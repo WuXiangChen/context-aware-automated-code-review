@@ -2,11 +2,7 @@
 
 nohup python -u rl_main.py --rlModel msg/train_NN_10 --device "cuda:0" --llm_device "cuda:1" --task_type "msg" --maxRL 10 > ./Output/rl_logs/msg/run_train_NN10.log 2>&1 &
 
-nohup python -u rl_main.py --rlModel ref/train_NN_10_baseBatchIndex_0 --device "cuda:0" --llm_device "cuda:1" --task_type "ref" --maxRL 10 --baseBatchIndex 0 > ./Output/rl_logs/ref/run_train_NN10_baseBatchIndex_0.log 2>&1 &
-nohup python -u rl_main.py --rlModel ref/train_NN_10_baseBatchIndex_11 --device "cuda:2" --llm_device "cuda:3" --task_type "ref" --maxRL 10 --baseBatchIndex 11 > ./Output/rl_logs/ref/run_train_NN10_baseBatchIndex_11.log 2>&1 &
-
 nohup python -u rl_main.py --rlModel msg/train_NN_10_baseBatchIndex_0 --device "cuda:4" --llm_device "cuda:5" --task_type "msg" --maxRL 10 --baseBatchIndex 0 > ./Output/rl_logs/msg/run_train_NN10_baseBatchIndex_0.log 2>&1 &
-nohup python -u rl_main.py --rlModel msg/train_NN_10_baseBatchIndex_11 --device "cuda:6" --llm_device "cuda:7" --task_type "msg" --maxRL 10 --baseBatchIndex 11 > ./Output/rl_logs/msg/run_train_NN10_baseBatchIndex_11.log 2>&1 &
 
 # 测试
 nohup python -u rl_main.py --rlModel msg/train_NN_5 --train_eval --task_type "msg" --device "cuda:0" --llm_device "cuda:0" --maxRL 1 > run_contextAware_codediff_maxRL1_1_1.log 2>&1 &
