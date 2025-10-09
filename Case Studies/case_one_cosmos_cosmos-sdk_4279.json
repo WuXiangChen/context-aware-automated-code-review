@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "440": "cosmos/cosmos-sdk:4279"
+        },
+        "selected_nodeLs": {
+            "440": "['PR-4279', 'Issue-4278']"
+        },
+        "codediff": {
+            "440": "@@ -204,7 +206,19 @@ func runAddCmd(_ *cobra.Command, args []string) error {\n \n \tif len(mnemonic) == 0 {\n \t\t// read entropy seed straight from crypto.Rand and convert to mnemonic\n-\t\tentropySeed, err := bip39.NewEntropy(mnemonicEntropySize)\n+\n+\t\t// get the mnemonic size\n+\t\tmnemonicSize := viper.GetInt(flagMnemonicSize)\n+\t\tif mnemonicSize == 0 {\n+\t\t\tmnemonicSize = 24"
+        },
+        "groundTruth": {
+            "440": "I would rather remove this. If users passed `--mnemonic-size=0` , it'd be better to let the command fail with an informative error message (as done in the ensuing `if` block) rather than silently ignore the flag and set `mnemonicSize` to 24."
+        },
+        "ds_dnContext": {
+            "440": "{\n  \"code_review_suggestion\": \"The code now configures mnemonic size, but it doesn't validate if the size is standard (e.g., 12 or 24 words for BIP39). Adding a check for valid sizes would prevent errors and ensure secure defaults.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "440": "{\n  \"code_review_suggestion\": \"The code should validate that the mnemonic size is one of the supported values (12, 15, 18, 21, or 24) to prevent errors or insecure mnemonics, ensuring compatibility with BIP39 standards.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "440": "{\n  \"code_review_suggestion\": \"The hardcoded fallback value of 24 for mnemonic size should be extracted as a constant with a descriptive name (like 'defaultMnemonicSize') to make the code more maintainable and self-documenting.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "440": "{\n  \"code_review_suggestion\": \"The code correctly implements the mnemonic size flag, but you should add validation to ensure only valid BIP39 sizes (12, 15, 18, 21, 24) are accepted to prevent invalid entropy values and maintain security standards.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "440": "{\n  \"code_review_suggestion\": \"Great idea to make the mnemonic size configurable! However, checking if the value is `0` to set a default can be ambiguous, as `viper.GetInt` returns `0` for both unset keys and keys explicitly set to `0`. A more robust approach is to set the default value when defining the flag itself.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "440": "{\n  \"code_review_suggestion\": \"Nice work on adding configurable mnemonic sizes! To make this a bit cleaner, how about setting the default value of `24` when you define the flag? That way, you can remove the `if mnemonicSize == 0` check here and rely on Viper/Cobra's built-in default handling.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "440": "{\n  \"code_review_suggestion\": \"Avoid silently defaulting to 24 for mnemonicSize without validation; instead, explicitly validate this input and handle unsupported sizes gracefully to prevent generating invalid entropy or confusing behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "440": "{\n  \"code_review_suggestion\": \"Great addition to support configurable mnemonic lengths! To avoid confusion and potential bugs, ensure the mnemonicSize value is validated against allowed sizes (12, 15, 18, 21, 24) before generating entropy.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "440": "{\n  \"code_review_suggestion\": \"You read mnemonicSize but never use it, so the user’s flag is silently ignored. Either remove the dead code or (better) validate allowed sizes (12,15,18,21,24), map them to entropy (128..256 bits), and pass that to bip39.NewEntropy so the flag actually works.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "440": "{\"code_review_suggestion\":\"You read the --mnemonic-size flag but (in this snippet) don’t validate or map it to the correct entropy bits before generating the mnemonic. Add a switch/lookup to accept only 12,15,18,21,24 and map them to 128,160,192,224,256 bits (returning an error otherwise) before calling bip39.NewEntropy—this prevents accidental weak or invalid lengths and makes the new flag reliably enforce the user’s intent.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

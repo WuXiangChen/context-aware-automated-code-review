@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "139": "apache/skywalking:3318"
+        },
+        "selected_nodeLs": {
+            "139": "['PR-3318', 'Issue-3307']"
+        },
+        "codediff": {
+            "139": "@@ -161,7 +162,12 @@ public void parseEntry(SpanDecorator spanDecorator, SegmentCoreInfo segmentCoreI\n             statement.setTraceId(traceId);\n             for (KeyStringValuePair tag : spanDecorator.getAllTags()) {\n                 if (SpanTags.DB_STATEMENT.equals(tag.getKey())) {\n-                    statement.setStatement(tag.getValue());\n+                    if (!StringUtil.isEmpty(tag.getValue()) && tag.getValue().length() > config.getMaxSlowSQLLength()) {\n+                        statement.setStatement(tag.getValue().substring(0,config.getMaxSlowSQLLength()));"
+        },
+        "groundTruth": {
+            "139": "Don't need to call getValue so many times. Provide a local variable named sqlStatement."
+        },
+        "ds_dnContext": {
+            "139": "{\n  \"code_review_suggestion\": \"The code could throw a StringIndexOutOfBoundsException if config.getMaxSlowSQLLength() is negative. Consider using Math.max(0, config.getMaxSlowSQLLength()) to ensure a safe value for truncation.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "139": "{\n  \"code_review_suggestion\": \"The code only truncates and sets long SQL statements, but it misses setting normal-length ones, which could break functionality. Add an else clause to set the full value when it's within the limit.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "139": "{\n  \"code_review_suggestion\": \"The substring approach for truncating long SQL statements could cut off in the middle of a word or SQL keyword, making debugging harder. Consider using an ellipsis at the end (e.g., substring(0, config.getMaxSlowSQLLength() - 3) + \\\"...\\\") to indicate the statement was truncated.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "139": "{\"code_review_suggestion\": \"The substring approach works for preventing database errors, but consider using StringUtils.substring instead of raw substring to handle edge cases where the string might be shorter than maxSlowSQLLength, avoiding potential index issues.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "139": "{\n  \"code_review_suggestion\": \"Good idea to truncate long SQL statements! However, it looks like the `else` case is missing. Currently, any statement that is *not* longer than `maxSlowSQLLength` will be dropped entirely. We should add an `else` block to set the statement for those cases as well.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "139": "{\n  \"code_review_suggestion\": \"Good fix for the long SQL issue! However, the current logic only sets the statement if it's longer than the configured limit. We need to add an `else` block to also set the statement for SQL queries that are within the length limit, otherwise they won't be recorded.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "139": "{\n  \"code_review_suggestion\": \"The diff truncates the SQL statement but omits handling the case when the statement length is within limits, so add an else branch to set the full statement when it's short enough to avoid leaving it unset.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "139": "{\n  \"code_review_suggestion\": \"The current truncation logic only sets the statement if it exceeds max length, but misses the else case to set it as is when shorter; ensure you always set the statement to avoid null or missing values.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "139": "{\n  \"code_review_suggestion\": \"Truncation logic now only sets the statement when it’s longer than the max, so shorter or equal-length SQL ends up never being recorded. Add an else branch (or restructure) so normal-sized statements are still set, e.g.: if (StringUtil.isEmpty(v)) return; if (v.length() > max) set(truncated) else set(v).\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "139": "{\n  \"code_review_suggestion\": \"The new trim logic only sets the statement when length > max, so normal (short) SQLs now never get recorded. Add an else branch (and handle empty safely), e.g. if (!StringUtil.isEmpty(v)) { statement.setStatement(v.length() > max ? v.substring(0, max) : v); } to preserve previous behavior while trimming long ones.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

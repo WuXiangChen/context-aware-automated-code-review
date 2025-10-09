@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "169": "Automattic/sensei:1018"
+        },
+        "selected_nodeLs": {
+            "169": "['PR-1018', 'Issue-1004']"
+        },
+        "codediff": {
+            "169": "@@ -1573,20 +1573,20 @@ public function course_link_from_order( $order_id ) {\n \n \t\t\t\t\tif( $courses && count( $courses ) > 0 ) {\n \n-\t\t\t\t\t\techo ' <p><div id= \"message\" class=\"updated fade woocommerce-info\" >';"
+        },
+        "groundTruth": {
+            "169": "@mahangu I think removing the id=\"message\" may cause some inconsistencies."
+        },
+        "ds_dnContext": {
+            "169": "{\n  \"code_review_suggestion\": \"The echoed HTML has a <div> inside a <p> tag, which is invalid and might break the layout. Consider removing the <p> tag for valid markup.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"Good job removing the invalid <p> tag to fix HTML parsing. For even cleaner code, consider updating 'id= \\\"message\\\" ' to 'id=\\\"message\\\" ' by removing the space for consistency with standard HTML attribute formatting.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"The HTML structure is invalid - you can't nest a <div> inside a <p> tag. Consider using a proper container structure like: '<div class=\\\"updated fade woocommerce-info\\\"><p>' instead to maintain valid HTML and proper rendering.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"Good fix for the invalid HTML issue! Removing the `<p>` tag around the `<div>` resolves the parsing problem where browsers were incorrectly handling the div inside a paragraph. This maintains proper HTML structure while preserving the intended styling and functionality.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"Good call removing this line. Just a heads-up for future reference, nesting a block element like `<div>` inside a `<p>` is invalid HTML and can cause unpredictable rendering across browsers.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"Thanks for fixing the invalid HTML! While you're at it, you could also clean up the spacing in the `div` element for consistency, like so: `echo '<div id=\\\"message\\\" class=\\\"updated fade woocommerce-info\\\">';`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"Avoid nesting a <div> inside a <p> as it breaks HTML semantics; replace the <p> tag with a <div> or remove it entirely for better markup structure and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"Great job removing the invalid <p> tag around the <div>; just ensure the div has proper spacing and attribute quotes for consistent readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"You removed the opening <div> (and <p>) wrapper but likely left the matching closing tags, which will break the HTML structure. Either restore a valid container (without nesting a <div> inside a <p>) or remove/adjust the corresponding closing tags, and while at it switch to properly escaped output (e.g., printf with esc_attr / esc_html).\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "169": "{\n  \"code_review_suggestion\": \"Good fix removing the invalid <p>, but double‑check that any matching </p> later in the block was also removed, and consider cleaning the echo to use consistent attribute formatting: echo '<div id=\\\"message\\\" class=\\\"updated fade woocommerce-info\\\">'; to avoid the extra space after id= and leading space before the tag.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

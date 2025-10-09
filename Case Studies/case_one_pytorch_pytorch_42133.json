@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "191": "pytorch/pytorch:42133"
+        },
+        "selected_nodeLs": {
+            "191": "['PR-42133']"
+        },
+        "codediff": {
+            "191": "@@ -84,6 +84,7 @@ void print_unsupported_ops_and_throw(\n \n void parseMethods(\n     const std::vector<IValue>& vals,\n+    const std::vector<IValue>& debug_info_vals,"
+        },
+        "groundTruth": {
+            "191": "Maybe do optional here, so that instead of `bool has_debug_info = debug_info_vals.size() > 0;`, you can do `bool has_debug_info = debug_info_vals.has_value();`"
+        },
+        "ds_dnContext": {
+            "191": "{\n  \"code_review_suggestion\": \"You've added a new parameter 'debug_info_vals' to 'parseMethods', which is great for debugging! However, ensure all existing calls to 'parseMethods' are updated to pass this new argument to avoid compilation errors or runtime issues.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n  \"code_review_suggestion\": \"Consider renaming 'debug_info_vals' to 'module_info_vals' to better align with the PR's goal of handling module information, improving clarity and consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n  \"code_review_suggestion\": \"The new debug_info_vals parameter should be documented with a comment explaining its purpose and expected format, as it's not immediately clear what debug information it contains or how it should be used.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n    \"code_review_suggestion\": \"The debug_info_vals parameter is being added to parseMethods but there's no context about how it should be used or validated. Consider adding a brief comment explaining its purpose and ensuring it's properly handled in the method implementation to avoid potential crashes or undefined behavior.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n  \"code_review_suggestion\": \"Great idea to add more debug information! To help others understand the new `debug_info_vals` parameter, could you please add a brief comment explaining its purpose and how it relates to the `vals` vector?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n  \"code_review_suggestion\": \"Thanks for adding this! To improve readability, could we rename the new parameter `debug_info_vals` to simply `debug_info`? The `_vals` suffix is a bit redundant since the type is already `std::vector<IValue>`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n  \"code_review_suggestion\": \"It looks like you added a new parameter without updating the function signature consistently (e.g., missing in the function declaration or call sites). To maintain clarity and avoid confusion, ensure the parameter addition is reflected everywhere this function is used or declared.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n  \"code_review_suggestion\": \"The added parameter `debug_info_vals` in `parseMethods` is not used within the snippet; ensure it is either utilized appropriately or removed to keep the function signature clean and maintainable.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n  \"code_review_suggestion\": \"Adding debug_info_vals to parseMethods without a default or overload is an API/ABI breaking change—callers will now fail to compile (and possibly link). Consider adding an overload, a default value, or deprecating the old signature first to preserve backward compatibility.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "191": "{\n  \"code_review_suggestion\": \"Adding debug_info_vals to parseMethods changes its signature and can silently break existing callers; either add an overload (keeping the old signature) or supply a default/optional parameter, and validate that debug_info_vals aligns (size/order) with vals. If it’s not yet used, mark it maybe_unused to avoid warnings until integrated.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

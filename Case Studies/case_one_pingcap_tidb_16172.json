@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "137": "pingcap/tidb:16172"
+        },
+        "selected_nodeLs": {
+            "137": "['PR-16172', 'Issue-16127']"
+        },
+        "codediff": {
+            "137": "@@ -271,6 +271,9 @@ func (e *Execute) getPhysicalPlan(ctx context.Context, sctx sessionctx.Context,\n \t\t// type from \"paramMarker\" to \"Constant\".When Point Select queries are executed,\n \t\t// the expression in the where condition will not be evaluated,\n \t\t// so you don't need to consider whether prepared.useCache is enabled.\n+\t\tnote := errors.New(\"Hit plan cache: True\")"
+        },
+        "groundTruth": {
+            "137": "how about use \"errors\" instead of \"github.com/pingcap/errors\" to generate this error? pingcap/errors#New will fetch stack info via `runtime.Caller` (but not use it)that maybe affect performance~ or maybe we can make it be global variable and avoid New every time- -"
+        },
+        "ds_dnContext": {
+            "137": "{\n  \"code_review_suggestion\": \"Using errors.New for a non-error message like 'Hit plan cache: True' is not idiomatic in Go—it should represent actual errors. Consider using a logging framework for informational messages to avoid confusion and maintain code clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "137": "{\n  \"code_review_suggestion\": \"Based on the PR discussion, the team decided to use a session variable `last_statement_found_in_plan_cache` instead of warnings to avoid protocol issues. Consider replacing the warning note with a session variable update to align with the agreed approach.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "137": "{\n  \"code_review_suggestion\": \"The error message 'Hit plan cache: True' is confusing because errors typically indicate problems, not successful cache hits. Consider using a debug log statement instead of an error to properly communicate this informational event.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "137": "{\"code_review_suggestion\": \"The change adds a note for plan cache hits, but using `errors.New()` creates an error-level message instead of the intended warning/note. Consider using `sctx.GetSessionVars().StmtCtx.AppendNote()` to add a proper warning note that won't be confused with actual errors.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "137": "{\n  \"code_review_suggestion\": \"Using `errors.New` for a success case like hitting the plan cache can be a bit misleading, as it's not actually an error. For better code clarity, it might be better to use a simple string or a dedicated logging/note mechanism for informational messages.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "137": "{\n  \"code_review_suggestion\": \"Thanks for adding this! Based on the excellent discussion in the related issue, it seems the consensus was to use a session variable like `last_statement_found_in_plan_cache` instead of a warning. This would be less intrusive for applications. Should we align with that approach?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "137": "{\n  \"code_review_suggestion\": \"Creating an error with a fixed message 'Hit plan cache: True' here seems misleading since this isn't an actual error; consider replacing it with proper logging or a boolean flag to indicate plan cache usage for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "137": "{\n  \"code_review_suggestion\": \"Using errors.New for a plan cache hit note may be misleading since it's not an error; consider using a proper warning or note mechanism to clearly convey this information without implying a failure.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "137": "{\"code_review_suggestion\":\"The added line creates an error value (note := errors.New(...)) that’s never used, which will cause a compile error in Go. Either remove it or replace it with an actual logging/tracing call (e.g., logger.Info(\\\"Hit plan cache\\\", ...)) if the intent was observability.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "137": "{\n  \"code_review_suggestion\": \"The added line just creates an unused error (note := errors.New(...)), which will not compile and also doesn’t surface the note to clients. Either remove it or actually emit the warning, e.g. define a package-level var and call stmtCtx.AppendNote(planCacheHitNote).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

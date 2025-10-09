@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "149": "Yoast/wordpress-seo:5024"
+        },
+        "selected_nodeLs": {
+            "149": "['PR-5024']"
+        },
+        "codediff": {
+            "149": "@@ -0,0 +1,187 @@\n+/* global wp, jQuery */\n+\n+var isUndefined = require( 'lodash/isUndefined' );\n+var defaultsDeep = require( 'lodash/defaultsDeep' );\n+var getIndicatorForScore = require( './getIndicatorForScore' );\n+\n+var $ = jQuery;\n+\n+var defaultArguments = {\n+\tlabel: '',\n+\tactive: false,\n+\thideable: false,\n+\n+\tclasses: [ 'wpseo_tab', 'wpseo_generic_tab' ],\n+\n+\tonActivate: function ( ) { },\n+\tafterActivate: function ( ) { },\n+};\n+\n+module.exports = (function() {\n+\t'use strict';\n+\n+\t/**\n+\t * Constructor for a generic tab object\n+\t * @param {Object} args\n+\t * @constructor\n+\t */\n+\tfunction GenericTab( args ) {\n+\t\tdefaultsDeep( args, defaultArguments );\n+\n+\t\tthis.label          = args.label;\n+\t\tthis.active         = args.active;\n+\t\tthis.hideable       = args.hideable;\n+\t\tthis.classes        = args.classes;\n+\n+\t\tthis.onActivate     = args.onActivate;\n+\t\tthis.afterActivate  = args.afterActivate;\n+\t}\n+\n+\t/**\n+\t * Initialize a keyword tab.\n+\t *\n+\t * @param {HTMLElement} container The container element to add the tab to.\n+\t * @param {string} [position] Either prepend or append for the position in the container.\n+\t */\n+\tGenericTab.prototype.init = function( container, position ) {\n+\t\tposition = position || 'prepend';\n+\n+\t\tthis.setElement( this.render() );\n+\t\tthis.addToContainer( container, position );\n+\t};\n+\n+\t/**\n+\t * Adds the current tab to the container element.\n+\t *\n+\t * @param {HTMLElement} container The container element to add the tab to."
+        },
+        "groundTruth": {
+            "149": "Isn't this a string that is the ID of the container? So not the element itself?"
+        },
+        "ds_dnContext": {
+            "149": "{\n  \"code_review_suggestion\": \"You're importing 'isUndefined' from lodash but not using it, which adds unnecessary code to the bundle. Remove this unused import to improve performance and maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "149": "{\n  \"code_review_suggestion\": \"The GenericTab class doesn't currently support a 'disabled' state, which is essential for implementing the tab disabling feature described in the PR. Consider adding a 'disabled' property to defaultArguments and conditionally preventing activation when set to true.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "149": "{\n  \"code_review_suggestion\": \"The `defaultsDeep` function is called with `args` as the first parameter, but it should be called with `args` as the second parameter and `defaultArguments` as the first parameter to properly merge defaults into the args object. Currently, it's backwards and won't work as intended.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "149": "{\n  \"code_review_suggestion\": \"The GenericTab constructor accepts a 'hideable' parameter, but it's not being used in the rendering logic. Since this PR is about disabling keyword/content tabs, you should implement the hiding functionality in the render() method to ensure tabs are properly hidden when hideable is true.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "149": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "149": "{\n  \"code_review_suggestion\": \"In the `GenericTab` constructor, `defaultsDeep` modifies the passed `args` object. To avoid potential side effects, it's better to create a new object for the final configuration, like `var options = defaultsDeep({}, defaultArguments, args);`, and use that to set up your tab properties.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "149": "{\n  \"code_review_suggestion\": \"The key issue is how defaultsDeep is used incorrectly: it should be called as defaultsDeep({}, args, defaultArguments) to avoid mutating the user's input and properly apply defaults. This will make the code safer and clearer.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "149": "{\n  \"code_review_suggestion\": \"In the GenericTab constructor, consider using `defaultsDeep(defaultArguments, args)` instead of `defaultsDeep(args, defaultArguments)` to ensure default values are correctly applied when arguments are missing.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "149": "{\n  \"code_review_suggestion\": \"defaultsDeep(args, defaultArguments) reuses the defaultArguments references, so tabs without a custom classes array will share and mutate the same array. Fix by cloning: args = defaultsDeep({}, args || {}, defaultArguments); this.classes = [].concat(args.classes); to avoid cross-instance side effects.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "149": "{\"code_review_suggestion\":\"In the constructor you call defaultsDeep(args, defaultArguments) without first ensuring args is an object; if GenericTab is instantiated without args it can throw—add args = args || {} (and optionally use defaultsDeep({}, defaultArguments, args)) to avoid runtime errors and accidental mutation of the shared default arrays.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

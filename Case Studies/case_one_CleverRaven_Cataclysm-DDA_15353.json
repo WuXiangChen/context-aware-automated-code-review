@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "78": "CleverRaven/Cataclysm-DDA:15353"
+        },
+        "selected_nodeLs": {
+            "78": "['PR-15353', 'PR-15268']"
+        },
+        "codediff": {
+            "78": "@@ -512,17 +514,17 @@ void player::action_taken()\n void player::update_morale()\n {\n     // Decay existing morale entries.\n-    for( size_t i = 0; i < morale.size(); i++ ) {\n+    for( size_t i = morale.size() - 1; i > 0; i-- ) {"
+        },
+        "groundTruth": {
+            "78": "`size_t` can be unsigned. From what I've seen, it is signed in Windows MinGW (for example, CodeBlocks), but unsigned on GNU/Linux when compiled with GCC. When unsigned, `morale.size() - 1` will wrap around when `morale.size() == 0`, then `i > 0` will be true and `morale[i].proceed()` will be called. This causes a crash."
+        },
+        "ds_dnContext": {
+            "78": "{\n  \"code_review_suggestion\": \"The reverse loop condition `i > 0` skips the first element (index 0) and causes out-of-bounds access when the vector is empty. Consider using `i != (size_t)-1` or a signed index to safely iterate over all elements.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n  \"code_review_suggestion\": \"The backward loop iteration skips the first element (index 0) and may cause out-of-bounds access if the morale vector is empty, undermining the goal of accurate morale computation. Fix the condition to iterate over all elements, e.g., use `for (size_t i = morale.size(); i > 0; ) { --i; ... }` to ensure correct bounds.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n    \"code_review_suggestion\": \"The loop condition should be 'i >= 0' instead of 'i > 0' to ensure the first element (index 0) is processed. Currently, the first morale entry is being skipped.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n    \"code_review_suggestion\": \"The loop change from forward to backward iteration is good for removing elements, but there's an off-by-one error - the condition should be `i >= 0` instead of `i > 0` to process all elements including index 0.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n  \"code_review_suggestion\": \"Heads up, this reverse loop has a subtle bug. It will crash if the `morale` vector is empty due to unsigned integer underflow, and it also skips processing the element at index 0. A safer and more idiomatic way to iterate backward is by using reverse iterators.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n  \"code_review_suggestion\": \"This reverse loop has a subtle bug. Since `size_t` is unsigned, `morale.size() - 1` will underflow if `morale` is empty, leading to a crash. It also skips the element at index 0. Consider using a signed type for the index, like `for(ssize_t i = morale.size() - 1; i >= 0; i--)`, to iterate safely.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n  \"code_review_suggestion\": \"The reverse loop `for( size_t i = morale.size() - 1; i > 0; i-- )` skips index 0, potentially missing the first morale entry. Consider using a loop that includes index 0, like a do-while or a signed integer index, to ensure all entries decay properly.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n  \"code_review_suggestion\": \"The loop now skips the first morale entry by using 'i > 0' and decrements from morale.size() - 1, which risks missing element 0 and underflow if morale is empty; consider adjusting the loop condition and handling the empty case to avoid out-of-bounds errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n  \"code_review_suggestion\": \"The new reverse loop risks unsigned underflow when morale is empty and also skips index 0; use a safe reverse pattern like `for (size_t i = morale.size(); i-- > 0; )` (or early-return if empty) so all elements are processed without wraparound.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "78": "{\n  \"code_review_suggestion\": \"The new reverse loop will underflow when morale is empty (size() - 1 on size_t) and it never processes index 0. Use a safe reverse pattern, e.g. for (size_t i = morale.size(); i-- > 0; ) { ... }, or switch to reverse iterators, and/or early-return if empty.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

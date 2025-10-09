@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "128": "google/go-cloud:1783"
+        },
+        "selected_nodeLs": {
+            "128": "['PR-1783']"
+        },
+        "codediff": {
+            "128": "@@ -495,16 +497,16 @@ func BytesDecode(b []byte, obj interface{}) error {\n //\n // post defaults to BytesDecode. An optional decoder can be passed in to do\n // further decode operation based on the decrypted message.\n-func DecryptDecode(ctx context.Context, k *secrets.Keeper, post Decode) Decode {\n-\treturn func(b []byte, obj interface{}) error {\n+func DecryptDecode(unusedCtx context.Context, k *secrets.Keeper, post Decode) Decode {"
+        },
+        "groundTruth": {
+            "128": "Remove this Context parameter: it was added specifically to curry the context, which is what led me to file #1667. ```suggestion func DecryptDecode(k *secrets.Keeper, post Decode) Decode { ```"
+        },
+        "ds_dnContext": {
+            "128": "{\n  \"code_review_suggestion\": \"The parameter 'unusedCtx' suggests this context isn't used, which might indicate a potential issue. If the context is truly unnecessary, consider removing it to simplify the signature. If it's needed for the decryption process, ensure it's properly utilized to handle timeouts or cancellations.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n  \"code_review_suggestion\": \"The context parameter is renamed to 'unusedCtx' but isn't utilized, which undermines the goal of adding context support for cancellations or timeouts. Consider propagating it to the 'post' Decode function or using it in the decoding logic.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n    \"code_review_suggestion\": \"The parameter 'unusedCtx' should be renamed to 'ctx' since it's still being passed through the closure and might be used by the 'post' decode function, even if not used directly in this wrapper. This maintains consistency with Go context naming conventions and makes the function's intent clearer.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n    \"code_review_suggestion\": \"The parameter was renamed to 'unusedCtx' but the context should actually be used for the decryption operation. Since this is part of fixing #1667 to propagate context through the decoding chain, you should pass this context to the Keeper's decryption method instead of leaving it unused.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n  \"code_review_suggestion\": \"Good catch flagging the unused context. To align with Go's idiomatic style, it's preferable to use the blank identifier `_` for unused parameters instead of naming it `unusedCtx`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n  \"code_review_suggestion\": \"Great start on adding context. Since the goal is to propagate it, you can now pass the `unusedCtx` to the underlying `secrets.Keeper`'s decryption call within the returned function. This will ensure decryption can be cancelled.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n  \"code_review_suggestion\": \"The unused context parameter should either be removed or properly utilized to follow Go best practices and avoid confusion; currently, naming it 'unusedCtx' signals it's ignored, which can be misleading and reduce code clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n  \"code_review_suggestion\": \"The context parameter is renamed to 'unusedCtx' but not used; to align with the new Decode signature, propagate the context into the returned Decode function instead of ignoring it to ensure proper context handling.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n  \"code_review_suggestion\": \"DecryptDecode now signals the context is ignored (unusedCtx), which is misleading—callers expect cancellation/timeouts to propagate. Either use the context in the decryption/decoding path or replace the param with _ context.Context (or remove it) to avoid a deceptive API.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "128": "{\n  \"code_review_suggestion\": \"You renamed ctx to unusedCtx but still keep the parameter; this undercuts the PR goal of propagating context. Either plumb the context through to the decryption/Decode logic (preferred) or drop the parameter entirely until it's used.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

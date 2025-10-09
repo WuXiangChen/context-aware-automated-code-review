@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "188": "spiffe/spire:951"
+        },
+        "selected_nodeLs": {
+            "188": "['PR-951', 'Issue-836']"
+        },
+        "codediff": {
+            "188": "@@ -1,27 +1,28 @@\n package endpoints\n \n import (\n-\t\"crypto/ecdsa\"\n+\t\"crypto\"\n \t\"crypto/tls\"\n \t\"crypto/x509\"\n \t\"errors\"\n \t\"fmt\"\n \t\"net\"\n \t\"os\"\n-\t\"sync\"\n \n \t\"golang.org/x/net/context\"\n \t\"google.golang.org/grpc\"\n \t\"google.golang.org/grpc/credentials\"\n \n \t\"github.com/spiffe/spire/pkg/common/auth\"\n+\t\"github.com/spiffe/spire/pkg/common/bundleutil\"\n \t\"github.com/spiffe/spire/pkg/common/peertracker\"\n \t\"github.com/spiffe/spire/pkg/common/util\"\n \t\"github.com/spiffe/spire/pkg/server/endpoints/node\"\n \t\"github.com/spiffe/spire/pkg/server/endpoints/registration\"\n-\t\"github.com/spiffe/spire/pkg/server/svid\"\n+\t\"github.com/spiffe/spire/pkg/server/federation\""
+        },
+        "groundTruth": {
+            "188": "As a passing observation, from an organization perspective, it is confusing that I can't find the bundle endpoint server code inside `github.com/spiffe/spire/pkg/server/endpoints`. The code we are writing here is effectively a \"bundle endpoint\" server and client, and the spec it implements is the SPIFFE Trust Domain and Bundle spec. So, maybe it is to say that if you use the bundle endpoint server and client, you _get_ federation? Not trying to be too nitpicky here, but I think that our choice in terminology will be important going forward. Curious to hear your thoughts on the naming as well as the code organization"
+        },
+        "ds_dnContext": {
+            "188": "{\n  \"code_review_suggestion\": \"The removal of the 'sync' import suggests potential concurrency handling changes. If this code manages shared state, ensure thread safety is maintained through other mechanisms like atomic operations or channel-based synchronization to prevent race conditions.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n  \"code_review_suggestion\": \"Verify that the removal of 'sync' and 'crypto/ecdsa' imports doesn't cause compilation errors, as they might still be needed for concurrency or cryptographic operations in the code.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n  \"code_review_suggestion\": \"The removal of the 'sync' import suggests this package no longer needs synchronization primitives, but we should verify that concurrent access patterns are still properly handled, especially with the new federation package being imported.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n    \"code_review_suggestion\": \"The change from 'crypto/ecdsa' to 'crypto' is a good abstraction, but ensure the new 'federation' import is properly used and tested since this is a prototype implementation for SPIFFE federation endpoints.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n  \"code_review_suggestion\": \"Great refactoring! Since the imports have changed significantly, it would be a good idea to run `goimports` to automatically clean up any newly unused packages and ensure everything is tidy.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n  \"code_review_suggestion\": \"As you're adding the new federation endpoint, it might be a good idea to place its handler logic in `pkg/server/endpoints/federation`. This would align with the existing structure for `node` and `registration` endpoints, keeping our server's package organization consistent.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n  \"code_review_suggestion\": \"The import cleanup is good, but consider verifying that removing 'sync' and replacing 'crypto/ecdsa' with 'crypto' doesn’t break any downstream cryptographic functionality, to ensure clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n  \"code_review_suggestion\": \"Since this diff adds federation imports and related features, consider removing unused imports like 'crypto/ecdsa' and 'sync' to keep the code clean and maintainable.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n  \"code_review_suggestion\": \"You swapped crypto/ecdsa for the generic crypto package; if the code still references ecdsa.PrivateKey (or other ecdsa symbols), it will now fail to compile. Either reintroduce the ecdsa import or refactor those usages to depend on crypto.Signer so the implementation is algorithm-agnostic.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "188": "{\n  \"code_review_suggestion\": \"Since you swapped crypto/ecdsa for the generic crypto package (likely to abstract key handling), double‑check that any downstream code no longer relies on ecdsa‑specific fields (e.g. X/Y coords) and instead uses crypto.Signer or crypto.PublicKey generically. If any algorithm-specific logic remains, isolate it or add a small helper to keep the federation endpoint flexible for future key types (e.g. Ed25519).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

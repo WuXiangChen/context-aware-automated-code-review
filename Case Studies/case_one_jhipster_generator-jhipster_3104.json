@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "47": "jhipster/generator-jhipster:3104"
+        },
+        "selected_nodeLs": {
+            "47": "['PR-3104']"
+        },
+        "codediff": {
+            "47": "@@ -541,168 +541,9 @@ module.exports = JhipsterClientGenerator.extend({\n         updateJsToHtml: function () {\n             // Index page\n             var indexFile = html.readFileAsString(path.join(this.sourceRoot(), MAIN_SRC_DIR + '_index.html'));\n-\n             indexFile = engine(indexFile, this, {});\n-\n-            var appScripts = [\n-                'app/app.module.js',\n-                'app/app.state.js',\n-                'app/app.constants.js',\n-                //blocks\n-                'app/blocks/handlers/state.handler.js',\n-                'app/blocks/config/alert.config.js',\n-                'app/blocks/config/http.config.js',\n-                'app/blocks/config/localstorage.config.js',\n-                'app/blocks/config/compile.config.js',\n-                'app/blocks/interceptor/auth-expired.interceptor.js',\n-                'app/blocks/interceptor/errorhandler.interceptor.js',\n-                'app/blocks/interceptor/notification.interceptor.js',\n-                // account\n-                'app/account/account.state.js',\n-                'app/account/activate/activate.state.js',\n-                'app/account/activate/activate.controller.js',\n-                'app/account/password/password.state.js',\n-                'app/account/password/password.controller.js',\n-                'app/account/password/password-strength-bar.directive.js',\n-                'app/account/register/register.state.js',\n-                'app/account/register/register.controller.js',\n-                'app/account/settings/settings.state.js',\n-                'app/account/settings/settings.controller.js',\n-                'app/account/reset/finish/reset.finish.controller.js',\n-                'app/account/reset/finish/reset.finish.state.js',\n-                'app/account/reset/request/reset.request.controller.js',\n-                'app/account/reset/request/reset.request.state.js',\n-                // admin\n-                'app/admin/admin.state.js',\n-                'app/admin/audits/audits.state.js',\n-                'app/admin/audits/audits.controller.js',\n-                'app/admin/audits/audits.service.js',\n-                'app/admin/configuration/configuration.state.js',\n-                'app/admin/configuration/configuration.controller.js',\n-                'app/admin/configuration/configuration.service.js',\n-                'app/admin/docs/docs.state.js',\n-                'app/admin/health/health.state.js',\n-                'app/admin/health/health.controller.js',\n-                'app/admin/health/health.service.js',\n-                'app/admin/health/health.modal.controller.js',\n-                'app/admin/logs/logs.state.js',\n-                'app/admin/logs/logs.controller.js',\n-                'app/admin/logs/logs.service.js',\n-                'app/admin/metrics/metrics.state.js',\n-                'app/admin/metrics/metrics.controller.js',\n-                'app/admin/metrics/metrics.service.js',\n-                'app/admin/metrics/metrics.modal.controller.js',\n-                'app/admin/user-management/user-management-detail.controller.js',\n-                'app/admin/user-management/user-management-dialog.controller.js',\n-                'app/admin/user-management/user-management-delete-dialog.controller.js',\n-                'app/admin/user-management/user-management.controller.js',\n-                'app/admin/user-management/user-management.state.js',\n-                // components\n-                'app/components/form/show-validation.directive.js',\n-                'app/components/form/maxbytes.directive.js',\n-                'app/components/form/minbytes.directive.js',\n-                'app/components/form/uib-pager.config.js',\n-                'app/components/form/uib-pagination.config.js',\n-                'app/components/form/pagination.constants.js',\n-                'app/components/login/login.service.js',\n-                'app/components/login/login.controller.js',\n-                'app/components/util/truncate-characters.filter.js',\n-                'app/components/util/truncate-words.filter.js',\n-                'app/components/util/base64.service.js',\n-                'app/components/util/capitalize.filter.js',\n-                'app/components/alert/alert.service.js',\n-                'app/components/alert/alert.directive.js',\n-                'app/components/util/parse-links.service.js',\n-                'app/components/util/date-util.service.js',\n-                'app/components/util/data-util.service.js',\n-                'app/components/util/pagination-util.service.js',\n-                'app/components/util/sort.directive.js',\n-                'app/components/util/sort-by.directive.js',\n-                'app/components/util/jhi-item-count.directive.js',\n-                // entities\n-                'app/entities/entity.state.js',\n-                // home\n-                'app/home/home.state.js',\n-                'app/home/home.controller.js',\n-                // layouts\n-                'app/layouts/error/error.state.js',\n-                'app/layouts/navbar/active-link.directive.js',\n-                'app/layouts/navbar/navbar.controller.js',\n-                // services\n-                'app/services/auth/auth.service.js',\n-                'app/services/auth/principal.service.js',\n-                'app/services/auth/has-authority.directive.js',\n-                'app/services/auth/has-any-authority.directive.js',\n-                'app/services/auth/account.service.js',\n-                'app/services/auth/activate.service.js',\n-                'app/services/auth/password.service.js',\n-                'app/services/auth/password-reset-init.service.js',\n-                'app/services/auth/password-reset-finish.service.js',\n-                'app/services/auth/register.service.js',\n-                'app/services/user/user.service.js'\n-            ];\n-            if (this.enableTranslation) {\n-                appScripts = appScripts.concat([\n-                    'app/blocks/handlers/translation.handler.js',\n-                    'app/blocks/config/translation.config.js',\n-                    'app/blocks/config/translation-storage.provider.js',\n-                    'app/components/language/language.service.js',\n-                    'app/components/language/language.constants.js',\n-                    'app/components/language/language.filter.js',\n-                    'app/components/language/language.controller.js',\n-                    'app/layouts/navbar/active-menu.directive.js'\n-                ]);\n-            }\n-            if (this.enableSocialSignIn) {\n-                appScripts = appScripts.concat([\n-                    'app/account/social/directive/social.directive.js',\n-                    'app/account/social/social-register.state.js',\n-                    'app/account/social/social-register.controller.js',\n-                    'app/account/social/social.service.js'\n-                ]);\n-            }\n-            if (this.authenticationType == 'jwt') {\n-                appScripts = appScripts.concat([\n-                    'app/services/auth/auth.jwt.service.js',\n-                    'app/blocks/interceptor/auth.interceptor.js'\n-                ]);\n-            }\n-\n-            if (this.authenticationType == 'oauth2') {\n-                appScripts = appScripts.concat([\n-                    'app/services/auth/auth.oauth2.service.js',\n-                    'app/blocks/interceptor/auth.interceptor.js'\n-                ]);\n-            }\n-\n-            if (this.authenticationType == 'session') {\n-                appScripts = appScripts.concat([\n-                    'app/services/auth/sessions.service.js',\n-                    'app/services/auth/auth.session.service.js',\n-                    'app/account/sessions/sessions.state.js',\n-                    'app/account/sessions/sessions.controller.js'\n-                ]);\n-            }\n-\n-            if (this.websocket == 'spring-websocket') {\n-                appScripts = appScripts.concat([\n-                    'app/admin/tracker/tracker.state.js',\n-                    'app/admin/tracker/tracker.controller.js',\n-                    'app/admin/tracker/tracker.service.js'\n-                ]);\n-            }\n-\n-            if (this.applicationType == 'gateway') {\n-                appScripts = appScripts.concat([\n-                    'app/admin/gateway/gateway.state.js',\n-                    'app/admin/gateway/gateway.controller.js',\n-                    'app/admin/gateway/gateway.routes.service.js'\n-                ]);\n-            }\n-\n-            indexFile = html.appendScripts(indexFile, 'app/app.js', appScripts, {});\n+            indexFile = html.append(indexFile, 'body', '\\n<!-- build:js app/app.js  -->\\n<!-- inject:js -->\\n<!-- endinject -->\\n<!-- endbuild -->\\n');"
+        },
+        "groundTruth": {
+            "47": "we could add this placeholder in the index.html template directly and avoid touching the file here"
+        },
+        "ds_dnContext": {
+            "47": "{\n  \"code_review_suggestion\": \"The diff replaces a dynamic script injection system with a hardcoded build comment, which breaks functionality for conditional features like translations and social sign-in. Consider keeping the dynamic logic or ensuring the build system handles these conditionals.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "47": "{\n  \"code_review_suggestion\": \"Great move to gulp-inject for script management! However, ensure the gulpfile is configured to handle conditional files (like translation or social sign-in scripts) that were previously feature-flagged, as they're no longer explicitly listed here.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "47": "{\n  \"code_review_suggestion\": \"The hardcoded script list removal is a good step toward maintainability, but the replacement with build comments lacks actual script injection logic. Consider implementing a dynamic script loader that automatically discovers and includes JavaScript files based on the project's feature flags and configuration.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "47": "{\n  \"code_review_suggestion\": \"The change removes hardcoded script paths in favor of gulp inject, but you should verify that the new injection pattern correctly handles all the conditional script inclusions (translation, social sign-in, authentication types, websocket, gateway) that were previously managed by the appScripts logic.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "47": "{\n  \"code_review_suggestion\": \"This is a fantastic simplification. Replacing the large, hardcoded list of script files with an automated injection block (`<!-- inject:js -->`) dramatically improves maintainability. This decouples the generator from the client-side file structure, making the codebase much more robust and easier to manage going forward.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "47": "{\n  \"code_review_suggestion\": \"This is a fantastic simplification! Removing the large, hardcoded list of scripts from the generator and delegating the injection to a build task significantly improves maintainability. Great refactor.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "47": "{\n  \"code_review_suggestion\": \"Looks like you removed the long explicit appScripts array and replaced it with a generic script injection placeholder; to maintain clarity and control, consider using a dynamic script injection approach or document this change to avoid losing important script load order and dependencies.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "47": "{\n  \"code_review_suggestion\": \"Great move replacing manual script listing with injection for maintainability; consider adding error handling or validation around the injection to ensure all scripts load correctly during build.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "47": "{\"code_review_suggestion\":\"By replacing the explicit, conditionally-built appScripts list with a static inject placeholder, you’ve dropped all the feature-based (auth type, translation, websocket, gateway) script inclusion logic, likely breaking those options at runtime. Either restore the conditional list feeding appendScripts, or introduce an equivalent build step (e.g. gulp/grunt/webpack glob with condition flags) so only the right scripts are actually injected.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "47": "{\n  \"code_review_suggestion\": \"By replacing the explicit script list with only build/inject comment markers, the generated index.html is no longer runnable until the gulp inject task has executed; users starting the app directly (e.g., mvn spring-boot:run) will get a blank/errored UI. Consider triggering the inject task automatically at the end of generation (or seeding at least the main bootstrap script as a fallback) to preserve out‑of‑the‑box usability.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

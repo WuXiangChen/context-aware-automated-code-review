@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "172": "open-mmlab/mmdetection:6435"
+        },
+        "selected_nodeLs": {
+            "172": "['PR-3389', 'Issue-2931']"
+        },
+        "codediff": {
+            "172": "@@ -163,14 +173,21 @@ def build_dataloader(dataset,\n         worker_init_fn, num_workers=num_workers, rank=rank,\n         seed=seed) if seed is not None else None\n \n+    if (TORCH_VERSION != 'parrots'\n+            and digit_version(TORCH_VERSION) >= digit_version('1.7.0')):\n+        kwargs['persistent_workers'] = persistent_workers\n+    elif persistent_workers is True:\n+        warnings.warn('persistent_workers is invalid because your pytorch '\n+                      'version is lower than 1.7.0')\n+\n     data_loader = DataLoader(\n         dataset,\n         batch_size=batch_size,\n         sampler=sampler,\n         num_workers=num_workers,\n         batch_sampler=batch_sampler,\n         collate_fn=partial(collate, samples_per_gpu=samples_per_gpu),\n-        pin_memory=False,\n+        pin_memory=pin_memory,"
+        },
+        "groundTruth": {
+            "172": "For now, we actually do not support setting pin_memory through the config, should we allow that?"
+        },
+        "ds_dnContext": {
+            "172": "{\n  \"code_review_suggestion\": \"The warning message for persistent_workers might mislead users with the 'parrots' PyTorch fork, as it incorrectly states the version is lower than 1.7.0. Consider updating it to say 'not supported in this PyTorch version or fork' for accuracy.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "172": "{\n  \"code_review_suggestion\": \"The version check for persistent_workers relies on TORCH_VERSION and digit_version—ensure these are correctly defined and imported to avoid runtime errors, especially with non-standard PyTorch builds like 'parrots'.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "172": "{\n  \"code_review_suggestion\": \"The persistent_workers warning should be more specific about which PyTorch version is actually detected, not just the required version. Consider adding the current TORCH_VERSION to the warning message to help users debug version compatibility issues.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "172": "{\n  \"code_review_suggestion\": \"The persistent_workers check should be moved after the DataLoader initialization to avoid a potential NameError if TORCH_VERSION or digit_version are not defined, and to maintain a cleaner flow of parameter handling.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "172": "{\n  \"code_review_suggestion\": \"Great job adding support for `persistent_workers`! To make the version check a bit more direct, you could consider simplifying the logic. Instead of a complex `if/elif` that modifies `kwargs`, you could determine the `persistent_workers` value to use and then pass it to the `DataLoader` only if it'"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "172": "{\n  \"code_review_suggestion\": \"Nice addition for `persistent_workers`! To make the logic a bit more direct, you could first check if `persistent_workers` is requested. Inside that block, you can then add it to `kwargs` if the PyTorch version is sufficient, or issue the warning if it's not. This would make the"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "172": "{\n  \"code_review_suggestion\": \"Consider initializing 'kwargs' as an empty dictionary before adding 'persistent_workers' to avoid potential KeyError or unexpected behavior, and pass 'kwargs' to DataLoader to ensure these options take effect properly.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "172": "{\n  \"code_review_suggestion\": \"The PyTorch version check for setting 'persistent_workers' is good, but consider simplifying the warning logic by explicitly verifying version comparison once rather than combining multiple conditions for better clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "172": "{\"code_review_suggestion\":\"Add a guard so persistent_workers is only set when num_workers > 0; currently it may raise a ValueError if num_workers == 0. Example: if persistent_workers and num_workers > 0: kwargs['persistent_workers']=True else: kwargs['persistent_workers']=False to avoid runtime crashes.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "172": "{\n  \"code_review_suggestion\": \"You add persistent_workers into kwargs but (in the shown hunk) never forward **kwargs to DataLoader, so the flag will be silently ignored; just pass persistent_workers directly in the DataLoader call (with a num_workers > 0 check) or ensure **kwargs is included.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

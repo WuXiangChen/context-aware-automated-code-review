@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "239": "hashicorp/terraform-provider-azurerm:2990"
+        },
+        "selected_nodeLs": {
+            "239": "['PR-2990', 'Issue-1576']"
+        },
+        "codediff": {
+            "239": "@@ -260,6 +260,32 @@ func TestAccAzureRMApplicationGateway_probesPickHostNameFromBackendHTTPSettings(\n \t})\n }\n \n+func TestAccAzureRMApplicationGateway_backendHttpSettingsHostName(t *testing.T) {"
+        },
+        "groundTruth": {
+            "239": "Could we get another test with 3 steps: - set pick true - set hostname - unset hostname"
+        },
+        "ds_dnContext": {
+            "239": "{\n  \"code_review_suggestion\": \"The new test function name should follow the project's naming convention. Consider renaming it to match the pattern used in existing tests like `TestAccAzureRMApplicationGateway_probesPickHostNameFromBackendHTTPSettings` for consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "239": "{\n  \"code_review_suggestion\": \"The test function name uses 'HttpSettings' which is inconsistent with the existing 'HTTPSettings' naming in the codebase. Consider renaming to 'backendHTTPSettingsHostName' to maintain consistency with Azure API conventions and existing tests.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "239": "{\n  \"code_review_suggestion\": \"The test function name 'TestAccAzureRMApplicationGateway_backendHttpSettingsHostName' should use consistent capitalization - it should be 'TestAccAzureRMApplicationGateway_BackendHTTPSettingsHostName' to match the existing pattern of 'HTTPSettings' (not 'HttpSettings').\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "239": "{\n  \"code_review_suggestion\": \"The test function name should be more specific to match its purpose - consider renaming to `TestAccAzureRMApplicationGateway_backendHttpSettingsHostName` (capital 'N') to align with the actual hostname field being tested and maintain naming consistency with other test functions.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "239": "{\n  \"code_review_suggestion\": \"Great start on the new acceptance test! Since the function body is currently empty, it would be helpful to add a `t.Skip(\\\"TODO: Implement test logic\\\")` to make its work-in-progress status clear and prevent it from passing vacuously.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "239": "{\n  \"code_review_suggestion\": \"To make our test suite easier to navigate, could we give this new acceptance test a more descriptive name? Something like `TestAccAzureRMApplicationGateway_backendHttpSettings_withHostName` would more clearly state its purpose of verifying the new `hostname` functionality.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "239": "{\n  \"code_review_suggestion\": \"The new test function is empty and lacks implementation; adding meaningful test cases and assertions will ensure it properly validates backend HTTP settings behavior and maintain test coverage.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "239": "{\n  \"code_review_suggestion\": \"Please include assertions within the new test to verify that the backend HTTP settings correctly handle the hostname property; without validation, the test won't confirm the intended functionality.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "239": "{\"code_review_suggestion\": \"The new test function is only a signature with no body, which will break the build. Either implement it or add a stub (e.g., t.Run / t.Skip) and proper braces so the code compiles.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "239": "{\n  \"code_review_suggestion\": \"The newly added test function is just a stub (only the signature/opening brace) and will break compilation; either complete it with assertions validating the backend_http_settings hostname behavior (e.g., plan/apply then inspect HostName) or remove the placeholder until the test is ready.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

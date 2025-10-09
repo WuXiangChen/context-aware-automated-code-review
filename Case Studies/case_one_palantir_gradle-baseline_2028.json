@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "383": "palantir/gradle-baseline:2028"
+        },
+        "selected_nodeLs": {
+            "383": "['PR-2028', 'PR-2024']"
+        },
+        "codediff": {
+            "383": "@@ -0,0 +1,83 @@\n+/*\n+ * (c) Copyright 2022 Palantir Technologies Inc. All rights reserved.\n+ *\n+ * Licensed under the Apache License, Version 2.0 (the \"License\");\n+ * you may not use this file except in compliance with the License.\n+ * You may obtain a copy of the License at\n+ *\n+ *     http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+\n+package com.palantir.baseline.errorprone;\n+\n+import com.google.auto.service.AutoService;\n+import com.google.errorprone.BugPattern;\n+import com.google.errorprone.BugPattern.SeverityLevel;\n+import com.google.errorprone.BugPattern.StandardTags;\n+import com.google.errorprone.VisitorState;\n+import com.google.errorprone.bugpatterns.BugChecker;\n+import com.google.errorprone.bugpatterns.BugChecker.ClassTreeMatcher;\n+import com.google.errorprone.fixes.SuggestedFix;\n+import com.google.errorprone.fixes.SuggestedFixes;\n+import com.google.errorprone.matchers.Description;\n+import com.google.errorprone.matchers.Matcher;\n+import com.google.errorprone.matchers.Matchers;\n+import com.google.errorprone.util.ASTHelpers;\n+import com.sun.source.tree.AnnotationTree;\n+import com.sun.source.tree.ClassTree;\n+import com.sun.tools.javac.code.Symbol.TypeSymbol;\n+import java.util.List;\n+import javax.lang.model.element.ElementKind;\n+\n+@AutoService(BugChecker.class)\n+@BugPattern(\n+        name = \"BugCheckerAutoService\",\n+        link = \"https://github.com/palantir/gradle-baseline#baseline-error-prone-checks\",\n+        linkType = BugPattern.LinkType.CUSTOM,\n+        summary = \"Concrete BugChecker implementations should be annotated \"\n+                + \"`@AutoService(BugChecker.class)` for auto registration with error-prone.\",\n+        severity = SeverityLevel.ERROR,\n+        tags = StandardTags.PERFORMANCE)"
+        },
+        "groundTruth": {
+            "383": "I don't think this is a perf issue :-)"
+        },
+        "ds_dnContext": {
+            "383": "{\n  \"code_review_suggestion\": \"The check for @AutoService currently only matches on the annotation's simple name, which could lead to false positives if another annotation named 'AutoService' exists. Consider verifying the fully qualified name ('com.google.auto.service.AutoService') to ensure accuracy.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "383": "{\n  \"code_review_suggestion\": \"The current check for @AutoService arguments uses isSubtype, which may incorrectly allow subclasses of BugChecker.class. Since @AutoService requires exactly BugChecker.class, consider using isSameType instead to ensure precise matching and avoid false negatives.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "383": "{\"code_review_suggestion\": \"The BugCheckerAutoService checker incorrectly tags itself with StandardTags.PERFORMANCE when it should use StandardTags.LIKELY_ERROR or StandardTags.STYLE since it's checking for proper service registration rather than performance issues.\"}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "383": "{\"code_review_suggestion\": \"The BugCheckerAutoService checker should also verify that the @AutoService annotation includes the correct BugChecker.class parameter, as missing or incorrect parameters would still cause registration issues.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "383": "{\n  \"code_review_suggestion\": \"Great idea for a meta-check! I'm wondering if `StandardTags.PERFORMANCE` is the best tag here. Since this check ensures a `BugChecker` is correctly registered, it feels more like a correctness issue. Would `StandardTags.BUG_PATTERN` be a more accurate classification?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "383": "{\n  \"code_review_suggestion\": \"This is a great meta-check to ensure our bug checkers are always active! The `PERFORMANCE` tag seems a bit out of place, though. Since this check is about the implementation of bug patterns themselves, would `StandardTags.BUG_PATTERN` be a more fitting tag?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "383": "{\n  \"code_review_suggestion\": \"The check currently only matches class declarations but does not verify if the class actually implements BugChecker; add a guard to ensure only BugChecker subclasses are checked for the @AutoService annotation to avoid false positives.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "383": "{\n  \"code_review_suggestion\": \"The check currently only verifies presence of the @AutoService(BugChecker.class) annotation but does not validate if the class is effectively a concrete BugChecker implementation; consider adding validation to avoid false positives on abstract or non-BugChecker classes.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "383": "{\n  \"code_review_suggestion\": \"File stops after the @BugPattern annotation with no class definition, so it won’t compile. Add the public class (e.g., public final class BugCheckerAutoService extends BugChecker implements ClassTreeMatcher { ... }) implementing the intended matcher logic.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "383": "{\"code_review_suggestion\":\"Tagging this check as PERFORMANCE feels misleading since it’s about correct service registration, not runtime efficiency; consider using a STYLE or similar tag to better reflect intent and reduce noise for teams filtering on performance issues.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

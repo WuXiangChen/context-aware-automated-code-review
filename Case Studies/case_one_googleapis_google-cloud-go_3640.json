@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "497": "googleapis/google-cloud-go:3640"
+        },
+        "selected_nodeLs": {
+            "497": "['PR-3616', 'PR-3606']"
+        },
+        "codediff": {
+            "497": "@@ -640,6 +674,25 @@ func (s *server) readStream(ctx context.Context, tx *transaction, send func(*spa\n \treturn nil\n }\n \n+func (s *server) buildResultSetMetaData(ri rowIter) (*spannerpb.ResultSetMetadata, error) {"
+        },
+        "groundTruth": {
+            "497": "\"Metadata\" everything else here treats that as a single word."
+        },
+        "ds_dnContext": {
+            "497": "{\n  \"code_review_suggestion\": \"The function name 'buildResultSetMetaData' appears to use inconsistent casing with 'MetaData' instead of 'Metadata'. Consider renaming it to 'buildResultSetMetadata' to match Go naming conventions and the spannerpb.ResultSetMetadata type for consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n  \"code_review_suggestion\": \"The function name 'buildResultSetMetaData' contains a capitalization inconsistency ('MetaData' vs. 'Metadata'). Consider renaming it to 'buildResultSetMetadata' to match the return type 'ResultSetMetadata' and maintain naming consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n  \"code_review_suggestion\": \"The buildResultSetMetaData function should handle potential nil rowIter to prevent runtime panics. Consider adding a nil check at the beginning: if ri == nil { return nil, errors.New(\\\"rowIter cannot be nil\\\") }\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n    \"code_review_suggestion\": \"The new buildResultSetMetaData function should include proper error handling for cases where the rowIter might be nil or invalid, as this could lead to panics when processing metadata for query results.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n  \"code_review_suggestion\": \"Looks like a good start on the `buildResultSetMetaData` function! However, the implementation is currently missing. Could you please add the logic to construct the `ResultSetMetadata` based on the columns from the `rowIter`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n  \"code_review_suggestion\": \"This is a great extraction that improves modularity. As a thought for further decoupling, could `buildResultSetMetaData` be a standalone function? If it only operates on the `rowIter` argument, it might not need to be a method on the `server` struct.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n  \"code_review_suggestion\": \"It looks like the new buildResultSetMetaData function is incomplete or missing its implementation; make sure to fully implement this to avoid runtime errors and ensure it clearly constructs the ResultSetMetadata as intended.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n  \"code_review_suggestion\": \"Ensure that buildResultSetMetaData explicitly validates input and handles errors clearly to prevent silent failures or malformed metadata, improving robustness and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n  \"code_review_suggestion\": \"The newly added buildResultSetMetaData function is just a signature with an opening brace and no body, which will cause a compile error (unexpected EOF / missing return). Either complete the implementation (including proper nil checks on ri and returning (*spannerpb.ResultSetMetadata, error)) or remove the stub until ready.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "497": "{\n  \"code_review_suggestion\": \"The newly added buildResultSetMetaData function is declared without a body, which will break the build—either implement it, remove it until ready, or add a temporary stub (e.g., return nil, fmt.Errorf(\\\"unimplemented\\\")) with a clear TODO so the refactor stays compilable.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

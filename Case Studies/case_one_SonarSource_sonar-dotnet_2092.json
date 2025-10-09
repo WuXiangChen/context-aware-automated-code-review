@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "363": "SonarSource/sonar-dotnet:2092"
+        },
+        "selected_nodeLs": {
+            "363": "['PR-2092']"
+        },
+        "codediff": {
+            "363": "@@ -0,0 +1,164 @@\n+﻿using System;\n+using System.Text;\n+using System.IO;\n+using Microsoft.Win32.SafeHandles;\n+using System.Security.AccessControl;\n+using System.IO.Compression;\n+using System.IO.IsolatedStorage;\n+using System.IO.MemoryMappedFiles;\n+using System.Runtime.InteropServices;\n+using System.Security.Policy;\n+\n+namespace Tests.Diagnostics\n+{\n+    class Program\n+    {\n+        void Main(IntPtr intPtr, IsolatedStorageFile isolatedStorageFile, MemoryMappedFile memoryMappedFile, MemoryMappedFileSecurity memoryMappedFileSecurity, Stream stream)\n+        {\n+            // Any static method call on File or Directory will raise\n+            File.Exists(\"\"); // Noncompliant {{Make sure this file handling is safe here.}}\n+//          ^^^^^^^^^^^^^^^\n+            File.Create(\"\"); // Noncompliant\n+            File.Delete(\"\"); // Noncompliant\n+            File.ReadLines(\"\"); // Noncompliant\n+            Directory.Exists(\"\"); // Noncompliant\n+            Directory.Delete(\"\"); // Noncompliant\n+            Directory.EnumerateFiles(\"\"); // Noncompliant\n+\n+            // Any FileInfo or DirectoryInfo creation\n+            var fileInfo = new FileInfo(\"\"); // Noncompliant {{Make sure this file handling is safe here.}}\n+//                         ^^^^^^^^^^^^^^^^\n+            var dirInfo = new DirectoryInfo(\"\"); // Noncompliant\n+\n+            // Calls to extern CreateFile\n+            SafeFileHandle handle;\n+            handle = CreateFile(\"\", 0, 0, intPtr, 0, 0, intPtr); // Noncompliant\n+            handle = CreateFile(); // Compliant, not extern\n+\n+            // Creation of SafeFileHandle\n+            handle = new SafeFileHandle(IntPtr.Zero, false); // Noncompliant\n+\n+            // All constructors of FileStream\n+            FileStream fileStream;\n+            fileStream = new FileStream(IntPtr.Zero, FileAccess.Read); // Noncompliant"
+        },
+        "groundTruth": {
+            "363": "There's an exception in the RSPEC for creation of a FileStream from a SafeFileHandle."
+        },
+        "ds_dnContext": {
+            "363": "{\n  \"code_review_suggestion\": \"The test case includes a call to an external 'CreateFile' method without its extern declaration, which might lead to incomplete testing. Consider adding the proper DllImport attribute or mock declaration to ensure the rule correctly identifies external file handling methods.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "363": "{\n  \"code_review_suggestion\": \"The test cases should include examples for IsolatedStorageFile and MemoryMappedFile to ensure comprehensive coverage of file handling security issues, as the current parameters suggest they are intended but unused.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "363": "{\n  \"code_review_suggestion\": \"The code is flagging all file operations as potentially unsafe, but it's missing context about what makes them safe or unsafe. Consider adding specific validation logic for file paths (e.g., checking for path traversal vulnerabilities) rather than blanket flagging all file operations.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "363": "{\n  \"code_review_suggestion\": \"The rule implementation correctly identifies unsafe file handling methods, but consider adding specific guidance in the comments about why each method is flagged (e.g., path traversal, race conditions) to help developers understand the security risks.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "363": "{\n  \"code_review_suggestion\": \"I've noticed several file system operations, like `File.Exists(\\\"\\\")`, that use paths directly. To prevent path traversal vulnerabilities, it's safer to validate and sanitize any input used to construct file paths to ensure they point to an expected, secure location.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "363": "{\n  \"code_review_suggestion\": \"Great work on adding these test cases for the new security rule. To improve clarity, consider renaming the `Main` method to something more descriptive like `FileHandlingApis`, since its signature and purpose don't align with a standard program entry point.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "363": "{\n  \"code_review_suggestion\": \"The main risk here is the use of unsafe or unchecked file and directory operations with hardcoded or empty paths, which can lead to security vulnerabilities or runtime errors; to improve, validate all file paths rigorously and avoid using empty strings, ensuring that any file access is safe, intentional, and properly error-handled.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "363": "{\n  \"code_review_suggestion\": \"The main issue is the overly broad marking of file handling calls as 'Noncompliant' without clear criteria; consider refining the detection logic to avoid false positives and improve maintainability by distinguishing truly security-sensitive usages.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "363": "{\"code_review_suggestion\":\"Calls to CreateFile() will not compile because no P/Invoke signature or local method is declared; add a proper extern DllImport CreateFile definition (or a stub with another name) so the test clearly differentiates extern vs non-extern calls and the sample compiles.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "363": "{\n  \"code_review_suggestion\": \"The sample won’t compile because CreateFile isn’t declared (neither the extern P/Invoke nor the local non-extern overload used for the compliant case). Add the proper [DllImport] extern CreateFile(...) signature returning SafeFileHandle plus a simple non-extern CreateFile() stub so the test clearly distinguishes compliant vs noncompliant calls.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

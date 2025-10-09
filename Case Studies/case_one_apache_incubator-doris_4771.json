@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "19": "apache/incubator-doris:4771"
+        },
+        "selected_nodeLs": {
+            "19": "['PR-4771']"
+        },
+        "codediff": {
+            "19": "@@ -0,0 +1,80 @@\n+// Licensed to the Apache Software Foundation (ASF) under one\n+// or more contributor license agreements.  See the NOTICE file\n+// distributed with this work for additional information\n+// regarding copyright ownership.  The ASF licenses this file\n+// to you under the Apache License, Version 2.0 (the\n+// \"License\"); you may not use this file except in compliance\n+// with the License.  You may obtain a copy of the License at\n+//\n+//   http://www.apache.org/licenses/LICENSE-2.0\n+//\n+// Unless required by applicable law or agreed to in writing,\n+// software distributed under the License is distributed on an\n+// \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n+// KIND, either express or implied.  See the License for the\n+// specific language governing permissions and limitations\n+// under the License.\n+\n+package org.apache.doris.clone;\n+\n+import org.apache.doris.catalog.TabletInvertedIndex;\n+import org.apache.doris.clone.TabletScheduler.PathSlot;\n+import org.apache.doris.system.SystemInfoService;\n+import org.apache.doris.task.AgentBatchTask;\n+import org.apache.doris.thrift.TStorageMedium;\n+\n+import com.google.common.collect.Lists;\n+\n+import java.util.HashMap;\n+import java.util.List;\n+import java.util.Map;\n+\n+\n+/*\n+ * Rebalancer is responsible for\n+ * 1. selectAlternativeTablets: selecting alternative tablets by one rebalance strategy,\n+ * and return them to tablet scheduler(maybe contains the concrete moves, or maybe not).\n+ * 2. createBalanceTask: given a tablet, try to create a clone task for this tablet.\n+ * 3. getCachedSrcBackendId: if the rebalance strategy wants to delete the replica of a specified be,\n+ * override this func.\n+ * NOTICE:\n+ * It may have a long interval between selectAlternativeTablets() & createBalanceTask(). So the concrete moves may be\n+ * invalid when we createBalanceTask(), you should check the moves' validation.\n+ */\n+public abstract class Rebalancer {\n+    // When Rebalancer init, the statisticMap is usually empty. So it's no need to be an arg.\n+    // Only use updateLoadStatistic() to load stats.\n+    protected Map<String, ClusterLoadStatistic> statisticMap = new HashMap<>();\n+    protected TabletInvertedIndex invertedIndex;\n+    protected SystemInfoService infoService;\n+\n+    public Rebalancer(SystemInfoService infoService, TabletInvertedIndex invertedIndex) {\n+        this.infoService = infoService;\n+        this.invertedIndex = invertedIndex;\n+    }\n+\n+    public List<TabletSchedCtx> selectAlternativeTablets() {\n+        List<TabletSchedCtx> alternativeTablets = Lists.newArrayList();\n+        for (Map.Entry<String, ClusterLoadStatistic> entry : statisticMap.entrySet()) {\n+            for (TStorageMedium medium : TStorageMedium.values()) {\n+                alternativeTablets.addAll(selectAlternativeTabletsForCluster(entry.getKey(),\n+                        entry.getValue(), medium));\n+            }\n+        }\n+        return alternativeTablets;\n+    }\n+\n+    protected abstract List<TabletSchedCtx> selectAlternativeTabletsForCluster(\n+            String clusterName, ClusterLoadStatistic clusterStat, TStorageMedium medium);\n+\n+    public abstract void createBalanceTask(TabletSchedCtx tabletCtx, Map<Long, PathSlot> backendsWorkingSlots,\n+                                           AgentBatchTask batchTask) throws SchedException;\n+\n+    public Long getCachedSrcBackendId(Long tabletId) {"
+        },
+        "groundTruth": {
+            "19": "For current scheduler principal, a tablet can only have one task running or pending at most. So we should delete the cache as soon as possible. It is better to change this function to getAndDeleteCachedSrcBackendId. And call it after scheduler cancelled, task running cancelled, and deleteSrcReplicaOfLB."
+        },
+        "ds_dnContext": {
+            "19": "{\n  \"code_review_suggestion\": \"The comment mentions 'updateLoadStatistic()' but this method isn't defined, which could leave statisticMap empty and prevent rebalancing. Consider adding an abstract method like updateLoadStatistics() to ensure subclasses properly populate the map.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"The getCachedSrcBackendId method returns null by default, which might cause null pointer exceptions if callers don't handle it. Consider documenting this behavior clearly or using Optional<Long> to make the absence explicit and avoid potential issues.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"The getCachedSrcBackendId method returns null by default, which could lead to NullPointerExceptions in calling code. Consider either making this method abstract to force implementation, or adding proper null handling documentation and @Nullable annotation.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"The getCachedSrcBackendId method should return a primitive long instead of Long to avoid unnecessary boxing and potential NullPointerExceptions, since it's unlikely to return null values in this context.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"Nice work on the new `Rebalancer` abstraction. Since schedulers often operate in a multi-threaded environment, I'd suggest changing the `statisticMap` from a `HashMap` to a `ConcurrentHashMap` to ensure thread safety and prevent potential concurrency issues.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"Great work on introducing this base class for rebalancing! For `getCachedSrcBackendId`, consider returning `Optional<Long>` instead of a nullable `Long`. This would make the contract more explicit about the potential absence of a value and help prevent potential `NullPointerExceptions` for consumers of this method. The default implementation could then simply be `return Optional.empty();`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"The current design uses a non-thread-safe HashMap for statisticMap without synchronization, which can cause concurrency issues; consider using a thread-safe collection or adding appropriate synchronization to ensure safe concurrent access.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"Great refactor introducing a base Rebalancer class; to improve clarity and maintainability, consider adding JavaDoc comments to abstract methods describing their expected behavior and side effects.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"The file ends with an unterminated method (getCachedSrcBackendId) and no closing braces, which will not compile. Add a default implementation like `public Long getCachedSrcBackendId(Long tabletId) { return null; }` and properly close the class.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "19": "{\n  \"code_review_suggestion\": \"getCachedSrcBackendId(Long) is left without a body, so this class won’t compile. Add a simple default implementation (e.g., return null with a clarifying comment) that subclasses can override.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

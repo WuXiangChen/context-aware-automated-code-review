@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "213": "pingcap/tidb:27212"
+        },
+        "selected_nodeLs": {
+            "213": "['PR-27212']"
+        },
+        "codediff": {
+            "213": "@@ -1372,10 +1372,17 @@ func (b *PlanBuilder) buildProjection4Union(ctx context.Context, u *LogicalUnion\n \t\t\tchildTp := u.children[j].Schema().Columns[i].RetType\n \t\t\tresultTp = unionJoinFieldType(resultTp, childTp)\n \t\t}\n+\n+\t\tfor i := range tmpExprs {"
+        },
+        "groundTruth": {
+            "213": "the `i` occurs on the outer loop, to make it more understandable, I suggest change it to another variable."
+        },
+        "ds_dnContext": {
+            "213": "{\n  \"code_review_suggestion\": \"The inner loop reuses the variable 'i', which shadows the outer loop's index and could lead to unexpected behavior. Consider using a distinct variable name like 'k' or 'idx' for the inner loop to improve clarity and prevent potential bugs.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "213": "{\n  \"code_review_suggestion\": \"The inner loop reuses the variable 'i', which conflicts with the outer loop index and may cause incorrect iterations. Use a distinct variable name like 'k' to avoid shadowing and ensure proper column processing.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "213": "{\n  \"code_review_suggestion\": \"The loop `for i := range tmpExprs` appears to be incomplete and potentially misplaced after the type union logic. This could lead to unexpected behavior or panics. Consider either completing the loop's intended functionality or removing it if it's a leftover from development.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "213": "{\"code_review_suggestion\": \"The loop should use the same index variable 'i' that was used to determine resultTp, ensuring the charset fix applies to the correct union result column.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "213": "{\n  \"code_review_suggestion\": \"The newly added `for` loop re-uses the variable `i` from the outer loop, which is a classic shadowing issue. To prevent potential bugs, could you please rename the inner loop's variable to something like `idx`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "213": "{\n  \"code_review_suggestion\": \"It looks like the loop variable `i` is being reused in this new inner loop. This shadows the `i` from the outer loop, which could lead to unexpected behavior. To avoid confusion, could we use a different variable name for the inner loop?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "213": "{\n  \"code_review_suggestion\": \"The added loop over tmpExprs is incomplete and lacks a body, which likely causes confusion or runtime issues; please complete the loop with the intended logic or remove it if unnecessary for clarity and correctness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "213": "{\n  \"code_review_suggestion\": \"The added loop over tmpExprs is incomplete and missing a body; ensure you implement the intended logic or remove this placeholder to avoid confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "213": "{\n  \"code_review_suggestion\": \"The newly added 'for i := range tmpExprs {' loop is incomplete (no body / closing brace shown) and will either fail to compile or is a leftover no-op. Either remove it if accidental, or implement the intended logic (and avoid shadowing an outer i). Finish or delete it to restore build correctness.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "213": "{\n  \"code_review_suggestion\": \"The newly added inner loop reuses the loop variable name `i` (for i := range tmpExprs) while already inside an outer for i loop over columns—this shadowing is easy to misread and could cause subtle mistakes if `i` is later referenced; rename the inner index (e.g. to k) for clarity and to prevent accidental misuse.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

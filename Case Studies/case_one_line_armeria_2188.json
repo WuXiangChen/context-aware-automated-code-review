@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "56": "line/armeria:2188"
+        },
+        "selected_nodeLs": {
+            "56": "['PR-2188', 'Issue-2137']"
+        },
+        "codediff": {
+            "56": "@@ -366,6 +369,16 @@ private void handleRequest(ChannelHandlerContext ctx, DecodedHttpRequest req) th\n                 protocol, routingCtx, routingResult, req, getSSLSession(channel),\n                 proxiedAddresses, clientAddress);\n \n+        if (config.defaultServerNameResponseHeader()) {\n+            reqCtx.addAdditionalResponseHeader(HttpHeaderNames.SERVER, \"armeria\");"
+        },
+        "groundTruth": {
+            "56": "Let's add version and os name so that the header will be `Armeria/0.94.0 (Linux)`. We can use `Version` and `System.getProperty(\"os.name\")`."
+        },
+        "ds_dnContext": {
+            "56": "{\n  \"code_review_suggestion\": \"Adding a hard-coded Server header with 'armeria' might expose server details, which could be a security risk. Consider making the header value configurable to allow for generic or customizable responses.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "56": "{\n  \"code_review_suggestion\": \"The Server header value is hardcoded as 'armeria', but it should include the version number like 'Armeria/0.94.1' to match the expected format. Consider using a dynamic value from the server configuration.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "56": "{\n  \"code_review_suggestion\": \"The hardcoded 'armeria' server header value should be configurable or derived from the actual server implementation to avoid misleading information and maintain flexibility across deployments.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "56": "{\n    \"code_review_suggestion\": \"The hardcoded 'armeria' value should be replaced with the actual server version to match the expected format 'Armeria/0.94.1' as specified in the PR description. Consider using a configurable server version string instead.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "56": "{\n  \"code_review_suggestion\": \"Great addition! To improve maintainability and avoid 'magic strings', could we define \\\"armeria\\\" as a shared constant, perhaps in a utility class, and reference it here?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "56": "{\n  \"code_review_suggestion\": \"Thanks for adding the default `Server` header! The PR description mentions the format should be `Armeria/<version>`. It looks like the value is currently hardcoded to `armeria`. Could we use a constant that includes the project version to ensure it's always correct?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "56": "{\n  \"code_review_suggestion\": \"Consider defining the server name as a constant rather than a hardcoded string to improve maintainability and avoid magic strings.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "56": "{\n  \"code_review_suggestion\": \"The added Server header value is hardcoded to \\\"armeria\\\"; consider using a consistent format like \\\"Armeria/x.y.z\\\" matching version info for clarity and to align with existing defaults.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "56": "{\"code_review_suggestion\":\"Hard-coding the Server header to 'armeria' risks leaking stack details and possibly overwriting a user-defined value; pull the value from config (or let it be unset) and only add it if a Server header isn’t already present.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "56": "{\n  \"code_review_suggestion\": \"Hard-coding SERVER to 'armeria' diverges from the spec ('Armeria/<version>') and makes future version changes harder. Prefer a reusable constant or helper that builds 'Armeria/' + runtime version (and only add it if the header isn’t already present so user overrides work), rather than embedding the lowercase literal here.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

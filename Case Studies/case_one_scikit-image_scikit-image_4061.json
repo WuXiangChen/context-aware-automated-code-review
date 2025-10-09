@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "410": "scikit-image/scikit-image:4061"
+        },
+        "selected_nodeLs": {
+            "410": "['PR-4061', 'Issue-3947']"
+        },
+        "codediff": {
+            "410": "@@ -9,6 +9,7 @@\n import os as _os\n \n import numpy as _np\n+from warnings import warn\n \n from .._shared._warnings import expected_warnings, warn"
+        },
+        "groundTruth": {
+            "410": "lets remove this line? when did it sneak in...."
+        },
+        "ds_dnContext": {
+            "410": "{\n  \"code_review_suggestion\": \"The duplicate import of `warn` from both `warnings` and `.._shared._warnings` creates ambiguity and may lead to unexpected behavior. Since `.._shared._warnings` already provides `warn`, consider removing the standard library import to avoid confusion and maintain consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "410": "{\n  \"code_review_suggestion\": \"The added import from warnings is redundant since warn is already imported from .._shared._warnings. Use the existing project-specific warn for consistency with the codebase's warning handling.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "410": "{\n  \"code_review_suggestion\": \"You're importing the 'warn' function twice - once directly from warnings and once from .._shared._warnings. This creates a naming conflict where the second import will override the first. Consider removing the direct import since you're already importing it from your shared module.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "410": "{\"code_review_suggestion\": \"The warning import should be consistent - either use `from warnings import warn` or `from .._shared._warnings import warn`, but not both. Since you're importing from the local module, consider removing the standard library import to avoid confusion.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "410": "{\n  \"code_review_suggestion\": \"It looks like `warn` is being imported twice, once from the standard library and again from a local module. To avoid confusion from this name shadowing, could we remove the redundant `from warnings import warn` line?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "410": "{\n  \"code_review_suggestion\": \"It looks like `warn` is being imported twice here. Since it's already available from `_shared._warnings` on the last line, we can remove the new `from warnings import warn` to keep the imports clean.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "410": "{\n  \"code_review_suggestion\": \"You've imported 'warn' from both 'warnings' and a local module, which can cause confusion or unexpected behavior; consider aliasing one of them or removing the redundant import for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "410": "{\n  \"code_review_suggestion\": \"Since the goal is to make data.load private and limit its public exposure, consider removing or aliasing the imported `warn` from `warnings` if it’s unused, to avoid confusion with the project's custom warn function and keep imports clean.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "410": "{\"code_review_suggestion\": \"You've imported warn twice (stdlib warnings then overwritten by your internal warn), which is confusing and error-prone—drop the first import or alias one (e.g., from warnings import warn as std_warn) to make the intent clear.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "410": "{\n  \"code_review_suggestion\": \"The new 'from warnings import warn' shadows the existing custom 'warn' from .._shared._warnings, likely breaking our standardized warning behavior. Remove that import (or alias it) and keep using the project-specific warn.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

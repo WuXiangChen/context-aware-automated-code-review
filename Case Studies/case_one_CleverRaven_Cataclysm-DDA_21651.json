@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "167": "CleverRaven/Cataclysm-DDA:21651"
+        },
+        "selected_nodeLs": {
+            "167": "['PR-21651']"
+        },
+        "codediff": {
+            "167": "@@ -429,7 +429,7 @@ int monster::print_info(WINDOW* w, int vStart, int vLines, int column) const\n     const auto hp_desc = hp_description( hp, type->hp );\n     mvwprintz( w, vStart++, column, hp_desc.second, \"%s\", hp_desc.first.c_str() );\n \n-    std::vector<std::string> lines = foldstring(type->description, getmaxx(w) - 1 - column);\n+    std::vector<std::string> lines = foldstring( type->get_description().c_str(), getmaxx(w) - 1 - column );"
+        },
+        "groundTruth": {
+            "167": "Here you don't need to call `c_str`, `foldstring` works with an `std::string`. `description` is also used (without translation) in iuse.cpp - you should probably make it private in `mtype`, so your compiler will tell where it's used directly."
+        },
+        "ds_dnContext": {
+            "167": "{\n  \"code_review_suggestion\": \"Using .c_str() on the temporary string from get_description() creates a dangling pointer if foldstring doesn't immediately copy it. Pass the std::string directly instead to ensure safe lifetime handling: `foldstring( type->get_description(), ... )`.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n  \"code_review_suggestion\": \"The change correctly avoids storing translated strings, but using `.c_str()` on a temporary `std::string` from `get_description()` is unnecessary and less efficient. Consider passing `type->get_description()` directly to leverage `foldstring`'s native `std::string` overload for better clarity and performance.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n  \"code_review_suggestion\": \"The change from type->description to type->get_description().c_str() introduces a potential performance overhead. Since get_description() likely returns a std::string, calling .c_str() creates a temporary C-string that gets immediately copied. Consider using type->get_description() directly if foldstring accepts std::string, or storing the result in a variable if get_description() is expensive.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n    \"code_review_suggestion\": \"Good change to avoid storing translated descriptions, but consider using `type->get_description()` directly instead of `.c_str()` since `foldstring` likely accepts `std::string` parameters, which would be more type-safe and efficient.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n  \"code_review_suggestion\": \"It looks like `get_description()` returns a new string by value, which creates an unnecessary copy. Could we have it return a `const std::string&` instead? This would be more efficient and would also allow us to remove the `.c_str()` call.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n  \"code_review_suggestion\": \"Nice i18n refactor! However, calling `.c_str()` on the temporary `std::string` returned by `get_description()` creates a dangling pointer. To fix this, please store the description in a local variable first to ensure its lifetime extends through the `foldstring` call.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n  \"code_review_suggestion\": \"It looks like you've changed from using the raw member 'type->description' to calling 'type->get_description()', but kept the .c_str() call, which may be unnecessary if get_description() already returns a string. To improve clarity and avoid potential issues, ensure that get_description() returns a std::string and pass it directly to foldstring without .c_str().\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n  \"code_review_suggestion\": \"Great move switching to get_description() for dynamic translation; to keep consistency and avoid confusion, consider removing the unnecessary c_str() call since foldstring likely accepts a string directly.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n  \"code_review_suggestion\": \"Calling c_str() on the temporary returned by get_description() risks a dangling pointer (UB) if foldstring uses it after the full expression. Just pass the std::string directly: foldstring( type->get_description(), ... ) or store it in a const std::string& first.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "167": "{\n  \"code_review_suggestion\": \"Unnecessary .c_str() adds an extra temporary (char* -> std::string) and reduces clarity; just call foldstring( type->get_description(), ... ) or cache: const auto desc = type->get_description(); to avoid redundant conversions and keep style consistent.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

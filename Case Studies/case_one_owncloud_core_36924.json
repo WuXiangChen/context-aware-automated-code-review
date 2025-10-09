@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "379": "owncloud/core:36924"
+        },
+        "selected_nodeLs": {
+            "379": "['PR-36924']"
+        },
+        "codediff": {
+            "379": "@@ -186,7 +187,8 @@ public function fileOfUserShouldNotBeEncrypted($fileName, $username) {\n \n \t\tAssert::assertEquals(\n \t\t\t$fileContentServer,\n-\t\t\t$fileContent\n+\t\t\t$fileContent,\n+\t\t\t\"The content of file {$fileName} is {$fileContent}, but was supposed to be non-encypted: {$fileContentServer}\""
+        },
+        "groundTruth": {
+            "379": "```suggestion \"The content of file {$fileName} is {$fileContent}, but was supposed to be non-encrypted: {$fileContentServer}\" ```"
+        },
+        "ds_dnContext": {
+            "379": "{\n  \"code_review_suggestion\": \"The assertion message exposes raw file content, which could include sensitive data or binary clutter. Consider summarizing the mismatch instead, like comparing content lengths or hashes, to keep test outputs secure and readable.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "379": "{\n  \"code_review_suggestion\": \"Good improvement adding a descriptive assertion message! Just a quick note: there's a typo in 'non-encypted' – it should be 'non-encrypted' for consistency and clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "379": "{\n  \"code_review_suggestion\": \"The error message contains a typo ('non-encypted' should be 'non-encrypted') and exposes potentially sensitive file content in test output. Consider using a more secure message that doesn't reveal actual file contents in test failures.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "379": "{\n  \"code_review_suggestion\": \"The improved error message is much clearer for debugging test failures, but consider using 'unencrypted' instead of 'non-encypted' for correct spelling and consistency with the method name.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "379": "{\n  \"code_review_suggestion\": \"Nice work on adding a more descriptive assertion message! However, test frameworks like PHPUnit automatically generate a helpful diff when `assertEquals` fails. Including the full file content in your custom message can make the test output noisy and less readable than the default diff, so it's often better to omit it and let the framework do the work.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "379": "{\n  \"code_review_suggestion\": \"While adding a custom message is a great improvement for debugging, including the full file content in the string can make test failure logs unreadable for larger files. It might be better to keep the message concise, like 'Content of file {$fileName} should not be encrypted.', as the test framework will already show the diff between expected and actual content.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "379": "{\n  \"code_review_suggestion\": \"The custom assertion message is helpful, but it contains a typo ('non-encypted') and could be clearer by stating expected vs actual content explicitly for easier debugging.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "379": "{\n  \"code_review_suggestion\": \"Nice addition of the assertion message for better test clarity! Just fix the typo in 'non-encypted' to 'non-encrypted' to keep it professional and clear.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "379": "{\"code_review_suggestion\":\"The assert message dumps full file contents (and has a typo: 'non-encypted'); this can bloat logs or leak sensitive/binary data. Consider fixing the spelling and logging only lengths or hashes, e.g. \\\"Expected unencrypted content (len X) to match server content (len Y)\\\".\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "379": "{\n  \"code_review_suggestion\": \"The new assert message has a typo ('non-encypted') and is a bit unclear about expected vs actual. Consider: Assert::assertEquals($fileContentServer, $fileContent, \\\"Expected non-encrypted content for {$fileName}: {$fileContentServer}, got: {$fileContent}\\\"); to fix spelling and make the roles explicit.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

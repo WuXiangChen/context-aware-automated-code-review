@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "255": "dotnet/aspnetcore:26443"
+        },
+        "selected_nodeLs": {
+            "255": "['PR-26443', 'Issue-26397']"
+        },
+        "codediff": {
+            "255": "@@ -7,6 +7,9 @@\n \n namespace Microsoft.Extensions.Hosting\n {\n+    /// <summary>\n+    /// Contains extensions for a <see cref=\"IHostBuilder\"/>."
+        },
+        "groundTruth": {
+            "255": "```suggestion /// Contains extensions for an <see cref=\"IHostBuilder\"/>. ```"
+        },
+        "ds_dnContext": {
+            "255": "{\n  \"code_review_suggestion\": \"The added summary is a bit vague; consider specifying what the extensions do, like 'Provides methods for configuring dependency injection or logging,' to improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"The summary tag appears incomplete and ends abruptly. Please complete the documentation to properly describe what extensions this class contains for IHostBuilder.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"The XML documentation comment is incomplete - it starts with a summary tag but doesn't include the closing </summary> tag or any content. You should either complete the documentation with proper content and closing tags, or remove the incomplete comment to avoid compilation warnings.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"The doc string should be more descriptive about what extensions are provided. Consider expanding it to something like: 'Provides extension methods for configuring and building host instances.'\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"Thanks for adding the documentation! It seems this summary comment is placed on the namespace, where it's often ignored by documentation tools. To ensure it's visible, could you move it to the static class that actually contains the extension methods?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"Thanks for adding the documentation! Just a small style suggestion: could we remove the period and trailing space from the end of the summary? It's a common practice in .NET XML comments to omit the period for these short summary fragments.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"The added XML comment is incomplete and lacks a closing tag; to improve clarity and maintainability, please complete the summary and ensure proper XML documentation formatting.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"The added doc comment should be completed with a trailing punctuation mark or full sentence for consistency and clarity, ensuring it fully describes the purpose of the extension class.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"The new XML doc comment starts a <summary> but never closes it, which will trigger invalid XML documentation warnings. Close the tag (</summary>) and finish the triple-slash comment block to keep builds clean.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "255": "{\n  \"code_review_suggestion\": \"The new XML doc comment starts a <summary> but never closes it and the sentence is a bit awkward. Close the tag (</summary>) and tighten the wording (e.g., 'Provides extension methods for IHostBuilder.') to avoid invalid XML doc warnings and improve clarity.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

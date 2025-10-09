@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "48": "mantidproject/mantid:18670"
+        },
+        "selected_nodeLs": {
+            "48": "['PR-18670', 'Issue-18656']"
+        },
+        "codediff": {
+            "48": "@@ -145,8 +145,8 @@ void IntegrateEllipsoids::qListFromHistoWS(Integrate3DEvents &integrator,\n \n     std::vector<double> buffer(DIMS);\n     // get tof and counts\n-    const Mantid::MantidVec &xVals = wksp->readX(i);\n-    const Mantid::MantidVec &yVals = wksp->readY(i);\n+    const auto &xVals = wksp->x(i);"
+        },
+        "groundTruth": {
+            "48": "Don't you want to use `HistogramData::Points`? You would avoid the calculation of `tof` below."
+        },
+        "ds_dnContext": {
+            "48": "{\n  \"code_review_suggestion\": \"Using 'auto' here changes the variable type from MantidVec to HistogramX, which might not be a drop-in replacement. Ensure the rest of the code doesn't rely on vector-specific methods or memory layout that HistogramX doesn't guarantee.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"The change from readX/Y to x/y aligns with the HistogramData rollout goal, but ensure yVals is also updated to use wksp->y(i) for consistency with the new interface.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"Good change using auto for type deduction, but consider adding const to the yVals variable as well for consistency and to maintain the read-only intent of the original code.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"The change from readX()/readY() to x()/y() looks good for the HistogramData rollout, but I notice you only updated the xVals line - don't forget to also update yVals from wksp->readY(i) to wksp->y(i) for consistency.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"It seems the `yVals` variable, which likely holds the event counts, was removed in this change. The rest of the function will probably need this data, so you should reintroduce it, perhaps using `const auto &yVals = wksp->y(i);` for consistency with the `xVals` update.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"Great job updating to the new `HistogramData` API! It looks like you've updated `xVals` but removed the `yVals` line. Was the intention to also update it to use `wksp->y(i)`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"The change replaces readX(i)/readY(i) with x(i) but removes reading yVals, which might be needed later; ensure that yVals is still accessed appropriately or otherwise handled to avoid runtime errors or missing data.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"To maintain consistency and clarity with the new HistogramData interface, consider replacing the missing yVals line with `const auto &yVals = wksp->y(i);` to avoid potential errors and preserve expected functionality.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"Refactor looks incomplete: yVals was removed but likely still used later, causing a build error. Reintroduce it (e.g., const auto &yVals = wksp->y(i);) and confirm x()/y() have the same const-read semantics as readX/readY to avoid accidental mutation.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "48": "{\n  \"code_review_suggestion\": \"You switched to wksp->x(i) but removed the y retrieval; if yVals is referenced later this will break the build. Add const auto &yVals = wksp->y(i); (or eliminate its uses) to finish the HistogramData refactor cleanly.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

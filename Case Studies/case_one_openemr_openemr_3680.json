@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "234": "openemr/openemr:3680"
+        },
+        "selected_nodeLs": {
+            "234": "['PR-3250']"
+        },
+        "codediff": {
+            "234": "@@ -111,12 +129,14 @@\n                 <?php $datetimepicker_minDate = '-1970/01/01'; ?>\n                 <?php $datetimepicker_maxDate = false; ?>\n                 <?php require($GLOBALS['srcdir'] . '/js/xl/jquery-datetimepicker-2-5-4.js.php'); ?>\n-                <?php // can add any additional javascript settings to datetimepicker here; need to prepend first setting with a comma ?>\n+                <?php // can add any additional javascript settings to datetimepicker here; need to prepend first setting with a comma \n+                ?>\n             });\n         });\n     </script>\n \n </head>\n+\n <body class=\"body_top\">\n     <?php"
+        },
+        "groundTruth": {
+            "234": "Please help to remove the body_top class it is unnecessary."
+        },
+        "ds_dnContext": {
+            "234": "{\n  \"code_review_suggestion\": \"Splitting the PHP comment across lines with a separate close tag might introduce unnecessary whitespace in the output and reduce readability. Keep the comment and close tag on the same line for cleaner code.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "234": "{\n  \"code_review_suggestion\": \"The comment formatting change is minor and doesn't directly address the Bootstrap integration goal; consider ensuring all changes align with the primary purpose of modernizing the UI for consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "234": "{\n  \"code_review_suggestion\": \"The comment about prepending settings with a comma is unclear and could lead to syntax errors. Consider adding a concrete example like: `$.datetimepicker.setLocale('en', {format: 'Y-m-d H:i'});` to make the usage more explicit and prevent mistakes.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "234": "{\"code_review_suggestion\": \"The comment line break improves readability, but consider using a multi-line comment syntax (/* */) for better clarity when comments span multiple lines in PHP files.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "234": "{\n  \"code_review_suggestion\": \"Thanks for the contribution! While the added whitespace doesn't cause any harm, splitting a single-line PHP comment across multiple lines is a bit unconventional. It's generally cleaner to keep it on one line, like `<?php // comment ?>`, for better readability.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "234": "{\n  \"code_review_suggestion\": \"Looks like some extra newlines were introduced in this change. To keep the code tidy, could we remove the blank lines after the `</head>` tag and within the PHP comment?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "234": "{\n  \"code_review_suggestion\": \"Avoid mixing PHP inside JavaScript comments to prevent confusion; instead, place the comment entirely in JavaScript or PHP separately for clearer readability and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "234": "{\n  \"code_review_suggestion\": \"The added PHP comment break is unnecessary and adds visual clutter; consider keeping the comment inline or removing the trailing PHP tag for cleaner and more consistent code formatting.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "234": "{\"code_review_suggestion\":\"Including the JS via require($GLOBALS['srcdir'] . '/js/xl/jquery-datetimepicker-2-5-4.js.php') inside the inline <script> ties you to a mutable global path and blocks normal browser caching. Prefer a validated/static path and a regular <script src=\\\"...\\\"> (or at least require_once with a constant base path) so the asset can be cached and the include path can’t be silently altered.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "234": "{\"code_review_suggestion\":\"The inline comment about needing to prepend a comma for extra datetimepicker settings is still ambiguous—consider replacing it with a concrete example (e.g., // ,format: 'Y-m-d H:i') or a block comment explaining where to add options to prevent future syntax mistakes.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

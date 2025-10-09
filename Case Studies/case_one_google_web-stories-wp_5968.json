@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "8": "google/web-stories-wp:5968"
+        },
+        "selected_nodeLs": {
+            "8": "['PR-5968']"
+        },
+        "codediff": {
+            "8": "@@ -173,6 +193,18 @@ export default function WithMask({ element, fill, style, children, ...rest }) {\n           </clipPath>\n         </defs>\n       </svg>\n+      <Filler\n+        viewBox={`0 0 1 ${1 / mask.ratio}`}\n+        width=\"100%\"\n+        height=\"100%\"\n+        preserveAspectRatio=\"none\"\n+      >\n+        <FillerPath\n+          vectorEffect=\"non-scaling-stroke\""
+        },
+        "groundTruth": {
+            "8": "I don't think the `vectorEffect` is necessary - the stroke has no width here anyway?"
+        },
+        "ds_dnContext": {
+            "8": "{\n  \"code_review_suggestion\": \"The viewBox calculation uses division by mask.ratio, which could cause errors if mask.ratio is zero. Consider adding a validation check to handle this case.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "8": "{\n  \"code_review_suggestion\": \"The `vectorEffect='non-scaling-stroke'` on FillerPath might interfere with click-through behavior on scaled elements. Consider removing it to ensure the clickable area matches the visible mask area exactly.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "8": "{\n    \"code_review_suggestion\": \"The Filler component's viewBox height calculation uses 1 / mask.ratio, but if mask.ratio is zero, this will cause a division by zero error. Consider adding a guard clause to handle cases where mask.ratio might be zero or undefined.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "8": "{\n    \"code_review_suggestion\": \"The Filler component should include pointer-events=\\\"none\\\" to ensure clicks pass through the empty frame area as intended, allowing users to select underlying elements instead of always selecting the masked shape.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "8": "{\n  \"code_review_suggestion\": \"This looks good! To prevent potential rendering issues, it might be safer to add a check to ensure `mask.ratio` is a non-zero number before calculating the `viewBox`. A fallback value could prevent errors if `mask.ratio` is 0 or undefined.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "8": "{\n  \"code_review_suggestion\": \"This is a great solution for enabling click-through! To ensure the new `FillerPath` reliably captures clicks across its entire area, could we add a `fill=\\\"transparent\\\"` property? This will make the shape's area interactive without any visual change.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "8": "{\n  \"code_review_suggestion\": \"Using 'preserveAspectRatio=\\\"none\\\"' can distort the SVG content and lead to unexpected visuals; consider verifying if this behavior is intentional and document why it's necessary to avoid maintenance confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "8": "{\n  \"code_review_suggestion\": \"Consider adding explicit event handling or pointer-events properties to ensure clicks only register on visible parts of the mask, improving clarity and maintainability of the click-through behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "8": "{\"code_review_suggestion\":\"You’re dividing by mask.ratio in the viewBox without guarding against 0, null, or undefined—this can yield Infinity/NaN and break rendering. Add a safe fallback (e.g. const ratio = Number(mask?.ratio) > 0 ? mask.ratio : 1) before using it in the template.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "8": "{\n  \"code_review_suggestion\": \"Adding the extra <Filler> SVG may still capture clicks across its full box. To fully enable click‑through on empty masked areas, set pointerEvents='none' on the Filler SVG and explicitly enable pointer events only on the painted path (e.g. pointerEvents='visiblePainted' on FillerPath), so transparent regions don’t block underlying elements.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

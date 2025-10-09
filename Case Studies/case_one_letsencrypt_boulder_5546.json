@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "16": "letsencrypt/boulder:5546"
+        },
+        "selected_nodeLs": {
+            "16": "['PR-5546']"
+        },
+        "codediff": {
+            "16": "@@ -161,6 +162,19 @@ func Malformed(detail string, args ...interface{}) *ProblemDetails {\n \t}\n }\n \n+// Canceled returns a ProblemDetails with a CanceledProblem and a 408 Request\n+// Timeout status code.\n+func Canceled(detail string, args ...interface{}) *ProblemDetails {\n+\tif len(args) > 0 {\n+\t\tdetail = fmt.Sprintf(detail, args...)\n+\t}\n+\treturn &ProblemDetails{\n+\t\tType:       CanceledProblem,"
+        },
+        "groundTruth": {
+            "16": "This function is great, it should just create a `Type: MalformedProblem` instead, because that's the closest thing we have amongst the official ACME error codes we're allowed to return."
+        },
+        "ds_dnContext": {
+            "16": "{\n  \"code_review_suggestion\": \"The new Canceled function returns HTTP 408 (Request Timeout) but typically represents server-side cancellation. Consider using status code 499 (Client Closed Request) if this is for client cancellations, or clarify in documentation that this is for server-side operation timeouts.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "16": "{\n  \"code_review_suggestion\": \"Ensure the ProblemDetails returned by Canceled explicitly sets the HTTP status code to 408, as the comment indicates, to properly handle user-initiated cancellations and avoid potential mislogging.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "16": "{\n  \"code_review_suggestion\": \"The Canceled function returns a 408 Request Timeout status code, but this typically indicates the server timed out waiting for the request. For a canceled operation (client-side cancellation), consider using 499 Client Closed Request or ensure 408 accurately reflects the intended semantics.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "16": "{\n    \"code_review_suggestion\": \"The Canceled function returns a 408 status code for user-initiated cancellations, which aligns with the PR goal. However, the function comment says '408 Request Timeout' but the HTTP status code for request timeout is different from cancellation - consider using 499 Client Closed Request (non-standard but widely used) or confirming 408 is the intended code for this use case.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "16": "{\n  \"code_review_suggestion\": \"I see the string formatting logic is repeated from the `Malformed` function. To keep the code DRY, consider extracting this logic into a small, private helper function.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "16": "{\n  \"code_review_suggestion\": \"Nice addition for handling cancellations! The function's comment mentions returning a 408 status code, but it looks like the `Status` field isn't being set in the `ProblemDetails` struct. Let's add `Status: http.StatusRequestTimeout` to align the implementation with the documentation.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "16": "{\n  \"code_review_suggestion\": \"The Canceled function sets the HTTP status code to 408 Request Timeout, but the name suggests a cancellation rather than a timeout; consider using the 499 Client Closed Request or a more appropriate status code to better match the semantics and avoid confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "16": "{\n  \"code_review_suggestion\": \"The new Canceled function correctly maps cancellations to HTTP 408, but consider adding a comment clarifying why 408 is chosen over 500 for better maintainability and reviewer understanding.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "16": "{\"code_review_suggestion\":\"The new Canceled() helper promises a 408 status in its comment but never sets Status (or Title/Detail), so callers will get a zero/default status and misleading behavior. Populate Status: http.StatusRequestTimeout (and Title/Detail like the other helpers) or adjust the comment to match—better to add the fields so it’s consistent with Malformed().\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "16": "{\"code_review_suggestion\":\"The comment promises a 408 status, but the function body (as shown) only sets Type; be sure to also populate Status: http.StatusRequestTimeout (and likely Title/Detail for consistency with Malformed) so callers don’t rely on implied defaults.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

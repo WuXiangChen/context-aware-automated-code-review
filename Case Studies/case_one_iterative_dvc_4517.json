@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "162": "iterative/dvc:4517"
+        },
+        "selected_nodeLs": {
+            "162": "['PR-4517', 'Issue-4508']"
+        },
+        "codediff": {
+            "162": "@@ -85,3 +85,21 @@ def test_https_url_info_str():\n def test_path_info_as_posix(mocker, path, as_posix, osname):\n     mocker.patch(\"os.name\", osname)\n     assert PathInfo(path).as_posix() == as_posix\n+\n+\n+@pytest.mark.parametrize(\"cls\", [HTTPURLInfo])"
+        },
+        "groundTruth": {
+            "162": "No need for this, we could just use `HTTPURLInfo` directly in the test."
+        },
+        "ds_dnContext": {
+            "162": "{\n  \"code_review_suggestion\": \"The added @pytest.mark.parametrize decorator isn't attached to a test function, which will cause a syntax error or unused code. Please add a corresponding test function, like def test_something(cls):, to ensure it runs properly.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n  \"code_review_suggestion\": \"The test should include a scenario verifying that query parameters from the base URL are preserved when using HTTPURLInfo.replace(), as this was the core issue in #4508.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n  \"code_review_suggestion\": \"The test is missing test cases for the HTTPSURLInfo class. You should include both HTTPURLInfo and HTTPSURLInfo in the parametrize decorator to ensure both protocols are tested properly.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n    \"code_review_suggestion\": \"The test should also include query parameters in the test cases to verify that HTTPURLInfo.replace() correctly preserves them when constructing new URLs, ensuring the fix for #4508 works as expected.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n  \"code_review_suggestion\": \"It looks like this `@pytest.mark.parametrize` decorator was added without a corresponding test function, which will cause a syntax error. Let's either add the test function or remove this line if it's not ready yet.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n  \"code_review_suggestion\": \"This is a good start for the test. To ensure it directly addresses the bug, please make sure the test body creates a URL with query parameters, calls `replace()`, and then asserts that the query string was correctly preserved in the new URL.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n  \"code_review_suggestion\": \"The added @pytest.mark.parametrize decorator is incomplete and lacks a test function, which will cause errors or confusion; complete the test definition or remove the decorator if unused to maintain clarity and functionality.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n  \"code_review_suggestion\": \"The parameterized test decorator `@pytest.mark.parametrize(\\\"cls\\\", [HTTPURLInfo])` is incomplete without a test function; consider adding a test or removing it to maintain clarity and avoid confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n  \"code_review_suggestion\": \"The added @pytest.mark.parametrize decorator is dangling without a test function, causing a syntax error; attach it to a new test (e.g., def test_http_url_info(cls): ...) or remove it to keep the test suite valid.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "162": "{\n  \"code_review_suggestion\": \"Looks like you added a @pytest.mark.parametrize decorator without the following test function (it currently just hangs there), which will cause a syntax error. Either attach it to the intended test (e.g. def test_http_url_replace(...)) or remove it if accidental.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "157": "wazuh/wazuh:4256"
+        },
+        "selected_nodeLs": {
+            "157": "['PR-4256', 'Issue-3640']"
+        },
+        "codediff": {
+            "157": "@@ -57,31 +58,21 @@ int main(int argc, char **argv)\n \n     const char *related_of = NULL;\n     const char *related_values = NULL;\n-    report_filter r_filter;\n+    monitor_config *mon_config;\n \n     /* Set the name */\n     OS_SetName(ARGV0);\n \n-    r_filter.group = NULL;\n-    r_filter.rule = NULL;\n-    r_filter.level = NULL;\n-    r_filter.location = NULL;\n-    r_filter.srcip = NULL;\n-    r_filter.user = NULL;\n-    r_filter.files = NULL;\n-    r_filter.show_alerts = 0;\n-\n-    r_filter.related_group = 0;\n-    r_filter.related_rule = 0;\n-    r_filter.related_level = 0;\n-    r_filter.related_location = 0;\n-    r_filter.related_srcip = 0;\n-    r_filter.related_user = 0;\n-    r_filter.related_file = 0;\n-\n-    r_filter.report_type = 0;"
+        },
+        "groundTruth": {
+            "157": "Check that now you are setting `r_filter.report_type` to REPORT_TYPE_DAILY. Shouldn't you set it to another value?"
+        },
+        "ds_dnContext": {
+            "157": "{\n  \"code_review_suggestion\": \"The 'mon_config' pointer is declared but not initialized, which could cause crashes or undefined behavior if used later. Please initialize it properly, such as by allocating memory or setting it to a valid instance, to ensure safety and clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "157": "{\n  \"code_review_suggestion\": \"The switch to mon_config looks good for supporting JSON alerts, but make sure mon_config is properly initialized before use to avoid undefined behavior when accessing its fields.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "157": "{\n  \"code_review_suggestion\": \"The code removes initialization of r_filter but introduces mon_config without initializing it. This could lead to undefined behavior if mon_config contains uninitialized pointers or values. You should initialize mon_config to NULL or properly allocate and initialize it before use.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "157": "{\n    \"code_review_suggestion\": \"The code replaces a report_filter struct with a monitor_config pointer but doesn't initialize it. This could cause undefined behavior when accessing uninitialized memory. You should allocate and initialize mon_config before using it, or handle the case where it might be NULL.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "157": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "157": "{\n  \"code_review_suggestion\": \"Great job refactoring to use the `monitor_config` struct! To improve safety and prevent potential bugs, it's a best practice to initialize pointers when you declare them. Could you please change `monitor_config *mon_config;` to `monitor_config *mon_config = NULL;`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "157": "{\n  \"code_review_suggestion\": \"It looks like you replaced explicit initialization of report_filter fields with a pointer to monitor_config without initialization, which might lead to undefined behavior; ensure mon_config is properly allocated and initialized before use to avoid potential crashes or bugs.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "157": "{\n  \"code_review_suggestion\": \"You replaced the fully initialized struct 'r_filter' with a pointer 'mon_config' without initialization, which could lead to undefined behavior; consider properly initializing 'mon_config' or retaining and initializing 'r_filter' to ensure safe and predictable execution.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "157": "{\n  \"code_review_suggestion\": \"You replaced the initialized stack struct (r_filter) with a raw pointer (mon_config) but never allocate or initialize it—this invites undefined behavior when accessed. Either instantiate a concrete struct (not a pointer) or allocate/assign mon_config before use and ensure its fields are zeroed (e.g., calloc or memset after malloc).\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "157": "{\n  \"code_review_suggestion\": \"Previously r_filter was fully zero/NULL-initialized; replacing it with an uninitialized monitor_config *mon_config risks undefined behavior if later dereferenced or assumed cleared, which can break the new JSON report selection logic. Either allocate and memset/calloc mon_config before use or, if migration is incomplete, keep the old initialization until the new struct is properly integrated.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

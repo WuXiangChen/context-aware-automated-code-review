@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "65": "aws/aws-sdk-java-v2:2844"
+        },
+        "selected_nodeLs": {
+            "65": "['PR-2844', 'Issue-2609']"
+        },
+        "codediff": {
+            "65": "@@ -0,0 +1,87 @@\n+/*\n+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.\n+ *\n+ * Licensed under the Apache License, Version 2.0 (the \"License\").\n+ * You may not use this file except in compliance with the License.\n+ * A copy of the License is located at\n+ *\n+ *  http://aws.amazon.com/apache2.0\n+ *\n+ * or in the \"license\" file accompanying this file. This file is distributed\n+ * on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either\n+ * express or implied. See the License for the specific language governing\n+ * permissions and limitations under the License.\n+ */\n+\n+package software.amazon.awssdk.enhanced.dynamodb.model;\n+\n+import java.util.Objects;\n+import software.amazon.awssdk.annotations.SdkPublicApi;\n+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;\n+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;\n+import software.amazon.awssdk.services.dynamodb.model.DescribeTableResponse;\n+import software.amazon.awssdk.utils.ToString;\n+import software.amazon.awssdk.utils.Validate;\n+\n+/**\n+ * Defines the elements returned by DynamoDB from a {@code DescribeTable} operation, such as\n+ * {@link DynamoDbTable#describeTable()} and {@link DynamoDbAsyncTable#describeTable()}\n+ */\n+@SdkPublicApi\n+public final class DescribeTableEnhancedResponse {\n+    private final DescribeTableResponse response;\n+\n+    private DescribeTableEnhancedResponse(Builder builder) {\n+        this.response = Validate.paramNotNull(builder.response, \"response\");\n+    }\n+\n+    /**\n+     * The {@link DescribeTableResponse} from the low level DynamoDB client\n+     */\n+    public DescribeTableResponse describeTableResponse() {"
+        },
+        "groundTruth": {
+            "65": "Can we remove these? The other `Enhanced*Response` objects don't have it. I think ideally we don't want this on the enhanced response because we should expose the relevant stuff on the enhanced object if we need to."
+        },
+        "ds_dnContext": {
+            "65": "{\n  \"code_review_suggestion\": \"The class lacks a public static builder() method and Builder class implementation, making it impossible to instantiate DescribeTableEnhancedResponse. Add a standard builder pattern implementation to allow proper object construction.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "65": "{\n  \"code_review_suggestion\": \"The method name 'describeTableResponse()' is redundant with the class name. Consider renaming it to just 'response()' for consistency with other enhanced response patterns in the SDK, improving clarity and brevity.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "65": "{\"code_review_suggestion\": \"The `describeTableResponse()` getter method should return a defensive copy or immutable view of the `response` field to prevent external modification of the internal state, which could lead to inconsistent behavior.\"}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "65": "{\n  \"code_review_suggestion\": \"The method name 'describeTableResponse()' should be more descriptive to clearly indicate it returns the low-level response. Consider renaming it to 'lowLevelDescribeTableResponse()' or 'innerDescribeTableResponse()' to better distinguish it from the enhanced operation and improve API clarity.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "65": "{\n  \"code_review_suggestion\": \"Nice work on this new response object. For a cleaner and more concise API, what do you think about renaming the `describeTableResponse()` method to simply `response()`? It would make the call site feel a bit more fluent.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "65": "{\n  \"code_review_suggestion\": \"Nice work adding support for `DescribeTable`! In the new `DescribeTableEnhancedResponse` class, the method name `describeTableResponse()` is a bit verbose given the class context. To make the API more concise, how about renaming it to just `response()`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "65": "{\n  \"code_review_suggestion\": \"Consider overriding equals() and hashCode() methods in DescribeTableEnhancedResponse for better correctness and usability, especially if instances might be compared or stored in collections.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "65": "{\n  \"code_review_suggestion\": \"Consider adding an explanatory Javadoc comment to the describeTableResponse() method for consistency and clarity, as well as implementing equals(), hashCode(), and toString() methods in DescribeTableEnhancedResponse for better usability and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "65": "{\n  \"code_review_suggestion\": \"The describeTableResponse() method is declared without a body, so this class won’t compile. Add the method body (e.g., return response;) and complete the builder (builder(), build(), equals/hashCode/toString) to make the API usable.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "65": "{\n  \"code_review_suggestion\": \"The getter describeTableResponse() is currently missing its method body in this diff (no return statement), which would cause a compile error; add `return response;` and consider adding an @return tag to the Javadoc for clarity.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

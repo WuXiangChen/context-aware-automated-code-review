@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "195": "python/cpython:27387"
+        },
+        "selected_nodeLs": {
+            "195": "['PR-27387', 'Issue-88910']"
+        },
+        "codediff": {
+            "195": "@@ -1400,10 +1394,7 @@ def _allow_reckless_class_checks(depth=3):\n     The abc and functools modules indiscriminately call isinstance() and\n     issubclass() on the whole MRO of a user class, which may contain protocols.\n     \"\"\"\n-    try:\n-        return sys._getframe(depth).f_globals['__name__'] in ['abc', 'functools']\n-    except (AttributeError, ValueError):  # For platforms without _getframe().\n-        return True\n+    return _callee(depth) in {'abc', 'functools', None}"
+        },
+        "groundTruth": {
+            "195": "The meaning here seems slightly different from the old code. If `__name__ = None`, the old code would return `False`, but the new code will return `True` right? I recommend ```suggestion sentinel = object() return _callee(depth, unsupported=sentinel) in {'abc', 'functools', sentinel} ``` or some equivalent sentinel."
+        },
+        "ds_dnContext": {
+            "195": "{\n  \"code_review_suggestion\": \"The refactor improves readability but introduces a potential issue: returning True for None could allow reckless checks in unexpected contexts. Consider verifying if None should indeed be treated equivalently to the abc/functools modules, or if it should maintain the original fallback behavior only for specific error cases.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "195": "{\n  \"code_review_suggestion\": \"Consider adding a comment to clarify that `None` is included to handle cases where `_callee` cannot determine the caller (e.g., platforms without `sys._getframe`), preserving the original fallback behavior while improving readability.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "195": "{\n  \"code_review_suggestion\": \"The simplified return statement now returns True when _callee(depth) is None, which might be too permissive. Consider handling the None case explicitly to avoid potentially allowing reckless class checks in unexpected scenarios.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "195": "{\n    \"code_review_suggestion\": \"The refactor from sys._getframe to _callee() looks cleaner, but I'm concerned about returning True when _callee(depth) is None. This could potentially allow reckless class checks in unexpected scenarios where the caller can't be determined, which might be a security or correctness issue.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "195": "{\n  \"code_review_suggestion\": \"Great job simplifying this logic! However, including `None` in the set makes the intent a bit obscure. To improve clarity, perhaps we could explicitly check if the caller is `None` and return `True` separately, making the 'fail-open' behavior for undetermined callers more obvious.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "195": "{\n  \"code_review_suggestion\": \"This is a great simplification! To maintain clarity for future readers, could we add a small inline comment explaining why `None` is included in the set? It would help others understand this handles the fallback for platforms where `sys._getframe` might not be available, just as the previous `try...except` block did.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "195": "{\n  \"code_review_suggestion\": \"Returning None in _callee(depth) as valid namespace may hide cases where frame info isn't available, potentially causing false positives; consider handling missing frames explicitly to avoid unintended behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "195": "{\n  \"code_review_suggestion\": \"The refactor improves clarity by replacing the try-except with a direct call to _callee, but consider documenting the expected values and ensuring _callee handles all edge cases to maintain correctness and ease future maintenance.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "195": "{\"code_review_suggestion\": \"By removing the try/except you now rely on _callee never raising; if it does, this can crash instead of safely defaulting. Wrap the _callee call in a small try/except and only fallback to True (or include None) on failure, and document why None is treated as allowed.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "195": "{\"code_review_suggestion\": \"Previously any AttributeError/ValueError (missing _getframe or depth overflow) yielded True explicitly; now this relies on _callee() returning None implicitly. To avoid a subtle behavior change, either preserve a local try/except that returns True on failure or clearly document/guarantee that _callee() returns None for those cases.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

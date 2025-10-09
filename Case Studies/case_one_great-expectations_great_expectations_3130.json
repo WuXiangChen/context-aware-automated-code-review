@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "136": "great-expectations/great_expectations:3130"
+        },
+        "selected_nodeLs": {
+            "136": "['PR-2863', 'Issue-123']"
+        },
+        "codediff": {
+            "136": "@@ -1565,3 +1566,144 @@ def test_sparkdf_batch_aggregate_metrics(caplog, spark_session):\n         ):\n             found_message = True\n     assert found_message\n+\n+\n+def test_map_multicolumn_sum_equal():\n+    engine = build_pandas_engine(\n+        pd.DataFrame(data={\"a\": [0, 1, 2], \"b\": [5, 4, 3], \"c\": [0, 0, 1]})"
+        },
+        "groundTruth": {
+            "136": "I think we need to add a fourth column that is not included in `column_list` to demonstrate that unexpected_rows will return *all* columns (see note above about the small logic error in `_pandas_map_condition_rows`)."
+        },
+        "ds_dnContext": {
+            "136": "{\n  \"code_review_suggestion\": \"The test function appears incomplete without any assertions to verify the intended behavior, which could lead to false passes. Please add clear assertions to ensure it properly tests the map operation and sum equality.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "136": "{\n  \"code_review_suggestion\": \"The new test function is missing a return type hint. Since it's a test function that doesn't return anything, please add `-> None` to maintain consistency with the project's type hinting standards mentioned in the PR context.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "136": "{\n  \"code_review_suggestion\": \"The test name 'test_map_multicolumn_sum_equal' is too vague - it should clearly indicate what's being tested. Consider renaming it to something like 'test_multicolumn_sum_equality_validation' to better reflect the test's purpose.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "136": "{\n    \"code_review_suggestion\": \"The test function name 'test_map_multicolumn_sum_equal' is unclear about what it's testing. Consider renaming it to something more descriptive like 'test_multicolumn_sum_equality_validation' to better reflect that it's testing whether the sum of multiple columns meets some equality condition.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "136": "{\n  \"code_review_suggestion\": \"It looks like the new test `test_map_multicolumn_sum_equal` was added without any assertions. Could you please complete the test by adding the necessary checks, or remove it for now if it's a work-in-progress?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "136": "{\n  \"code_review_suggestion\": \"Great work on the cleanup! Since a key goal of this PR is to add type hints, could we add a `-> None` return type to the new `test_map_multicolumn_sum_equal` function for consistency?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "136": "{\n  \"code_review_suggestion\": \"The new test function 'test_map_multicolumn_sum_equal' is incomplete and missing assertions or any meaningful verification; please complete the test with proper assertions to ensure it actually validates the intended behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "136": "{\n  \"code_review_suggestion\": \"The new test function `test_map_multicolumn_sum_equal` is incomplete and lacks assertions or a proper test body; please finish implementing the test logic and add assertions to verify expected behavior for clarity and effectiveness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "136": "{\"code_review_suggestion\":\"The new test function is incomplete: it ends mid-call to build_pandas_engine and contains no assertion, which will cause a syntax error or a no-op test. Close the parentheses and add a meaningful assertion (or remove the stub) so the test suite remains valid and actually verifies behavior.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "136": "{\n  \"code_review_suggestion\": \"The newly added test_map_multicolumn_sum_equal appears incomplete: the build_pandas_engine call is missing its closing parenthesis and there are no assertions. Close the function call and add a clear assertion on the expected summed result so the test both parses and validates behavior.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

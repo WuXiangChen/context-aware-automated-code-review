@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "112": "dotnet/roslyn:46037"
+        },
+        "selected_nodeLs": {
+            "112": "['PR-46037']"
+        },
+        "codediff": {
+            "112": "@@ -90,7 +90,9 @@ private static IOperation Unwrap(IOperation expression)\n                     return;\n                 }\n \n-                if (invocation.Arguments.Length == 0)\n+                if (invocation.Arguments.Length == 0 &&\n+                    (invocation.TargetMethod.ContainingType.SpecialType == SpecialType.System_Object ||\n+                    invocation.TargetMethod.OverriddenMethod?.ContainingType.SpecialType == SpecialType.System_Object))"
+        },
+        "groundTruth": {
+            "112": "this won't be sufficient for the following: ``` class A { public override string ToString() { } } class B : A { public override string ToString() { } } ```"
+        },
+        "ds_dnContext": {
+            "112": "{\n  \"code_review_suggestion\": \"The condition might miss methods that indirectly override System.Object, like those in a inheritance chain. Consider checking the entire override hierarchy to ensure all relevant methods are caught.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n  \"code_review_suggestion\": \"The condition correctly excludes shadowed ToString calls, but it only checks immediate overrides. For multi-level inheritance (e.g., ClassB : ClassA : Object where ClassA overrides ToString), ClassB's ToString won't be detected. Consider traversing the entire override chain to ensure all Object.ToString overrides are included.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n  \"code_review_suggestion\": \"The condition to check for System.Object methods is too broad and could exclude valid method calls. Consider narrowing it to specifically check for the ToString method or other Object methods you actually want to handle, rather than excluding all Object methods which might include important overrides.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n    \"code_review_suggestion\": \"The fix correctly prevents ToString simplification when the method is shadowed, but consider extracting the System.Object type check into a helper method for better readability and reusability, since similar logic might be needed for the IFormattable path mentioned in the issue.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n  \"code_review_suggestion\": \"This new condition is getting a bit long. To improve readability, consider extracting the logic that checks if the method originates from `System.Object` into a small, private helper method.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n  \"code_review_suggestion\": \"This is a great catch! The current logic correctly handles direct overrides of `object.ToString()`, but it might miss cases in deeper inheritance chains. To make this more robust, you could create a helper method that walks up the `OverriddenMethod` chain to find the original definition and check if it's from `System.Object`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n  \"code_review_suggestion\": \"This added condition improves accuracy by ensuring the check only triggers for methods originally declared on System.Object, but it would be clearer and safer to cache the TargetMethod and OverriddenMethod results in local variables to avoid repeated property accesses.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n  \"code_review_suggestion\": \"Great fix adding the type checks to ensure only calls to Object.ToString are considered. For clarity and future maintenance, consider extracting the complex condition into a well-named boolean variable to make the intent more readable.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n  \"code_review_suggestion\": \"The added compound if mixes argument-count logic with 'object method' detection inline, hurting clarity and inviting future mistakes. Extract the object-method check into a well‑named helper or local (e.g., isObjectMethod) and reuse a local for invocation.TargetMethod to make intent obvious and avoid repeating the long member chain.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "112": "{\n  \"code_review_suggestion\": \"Your new check only looks one level up the override chain; ToString overrides that pass through an intermediate base (e.g., structs via System.ValueType or classes with an intermediate base) will now be wrongly excluded. Consider walking invocation.TargetMethod.OverriddenMethod recursively until null and then checking the root containing type for System_Object to avoid false negatives.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

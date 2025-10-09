@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "3": "nhibernate/nhibernate-core:2944"
+        },
+        "selected_nodeLs": {
+            "3": "['PR-1', 'PR-2797', 'PR-165']"
+        },
+        "codediff": {
+            "3": "@@ -0,0 +1,35 @@\n+using System;\n+using System.Threading.Tasks;\n+using NHibernate.Util;\n+\n+namespace NHibernate.Cache\n+{\n+\tpublic interface ICacheLock : IDisposable\n+\t{\n+\t\tIDisposable ReadLock();\n+\t\tIDisposable WriteLock();\n+\t\tTask<IDisposable> ReadLockAsync();\n+\t\tTask<IDisposable> WriteLockAsync();\n+\t}\n+\n+\tpublic interface ICacheReadWriteLockFactory"
+        },
+        "groundTruth": {
+            "3": "```suggestion /// <summary> /// Define a factory for cache locks. /// </summary> public interface ICacheReadWriteLockFactory ```"
+        },
+        "ds_dnContext": {
+            "3": "{\n  \"code_review_suggestion\": \"Implementing IDisposable on ICacheLock might confuse developers about what needs disposal—the lock instance or the acquired locks. Consider removing IDisposable if the instance itself doesn't manage resources, to avoid potential misuse and simplify the interface.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "3": "{\n  \"code_review_suggestion\": \"The new ICacheReadWriteLockFactory interface appears incomplete as it's missing its body and members. Consider adding at least a minimal definition (e.g., `{}`) or the intended factory methods to avoid compilation errors.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "3": "{\n  \"code_review_suggestion\": \"The ICacheReadWriteLockFactory interface appears to be incomplete in the diff. You should either complete the interface definition with its members or remove it if it's not needed yet to avoid compilation errors and confusion for other developers.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "3": "{\n  \"code_review_suggestion\": \"The ICacheReadWriteLockFactory interface appears to be missing its method definitions. Based on the naming pattern from ICacheLock, it should likely define factory methods like Create() that return ICacheLock instances to maintain consistency with the established interface design.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "3": "{\n  \"code_review_suggestion\": \"Nice work adding async support for locking! To fully embrace the async pattern and prevent potential blocking when a lock is released, consider having `ReadLockAsync` and `WriteLockAsync` return a `Task<IAsyncDisposable>`. This would make the entire lock lifecycle (acquire and release) non-blocking.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "3": "{\n  \"code_review_suggestion\": \"Great to see async support being added for cache locking! To fully align with modern async patterns, consider having `ReadLockAsync` and `WriteLockAsync` return `Task<IAsyncDisposable>` instead of `Task<IDisposable>`. This would allow consumers to use the `await using` statement for cleaner asynchronous resource cleanup.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "3": "{\n  \"code_review_suggestion\": \"The ICacheLock interface mixes synchronous and asynchronous lock acquisition methods returning IDisposable, which can lead to misuse and unclear disposal semantics; consider separating sync and async locking patterns or using IAsyncDisposable for async locks to ensure correct resource cleanup.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "3": "{\n  \"code_review_suggestion\": \"The interface ICacheLock declares async lock methods returning Task<IDisposable>, but it risks unclear ownership and disposal responsibilities; consider providing explicit guidance or wrapper implementations to ensure lock disposal is correctly handled to avoid resource leaks or deadlocks.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "3": "{\"code_review_suggestion\": \"The async lock methods lack CancellationToken support, so callers can’t abort a wait and risk hanging under contention. Add overloads like ReadLockAsync(CancellationToken ct) / WriteLockAsync(CancellationToken ct) (or defaulted tokens) to improve robustness and responsiveness.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "3": "{\n  \"code_review_suggestion\": \"The file won’t compile: ICacheReadWriteLockFactory is left as a bare declaration (no braces or members). Either complete the interface (e.g., define a method like Create(string region) returning ICacheLock) or remove it; otherwise fix the build before proceeding.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

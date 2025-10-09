@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "416": "ballerina-platform/ballerina-lang:19808"
+        },
+        "selected_nodeLs": {
+            "416": "['PR-19808']"
+        },
+        "codediff": {
+            "416": "@@ -0,0 +1,66 @@\n+/*\n+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.\n+ *\n+ * WSO2 Inc. licenses this file to you under the Apache License,\n+ * Version 2.0 (the \"License\"); you may not use this file except\n+ * in compliance with the License.\n+ * You may obtain a copy of the License at\n+ *\n+ *    http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing,\n+ * software distributed under the License is distributed on an\n+ * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n+ * KIND, either express or implied. See the License for the\n+ * specific language governing permissions and limitations\n+ * under the License.\n+ */\n+\n+package org.ballerinalang.nats.streaming.consumer;\n+\n+import io.nats.streaming.Subscription;\n+import org.ballerinalang.jvm.scheduling.Strand;\n+import org.ballerinalang.jvm.values.ObjectValue;\n+import org.ballerinalang.model.types.TypeKind;\n+import org.ballerinalang.natives.annotations.BallerinaFunction;\n+import org.ballerinalang.natives.annotations.Receiver;\n+import org.ballerinalang.nats.Constants;\n+import org.ballerinalang.nats.Utils;\n+\n+import java.io.IOException;\n+import java.util.concurrent.ConcurrentHashMap;\n+\n+/**\n+ * Unsubscribe from a subject.\n+ *\n+ * @since 1.0.4\n+ */\n+@BallerinaFunction(orgName = \"ballerina\",\n+        packageName = \"nats\",\n+        functionName = \"detach\",\n+        receiver = @Receiver(type = TypeKind.OBJECT,\n+                structType = \"StreamingListener\",\n+                structPackage = \"ballerina/nats\"),\n+        isPublic = true)\n+public class Detach {\n+    public static void detach(Strand strand, ObjectValue streamingListener, ObjectValue service) {\n+        ConcurrentHashMap<ObjectValue, StreamingListener> serviceListenerMap =\n+                (ConcurrentHashMap<ObjectValue, StreamingListener>) streamingListener\n+                        .getNativeData(Constants.STREAMING_DISPATCHER_LIST);\n+        ConcurrentHashMap<ObjectValue, Subscription> subscriptionsMap =\n+                (ConcurrentHashMap<ObjectValue, Subscription>) streamingListener\n+                        .getNativeData(Constants.STREAMING_SUBSCRIPTION_LIST);\n+        Subscription subscription = subscriptionsMap.get(service);\n+        try {\n+            if (subscription != null) {\n+                subscription.unsubscribe();\n+                subscriptionsMap.remove(service);\n+                serviceListenerMap.remove(service);\n+            }\n+            streamingListener.addNativeData(Constants.STREAMING_DISPATCHER_LIST, serviceListenerMap);"
+        },
+        "groundTruth": {
+            "416": "Why do we need to add this again? Since this is the reference to the map, it should update the content."
+        },
+        "ds_dnContext": {
+            "416": "{\n  \"code_review_suggestion\": \"The detach function lacks null safety checks when retrieving native data maps (STREAMING_DISPATCHER_LIST and STREAMING_SUBSCRIPTION_LIST). If these maps aren't initialized, it could cause NullPointerExceptions. Consider adding explicit null checks or initializing these maps during listener creation to prevent runtime crashes.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"The unsubscribe call might throw exceptions like IOException, which could leave the subscription and maps in an inconsistent state if not handled. Add a catch block to log errors and ensure maps are only updated on successful unsubscribe.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"The code has a potential resource leak - the subscription is unsubscribed but the underlying NATS connection isn't properly closed. Consider adding subscription.close() after unsubscribe() to ensure proper cleanup of resources.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"The detach function should handle potential IOException from subscription.unsubscribe() by wrapping it in a try-catch block and logging or rethrowing as appropriate, rather than silently ignoring it, to ensure proper error handling when unsubscribing from NATS streaming subscriptions.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"It looks like the `catch` block for the `IOException` is empty. Silently ignoring errors from `unsubscribe()` could lead to resource leaks and make debugging difficult. Could we log the exception here so we have visibility into any potential failures?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"Great work on implementing the `detach` functionality. I noticed the final call to `streamingListener.addNativeData(...)` is redundant. Since `serviceListenerMap` is a reference to the map already stored in the listener, the `remove(service)` call modifies it in place, so you can safely remove that last line for a cleaner implementation.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"Consider adding proper error handling around subscription.unsubscribe() to catch and log potential IOExceptions; this will improve robustness and help diagnose issues without silently failing.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"The detach method modifies native data maps but does not update STREAMING_SUBSCRIPTION_LIST after removing the subscription, which might lead to stale references; consider re-adding this updated map to native data for consistency.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"Handle the IOException from subscription.unsubscribe(): wrap it in a try/catch, and only remove the service from the maps after a successful unsubscribe (or propagate/log a Ballerina error). Right now the missing/empty catch risks either a compile error or silently masking an unsubscribe failure and leaving inconsistent state.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "416": "{\n  \"code_review_suggestion\": \"unsubscribe() throws IOException, but the call is inside a try with no catch or throws declaration—this won’t compile. Add a catch (IOException e) to log/propagate an error (and remove the unused Utils import), or declare the method to throw. That’s the key blocker for this detach implementation.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

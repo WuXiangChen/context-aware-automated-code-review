@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "334": "dotnet/orleans:2008"
+        },
+        "selected_nodeLs": {
+            "334": "['PR-2008', 'Issue-2006']"
+        },
+        "codediff": {
+            "334": "@@ -0,0 +1,80 @@\n+﻿using Orleans;\n+using Orleans.Messaging;\n+using Orleans.Runtime;\n+using Orleans.Runtime.MembershipService;\n+using System.Threading.Tasks;\n+using UnitTests.StorageTests.AWSUtils;\n+using Xunit;\n+\n+namespace UnitTests.MembershipTests\n+{\n+    /// <summary>\n+    /// Tests for operation of Orleans Membership Table using AWS DynamoDB - Requires access to external DynamoDB storage\n+    /// </summary>\n+    public class DynamoDBMembershipTableTest : MembershipTableTestsBase, IClassFixture<DynamoDBStorageTestsFixture>"
+        },
+        "groundTruth": {
+            "334": "Would these tests show as failed or skipped with a reason no AWS facilities found when I run the tests if I don't have AWS systems on my machine? If I don't have the libraries, how long would it take for either result to materialize (i.e. would the test be failed or skipped quickly)?"
+        },
+        "ds_dnContext": {
+            "334": "{\n  \"code_review_suggestion\": \"Consider adding a [TestCategory(\\\"AWS\\\")] attribute to this test class to clearly indicate it requires external AWS resources. This helps prevent accidental execution in environments without proper DynamoDB access and aligns with test filtering best practices.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "334": "{\n  \"code_review_suggestion\": \"The test class should include a constructor to inject the DynamoDBStorageTestsFixture fixture and initialize the base class with the appropriate membership table, ensuring proper test setup for AWS DynamoDB membership provider validation.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "334": "{\n  \"code_review_suggestion\": \"The test class inherits from MembershipTableTestsBase but doesn't override the required abstract methods like GetMembershipTable() or GetConnectionString(), which will cause compilation errors and prevent the tests from running.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "334": "{\"code_review_suggestion\": \"The test class inherits from MembershipTableTestsBase but doesn't override any methods, so it won't actually test anything. You should add test methods that call the base class test methods, like `public override Task MembershipTable_ReadAll_EmptyTable()` and `return base.MembershipTable_ReadAll_EmptyTable();`.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "334": "{\n  \"code_review_suggestion\": \"Since this test connects to DynamoDB, it's more of an integration test. To keep our test suites organized and clarify dependencies, would you mind moving it from the `UnitTests` namespace инфекци to a dedicated integration test folder?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "334": "{\n  \"code_review_suggestion\": \"This is a great start on the DynamoDB membership tests! To help manage tests that rely on external services, it would be beneficial to categorize this class with an xUnit trait, like `[Trait(\\\"Category\\\", \\\"AWS\\\")]`. This allows CI pipelines to selectively run or skip these integration tests.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "334": "{\n  \"code_review_suggestion\": \"The code includes a BOM character (﻿) at the start which can cause issues in compilation or source control; removing it will improve compatibility and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "334": "{\n  \"code_review_suggestion\": \"The test class is a good start but currently lacks any test methods; adding explicit, well-named test cases will clarify intended coverage and ensure the DynamoDB membership table integration functions as expected.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "334": "{\n  \"code_review_suggestion\": \"This test directly depends on live DynamoDB, which will make the suite flaky and slow in CI. Gate it behind an environment/config check (e.g., skip if required AWS creds/table not present) or use a local/emulated/mocked DynamoDB for default runs to keep tests reliable.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "334": "{\n  \"code_review_suggestion\": \"Since this test depends on external DynamoDB, mark it clearly as an integration test and auto-skip when required AWS env vars/credentials aren’t present (e.g., use Skip condition in a Fact/Theory or ITestCondition). That will prevent flaky CI failures and accidental live calls during local test runs.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

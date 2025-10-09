@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "455": "HypothesisWorks/hypothesis:1626"
+        },
+        "selected_nodeLs": {
+            "455": "['PR-1626']"
+        },
+        "codediff": {
+            "455": "@@ -107,6 +107,12 @@ def check_valid_size(value, name):\n     Otherwise raises InvalidArgument.\n     \"\"\"\n     if value is None:\n+        if name == 'min_size':\n+            from hypothesis._settings import note_deprecation\n+            note_deprecation(\n+                'You should set your settings to min_size=0, as min_size=None'\n+                'is deprecated and no longer has an affect.' "
+        },
+        "groundTruth": {
+            "455": "I'd shorten the message a little, because technically it *does* have an effect - it just gets replaced! ```python note_deprecation( 'min_size=None is deprecated; use min_size=0 instead.' ) ``` would be enough."
+        },
+        "ds_dnContext": {
+            "455": "{\n  \"code_review_suggestion\": \"The deprecation warning for min_size=None is a good addition, but it doesn't handle the None value afterward. Consider setting value=0 after the warning to maintain backward compatibility and avoid potential errors.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n  \"code_review_suggestion\": \"I spotted a typo in the deprecation message: 'affect' should be 'effect', and there's a missing space between 'None' and 'is'. Fixing this will ensure the warning is clear and professional for users transitioning to min_size=0.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n  \"code_review_suggestion\": \"The deprecation warning message has a typo - 'affect' should be 'effect'. Also, the string formatting could be improved by using f-strings for better readability and consistency with the codebase.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n    \"code_review_suggestion\": \"The deprecation warning message has a typo - 'affect' should be 'effect'. Also, consider adding a period at the end of the sentence for proper formatting.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n  \"code_review_suggestion\": \"Looks good! Just a small copy suggestion for the new deprecation warning: 'effect' is the word you're looking for, not 'affect'. It's a common mix-up, but fixing it will make the message clearer for users.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n  \"code_review_suggestion\": \"This looks good! To improve readability and stick to standard Python conventions, could you please move the `from hypothesis._settings import note_deprecation` import to the top of the file?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n  \"code_review_suggestion\": \"The deprecation warning message is incomplete and missing a closing parenthesis; also, consider importing note_deprecation at the module level to avoid repeated imports inside the function.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n  \"code_review_suggestion\": \"Consider completing the deprecation warning message and ensuring the import of note_deprecation is at the module level to avoid repeated imports; this will improve clarity and maintain best practices.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n  \"code_review_suggestion\": \"The new deprecation block introduces a syntax error: note_deprecation( is never closed. Add the missing closing parenthesis (and consider merging the strings with a space and fixing 'affect' to 'effect') so the code actually runs.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "455": "{\n  \"code_review_suggestion\": \"The new deprecation message will read poorly: the two adjacent string literals concatenate to 'min_size=Noneis', and it says 'has an affect'. Add a space and fix the grammar, e.g. `note_deprecation(\\\"You should set your settings to min_size=0; min_size=None is deprecated and no longer has any effect.\\\")`.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

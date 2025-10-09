@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "2": "pytorch/pytorch:47861"
+        },
+        "selected_nodeLs": {
+            "2": "['PR-47861', 'PR-47865']"
+        },
+        "codediff": {
+            "2": "@@ -186,6 +186,9 @@ std::string show_config() {\n }\n \n std::string get_cxx_flags() {\n+  #if defined(FBCODE_CAFFE2)\n+  TORCH_CHECK(false, \"CXX_FLAGS is only for OSS build.\");"
+        },
+        "groundTruth": {
+            "2": "This error message is not as descriptive as it could be. Why is CXX_FLAGS only for OSS build?"
+        },
+        "ds_dnContext": {
+            "2": "{\n  \"code_review_suggestion\": \"The TORCH_CHECK will crash in FBCODE_CAFFE2 builds if get_cxx_flags() is called. Consider making this function return an empty string or handle this case more gracefully to avoid runtime failures.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "2": "{\n  \"code_review_suggestion\": \"The TORCH_CHECK prevents internal builds from using CXX_FLAGS, but might cause compiler warnings about missing return statements. Consider adding a `return \\\"\\\";` after TORCH_CHECK to silence warnings, even though it's unreachable.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "2": "{\n    \"code_review_suggestion\": \"The TORCH_CHECK should be placed outside the #ifdef block to ensure it's always compiled, otherwise the check won't exist in FBCODE_CAFFE2 builds and the function will proceed incorrectly.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "2": "{\n  \"code_review_suggestion\": \"The TORCH_CHECK should use a more descriptive error message that explains why CXX_FLAGS isn't available in FBCODE builds, like 'CXX_FLAGS is not exposed in FBCODE/internal builds due to different build configuration requirements.'\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "2": "{\n  \"code_review_suggestion\": \"Instead of a runtime `TORCH_CHECK`, consider using a compile-time `#error` directive. This would provide faster feedback by failing the build immediately if this function is used incorrectly in an internal build, rather than causing a crash at runtime.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "2": "{\n  \"code_review_suggestion\": \"Instead of throwing an error with `TORCH_CHECK` for internal builds, how about just returning an empty string? It seems a bit more graceful and prevents callers from needing to handle an exception for what is essentially a configuration detail.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "2": "{\n  \"code_review_suggestion\": \"The added TORCH_CHECK will cause a compile error in OSS builds but leaves get_cxx_flags undefined in others; consider returning the appropriate flags or a clear error message consistently to improve clarity and prevent linker issues.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "2": "{\n  \"code_review_suggestion\": \"Instead of unconditionally failing with TORCH_CHECK in OSS builds, consider returning an empty string or a clear message to avoid abrupt termination, which will improve usability and prevent unexpected crashes in OSS contexts.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "2": "{\n  \"code_review_suggestion\": \"The new #if defined(FBCODE_CAFFE2) block isn’t closed with an #endif (at least in this diff), which will break compilation. Add the missing #endif (and optionally a return path) so the function remains well-formed.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "2": "{\"code_review_suggestion\": \"Using TORCH_CHECK(false) here will make any internal (FBCODE_CAFFE2) call to __config__.show()/get_cxx_flags() throw at runtime, which is harsh for an introspection helper. Prefer compiling out the feature: wrap the entire body in #ifndef FBCODE_CAFFE2 and return an empty string (or a descriptive literal) on fbcode builds instead of raising, so tooling doesn’t unexpectedly crash.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

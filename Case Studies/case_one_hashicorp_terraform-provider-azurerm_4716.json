@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "75": "hashicorp/terraform-provider-azurerm:4716"
+        },
+        "selected_nodeLs": {
+            "75": "['PR-4716', 'Issue-4422']"
+        },
+        "codediff": {
+            "75": "@@ -341,6 +342,75 @@ func TestAccAzureRMSignalRService_skuAndCapacityUpdate(t *testing.T) {\n \t})\n }\n \n+func TestAccAzureRMSignalRService_serviceMode(t *testing.T) {\n+\tresourceName := \"azurerm_signalr_service.test\"\n+\tri := tf.AccRandTimeInt()\n+\n+\tresource.ParallelTest(t, resource.TestCase{\n+\t\tPreCheck:     func() { testAccPreCheck(t) },\n+\t\tProviders:    testAccProviders,\n+\t\tCheckDestroy: testCheckAzureRMSignalRServiceDestroy,\n+\t\tSteps: []resource.TestStep{\n+\t\t\t{\n+\t\t\t\tConfig: testAccAzureRMSignalRService_withServiceMode(ri, testLocation(), \"Serverless\"),\n+\t\t\t\tCheck: resource.ComposeTestCheckFunc(\n+\t\t\t\t\ttestCheckAzureRMSignalRServiceExists(resourceName),\n+\t\t\t\t\tresource.TestCheckResourceAttr(resourceName, \"features.#\", \"1\"),\n+\t\t\t\t\tresource.TestCheckResourceAttr(resourceName, \"features.0.flag\", \"ServiceMode\"),\n+\t\t\t\t\tresource.TestCheckResourceAttr(resourceName, \"features.0.value\", \"Serverless\"),\n+\t\t\t\t\tresource.TestCheckResourceAttrSet(resourceName, \"hostname\"),\n+\t\t\t\t\tresource.TestCheckResourceAttrSet(resourceName, \"ip_address\"),\n+\t\t\t\t\tresource.TestCheckResourceAttrSet(resourceName, \"public_port\"),\n+\t\t\t\t\tresource.TestCheckResourceAttrSet(resourceName, \"server_port\"),\n+\t\t\t\t\tresource.TestCheckResourceAttrSet(resourceName, \"primary_access_key\"),\n+\t\t\t\t\tresource.TestCheckResourceAttrSet(resourceName, \"primary_connection_string\"),\n+\t\t\t\t\tresource.TestCheckResourceAttrSet(resourceName, \"secondary_access_key\"),\n+\t\t\t\t\tresource.TestCheckResourceAttrSet(resourceName, \"secondary_connection_string\"),\n+\t\t\t\t),\n+\t\t\t},\n+\t\t\t{\n+\t\t\t\tResourceName:      resourceName,\n+\t\t\t\tImportState:       true,\n+\t\t\t\tImportStateVerify: true,\n+\t\t\t},\n+\t\t},\n+\t})\n+}\n+\n+func TestAccAzureRMSignalRService_cors(t *testing.T) {\n+\tresourceName := \"azurerm_signalr_service.test\"\n+\tri := tf.AccRandTimeInt()\n+\n+\tresource.ParallelTest(t, resource.TestCase{\n+\t\tPreCheck:     func() { testAccPreCheck(t) },\n+\t\tProviders:    testAccProviders,\n+\t\tCheckDestroy: testCheckAzureRMSignalRServiceDestroy,\n+\t\tSteps: []resource.TestStep{\n+\t\t\t{\n+\t\t\t\tConfig: testAccAzureRMSignalRService_withCors(ri, testLocation()),\n+\t\t\t\tCheck: resource.ComposeTestCheckFunc(\n+\t\t\t\t\ttestCheckAzureRMSignalRServiceExists(resourceName),\n+\t\t\t\t\tresource.TestCheckResourceAttr(resourceName, \"site_config.0.cors.#\", \"1\"),\n+\t\t\t\t\tresource.TestCheckResourceAttr(resourceName, \"site_config.0.cors.0.allowed_origins.#\", \"3\"),"
+        },
+        "groundTruth": {
+            "75": "this'll need to be 2 (see below) ```suggestion resource.TestCheckResourceAttr(resourceName, \"site_config.0.cors.0.allowed_origins.#\", \"2\"), ```"
+        },
+        "ds_dnContext": {
+            "75": "{\n  \"code_review_suggestion\": \"The new CORS test only checks the count of allowed origins but doesn't validate their actual values. Consider adding explicit checks for the expected origin values (e.g., 'http://example.com') to ensure the CORS configuration is correctly applied, not just populated.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "75": "{\n  \"code_review_suggestion\": \"The CORS test validates the count of allowed_origins but doesn't verify the actual values. Consider adding checks for specific origin values (e.g., 'site_config.0.cors.0.allowed_origins.0') to ensure they match the expected test configuration.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "75": "{\n  \"code_review_suggestion\": \"The test is checking for exactly 3 allowed origins but doesn't verify the specific values. Consider adding explicit checks for the expected origin values to ensure the CORS configuration is working correctly, not just counting the number of entries.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "75": "{\n    \"code_review_suggestion\": \"The test verifies CORS configuration with 3 allowed origins, but the test name 'TestAccAzureRMSignalRService_cors' is too generic. Consider renaming it to 'TestAccAzureRMSignalRService_corsMultipleOrigins' to better reflect the specific scenario being tested.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "75": "{\n  \"code_review_suggestion\": \"Great work adding these new acceptance tests! To ensure the full resource lifecycle is covered, could you please add an `ImportState` step to the `TestAccAzureRMSignalRService_cors` test, similar to how you've done for the `serviceMode` test?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "75": "{\n  \"code_review_suggestion\": \"Great to see test coverage for the new CORS feature. To make this test more robust, could you also verify the specific values of the `allowed_origins`? Checking the values, in addition to just the count, will better ensure the feature is working as intended and prevent future regressions.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "75": "{\n  \"code_review_suggestion\": \"Consider extracting repeated resource attribute checks into reusable helper functions to improve readability and reduce duplication in your test cases.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "75": "{\n  \"code_review_suggestion\": \"Great addition of acceptance tests for service_mode and allowed_origins! To improve maintainability, consider adding test coverage for invalid or edge case values to ensure robust validation and error handling.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "75": "{\"code_review_suggestion\":\"In the CORS test you only assert the counts (#) of cors and allowed_origins; the test would still pass if the wrong origins were returned as long as there are three. Add explicit checks for each expected origin (e.g. using TestCheckTypeSetElemAttr for a TypeSet) to make the test actually validate correctness, not just length.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "75": "{\"code_review_suggestion\":\"The new CORS test only checks the count of allowed_origins, not their actual values—so a regression could slip in if the list changes but length stays 3. Consider adding explicit TestCheckResourceAttr lines for each index (e.g. allowed_origins.0, .1, .2) to assert the expected domains (and optionally an import verification step like in the serviceMode test) for stronger coverage.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "286": "ppy/osu-framework:3500"
+        },
+        "selected_nodeLs": {
+            "286": "['PR-3500']"
+        },
+        "codediff": {
+            "286": "@@ -525,9 +530,8 @@ protected override bool OnKeyDown(KeyDownEvent e)\n                 if (!drawableMenuItemsList.Any())\n                     return base.OnKeyDown(e);\n \n-                var currentPreselected = drawableMenuItemsList.FirstOrDefault(i => i.IsPreSelected) ?? drawableMenuItemsList.First(i => i.IsSelected);\n-\n-                var targetPreselectionIndex = drawableMenuItemsList.IndexOf(currentPreselected);\n+                var currentPreselected = PreselectedItem;\n+                var targetPreselectionIndex = currentPreselected == null ? NULL_ITEM_INDEX : drawableMenuItemsList.IndexOf(currentPreselected);"
+        },
+        "groundTruth": {
+            "286": "`IndexOf()` already returns -1 when the item isn't found, so it's probably ok to remove the null check"
+        },
+        "ds_dnContext": {
+            "286": "{\n  \"code_review_suggestion\": \"I noticed you're using NULL_ITEM_INDEX which isn't defined in this diff snippet. This might cause a compilation error if it's not defined elsewhere. Consider defining this constant or handling the null case with a clear fallback value like -1 to maintain code clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "286": "{\n  \"code_review_suggestion\": \"Ensure PreselectedItem handles null cases consistently by verifying it returns null when no items are selected, matching the expected behavior for NULL_ITEM_INDEX usage.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "286": "{\n  \"code_review_suggestion\": \"The change introduces a potential null reference issue when PreselectedItem is null but drawableMenuItemsList contains items. Consider adding a null check before calling IndexOf, or ensure PreselectedItem is always valid when items exist.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "286": "{\n  \"code_review_suggestion\": \"Good fix for handling the case where no item is selected! However, consider adding a null check before calling drawableMenuItemsList.IndexOf(currentPreselected) to make the code more robust and avoid potential null reference exceptions.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "286": "{\n  \"code_review_suggestion\": \"Great refactor! Using the `PreselectedItem` property and handling the null case not only makes the code more readable, but also fixes a potential crash that could occur if no item was selected.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "286": "{\n  \"code_review_suggestion\": \"Great fix! For a bit more conciseness, you could consider inlining the `currentPreselected` variable directly into the ternary expression, since it's only used once.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "286": "{\n  \"code_review_suggestion\": \"Using PreselectedItem directly may cause issues if it's not guaranteed to be part of drawableMenuItemsList, so ensure PreselectedItem is always synchronized or add a null/containment check to avoid unexpected behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "286": "{\n  \"code_review_suggestion\": \"Using the existing PreselectedItem directly improves clarity and avoids redundant searches, but ensure PreselectedItem is always up-to-date and properly reflects the menu state to prevent null reference issues.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "286": "{\"code_review_suggestion\":\"Using PreselectedItem directly can yield an index of -1 if it isn’t in drawableMenuItemsList, unlike the old in-list fallback logic. Treat a missing-or-not-found item the same as null (e.g., check IndexOf result and use NULL_ITEM_INDEX) to avoid downstream logic misinterpreting -1.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "286": "{\n  \"code_review_suggestion\": \"Consider guarding against PreselectedItem not being in drawableMenuItemsList: IndexOf() will return -1 (likely not equal to NULL_ITEM_INDEX), which could slip downstream as a valid index. You could treat (index == -1) the same as null (use NULL_ITEM_INDEX) to avoid inconsistent state.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

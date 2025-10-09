@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "199": "dask/dask:7803"
+        },
+        "selected_nodeLs": {
+            "199": "['PR-7803', 'Issue-7800']"
+        },
+        "codediff": {
+            "199": "@@ -162,6 +162,7 @@ def import_required(mod_name, error_msg):\n         raise RuntimeError(error_msg) from e\n \n \n+@_deprecated(use_instead=\"tmp_path or tmp_path_factory from pytest fixtures\")"
+        },
+        "groundTruth": {
+            "199": "Since `tmpfile` might be used outside of tests, something like ```python use_instead=\"the tempfile module from the standard library or pytest fixtures for temporary files\" ``` will cover more potential use cases"
+        },
+        "ds_dnContext": {
+            "199": "{\n  \"code_review_suggestion\": \"The deprecation decorator appears misplaced here - `import_required` handles module imports while the message references pytest path fixtures. Either this decorator was added to the wrong function, or the message should explain what to use instead of this import helper.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "199": "{\n  \"code_review_suggestion\": \"The deprecation decorator appears misplaced on `import_required`—this function handles module imports, not temp files. Move `@_deprecated` to the actual `tmpdir`/`tmpfile` functions instead, and ensure the warning aligns with their usage context.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "199": "{\n  \"code_review_suggestion\": \"The deprecation decorator is a good start, but it should include version information to help users understand when this will be removed. Consider adding something like `@_deprecated(version=\\\"X.Y\\\", use_instead=\\\"tmp_path or tmp_path_factory from pytest fixtures\\\")` to make the deprecation timeline clear.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "199": "{\n    \"code_review_suggestion\": \"The deprecation warning should clarify that tmpfile is still needed for Windows compatibility when creating temporary files that need to be opened multiple times while the context is active, as TemporaryFile/NamedTemporaryFile have platform-specific limitations on Windows.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "199": "{\n  \"code_review_suggestion\": \"Great job adding the deprecation warning! To make it more actionable for users, could we clarify the `use_instead` message? Briefly explaining the difference between `tmp_path` (function-scoped) and `tmp_path_factory` (session-scoped) would help them choose the right fixture.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "199": "{\n  \"code_review_suggestion\": \"Good call on deprecating this! The suggested alternatives, `tmp_path` and `tmp_path_factory`, are specific to pytest. Since this utility can be used outside of tests, could we also recommend the standard library equivalent, like `tempfile.TemporaryDirectory`, in the deprecation message?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "199": "{\n  \"code_review_suggestion\": \"The @ _deprecated decorator usage is missing the @ symbol directly before it; also, consider importing and using the standard warnings module for deprecation instead to align with best practices and improve clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "199": "{\n  \"code_review_suggestion\": \"The added @_deprecated decorator lacks an import statement or definition in this snippet; ensure it's properly imported to avoid runtime errors and clarify its usage for maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "199": "{\"code_review_suggestion\": \"You added @_deprecated but the diff shows no corresponding import/definition; this will raise a NameError at import time. Make sure the decorator is defined or imported before use (and consider dropping the leading underscore if it’s part of the public API).\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "199": "{\n  \"code_review_suggestion\": \"The deprecation hint points only to pytest fixtures; external users (outside tests) will likely need the stdlib replacements (tempfile.TemporaryDirectory / NamedTemporaryFile). Consider adjusting use_instead to mention those explicitly (or split test vs runtime guidance) so the deprecation message is clear and broadly useful.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

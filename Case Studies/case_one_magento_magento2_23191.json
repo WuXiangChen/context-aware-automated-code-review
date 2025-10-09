@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "71": "magento/magento2:23191"
+        },
+        "selected_nodeLs": {
+            "71": "['PR-23191']"
+        },
+        "codediff": {
+            "71": "@@ -836,7 +845,8 @@ public function __construct(\n         MediaGalleryProcessor $mediaProcessor = null,\n         StockItemImporterInterface $stockItemImporter = null,\n         DateTimeFactory $dateTimeFactory = null,\n-        ProductRepositoryInterface $productRepository = null\n+        ProductRepositoryInterface $productRepository = null,\n+        LinkProcessor $linkProcessor = null"
+        },
+        "groundTruth": {
+            "71": "@akaplya can this optional constructor dependency be included in a patch release?"
+        },
+        "ds_dnContext": {
+            "71": "{\n  \"code_review_suggestion\": \"The new `LinkProcessor` dependency is added to the constructor but isn’t stored as a class property or used yet. This could lead to runtime errors if the class tries to use it later. Consider assigning it to a property (e.g., `$this->linkProcessor = $linkProcessor`) to ensure it’s available for other methods.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n    \"code_review_suggestion\": \"Good start on the DI refactor! Since this is moving link processing to a dedicated class, consider making the `LinkProcessor` parameter required (not nullable) in a future update to enforce proper dependency injection and avoid potential null handling issues.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n  \"code_review_suggestion\": \"The constructor is missing the initialization of the new `linkProcessor` parameter. You should add `$this->linkProcessor = $linkProcessor;` to ensure the dependency is properly stored and available for use throughout the class.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n    \"code_review_suggestion\": \"The constructor parameter addition looks good for the DI-based link type handling, but make sure the LinkProcessor dependency is properly injected and used throughout the class to maintain the refactoring's purpose of separating link processing concerns.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n  \"code_review_suggestion\": \"Nice addition! To make the class's dependencies clearer and avoid potential null checks down the line, how about we make the new `$linkProcessor` a required constructor argument by removing the `= null` default?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n  \"code_review_suggestion\": \"Nice work introducing the `LinkProcessor`! To ensure full backward compatibility, could you please add a fallback inside the constructor to instantiate `LinkProcessor` via `ObjectManager` if it's provided as `null`? This is a common pattern that prevents issues for third-party extensions.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n  \"code_review_suggestion\": \"Adding a new constructor dependency without updating the corresponding property or usage can lead to confusion and potential bugs; ensure the new LinkProcessor parameter is properly assigned and used or clearly documented if optional.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n  \"code_review_suggestion\": \"Great refactor extracting link processing; however, consider adding proper null checks or default handling for the new LinkProcessor dependency to avoid potential null reference issues during construction.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n  \"code_review_suggestion\": \"You added LinkProcessor to the constructor but never store or use it—this creates dead/ambiguous DI. Either assign it to a property and use it, or drop the parameter until needed to avoid confusion and unnecessary instantiation.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "71": "{\n  \"code_review_suggestion\": \"You added LinkProcessor as a new constructor arg; be sure to update the docblock, store it in a property, and handle the null fallback (e.g. lazily resolve or keep previous behavior) to preserve backward compatibility for existing instantiations.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

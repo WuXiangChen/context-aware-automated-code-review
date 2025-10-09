@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "336": "microsoft/botbuilder-dotnet:4176"
+        },
+        "selected_nodeLs": {
+            "336": "['PR-4176']"
+        },
+        "codediff": {
+            "336": "@@ -1123,17 +1123,33 @@ private static (object value, string error) GetProperty(Expression expression, I\n         {\n             object value = null;\n             string error;\n-            object instance;\n+            object firstItem;\n             object property;\n \n             var children = expression.Children;\n-            (instance, error) = children[0].TryEvaluate(state, options);\n+            (firstItem, error) = children[0].TryEvaluate(state, options);\n             if (error == null)\n             {\n-                (property, error) = children[1].TryEvaluate(state, options);\n-                if (error == null)\n+                if (children.Length == 1)\n                 {\n-                    (value, error) = WrapGetValue(MemoryFactory.Create(instance), (string)property, options);\n+                    // get root value from memory\n+                    if (!(firstItem is string))\n+                    {\n+                        error = $\"if GetProperty contains only one parameter, please make sure it is string. But get {firstItem?.GetType()?.Name ?? \"null\"}\";"
+        },
+        "groundTruth": {
+            "336": ">if GetProperty contains only one parameter, please make sure it is string. But get {firstItem?.GetType()?.Name ?? \"null\" [](start = 34, length = 120) \"Single parameter {children[0]} is not a string."
+        },
+        "ds_dnContext": {
+            "336": "{\n  \"code_review_suggestion\": \"The error message for the single-parameter case mentions 'GetProperty', which is an internal implementation detail. Consider rephrasing it to be user-facing, like: 'Property accessor requires a string identifier, but received {type}'.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "336": "{\n  \"code_review_suggestion\": \"The error message for the single-parameter case is a bit verbose and could be clearer. Consider simplifying it to: 'getProperty requires a string argument when called with one parameter, but received {firstItem?.GetType()?.Name ?? \\\"null\\\"}.'\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "336": "{\n  \"code_review_suggestion\": \"The variable name 'firstItem' is misleading since it's used for both the instance and the property name. Consider using more descriptive names like 'instanceOrProperty' or handling the single parameter case with a separate variable to improve code clarity.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "336": "{\n  \"code_review_suggestion\": \"The error message should be more user-friendly and consistent with the function's new purpose. Instead of technical details about parameter types, consider something like: 'The getProperty function requires a string parameter to access top-level memory properties.'\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "336": "{\n  \"code_review_suggestion\": \"The new error message is a bit clunky. For better clarity and user experience, let's rephrase it to something more direct, like: `'GetProperty' expects a string property name as its argument, but received a '{firstItem?.GetType()?.Name ?? \\\"null\\\"}' instead.`\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "336": "{\n  \"code_review_suggestion\": \"Great addition to `getProperty`! To improve the developer experience, could we refine the new error message for clarity? Something like `'getProperty' expects a string property name as its single argument, but received a '{firstItem?.GetType()?.Name ?? \\\"null\\\"}'` would be more direct and grammatically correct.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "336": "{\n  \"code_review_suggestion\": \"The updated variable naming from 'instance' to 'firstItem' is good for clarity, but the logic around handling single-parameter cases in GetProperty is incomplete and does not consistently return the property value. Consider explicitly handling the single-parameter scenario by extracting the property from the memory object and returning it, ensuring the method returns the expected value or a clear error.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "336": "{\n  \"code_review_suggestion\": \"Great extension for supporting single-parameter access! To improve clarity and maintainability, consider separating the single-parameter and two-parameter logic more distinctly and adding comments explaining the new behavior clearly to avoid confusion in future code updates.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "336": "{\"code_review_suggestion\":\"The new single-argument branch is incomplete: if the first item is a valid string you never actually fetch a value (value stays null, no error), leading to silent incorrect results. After the string type check, call the same retrieval logic (e.g., WrapGetValue on the root memory) and return; otherwise set the error. This ensures the 1‑param form behaves predictably.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "336": "{\n  \"code_review_suggestion\": \"In the single-parameter branch you only validate the argument is a string but never actually resolve the memory value, so a valid getProperty('a:b') will likely return null with no error and may later hit children[1] logic. After the type check, retrieve the root value (e.g. (value, error) = WrapGetValue(MemoryFactory.Create(state), (string)firstItem, options) and return) to make the new mode functional and avoid an index or silent null.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

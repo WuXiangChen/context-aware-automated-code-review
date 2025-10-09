@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "340": "broadinstitute/gatk:5819"
+        },
+        "selected_nodeLs": {
+            "340": "['PR-5819', 'Issue-5751']"
+        },
+        "codediff": {
+            "340": "@@ -40,6 +46,19 @@ public void testAllDefaultArgs() throws IOException {\n         spec.executeTest(\"testInference\", this);\n     }\n \n+    @Test(expectedExceptions = RuntimeException.class)\n+    public void testRequirePythonEnvironment() throws IOException {\n+        // This test is deliberately left out of the \"python\" test group in order to ensure that\n+        // it only executes when the Python environment has *NOT* been properly established. Also,\n+        // skip this test if we're running on the Docker because the Python environment is always\n+        // activated there.\n+        final String isDockerCI = System.getenv(\"CI\");\n+        if (isDockerCI != null && isDockerCI.equalsIgnoreCase(\"true\")) {"
+        },
+        "groundTruth": {
+            "340": "I still maintain that we should change the \"CI\" variable and set it ourselves as part of the run-docker script so we are not relying on some feature of the environment that might change. Otherwise i'm not too bothered by this being a skip exception."
+        },
+        "ds_dnContext": {
+            "340": "{\n  \"code_review_suggestion\": \"Using the 'CI' environment variable to detect Docker might be unreliable since it's set in various CI environments, not just Docker. Consider checking for a more specific indicator or directly testing Python availability to ensure the test runs only when intended.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n    \"code_review_suggestion\": \"The CI environment variable check is too generic and fragile for detecting Docker. Consider using a more specific environment variable like GATK_DOCKER_TEST that you control, or implement a direct check for the conda environment's presence instead of relying on CI infrastructure details.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n  \"code_review_suggestion\": \"The environment variable check for 'CI' is too generic and could cause false positives. Consider using a more specific environment variable like 'DOCKER_CI' or checking for the actual Python environment presence instead of relying on a generic CI flag.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n  \"code_review_suggestion\": \"The CI environment variable check is fragile since CI=true could be set in various CI environments, not just Docker. Consider using a more specific environment variable like GATK_DOCKER_TEST or checking for the actual Python environment availability directly instead of relying on CI detection.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n  \"code_review_suggestion\": \"To correctly skip this test in CI, consider throwing a `SkipException` from within your `if` block. The current implementation will cause the test to fail in CI because the expected `RuntimeException` is never thrown, whereas a `SkipException` will correctly mark the test as skipped.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n  \"code_review_suggestion\": \"Relying on the generic `CI` environment variable to detect the Docker environment can be a bit fragile, as you noted. To make this test's condition more explicit and robust, how about checking for a more specific environment variable, like `GATK_DOCKER_CI=true`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n  \"code_review_suggestion\": \"Instead of checking the \\\"CI\\\" environment variable to detect Docker, use a more reliable indicator specific to the Docker environment to avoid false positives and ensure the test is properly skipped only when running inside Docker.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n  \"code_review_suggestion\": \"Using the 'CI' environment variable to detect Docker and skip tests is fragile; consider introducing a dedicated environment variable specifically for Docker CI detection or a test annotation to make this intent explicit and more reliable.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n  \"code_review_suggestion\": \"The test is brittle: it declares expectedExceptions=RuntimeException but (as shown) never guarantees one is thrown, and the Docker skip branch doesn’t actually skip (no return/SkipException). This can produce false failures. Use a clear skip (throw new SkipException or return) and explicitly assert the exception with Assert.expectThrows around the target call instead of the broad expectedExceptions annotation.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "340": "{\n  \"code_review_suggestion\": \"Relying on the generic CI env var to decide whether to skip is brittle—probe the actual Python env instead (eg try importing the required module/package and throw a SkipException if it succeeds), so the test’s outcome depends on real capability rather than the build host.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

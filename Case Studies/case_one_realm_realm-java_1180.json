@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "175": "realm/realm-java:1180"
+        },
+        "selected_nodeLs": {
+            "175": "['PR-1180']"
+        },
+        "codediff": {
+            "175": "@@ -0,0 +1,27 @@\n+/*\n+ * Copyright 2015 Realm Inc.\n+ *\n+ * Licensed under the Apache License, Version 2.0 (the \"License\");\n+ * you may not use this file except in compliance with the License.\n+ * You may obtain a copy of the License at\n+ *\n+ * http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+\n+package io.realm.exceptions;\n+\n+/**\n+ * RealmError is Realm specific Error used when unrecoverable problems in the underlying storage engine. An RealmError"
+        },
+        "groundTruth": {
+            "175": "\"when unrecoverable problems in the underlying storage engine\" -> \"when unrecoverable problems **happen** in the underlying storage engine\""
+        },
+        "ds_dnContext": {
+            "175": "{\n  \"code_review_suggestion\": \"The class Javadoc has a grammatical error and incomplete sentence. Consider rephrasing to: 'RealmError is a Realm-specific Error thrown for unrecoverable problems in the underlying storage engine.'\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "175": "{\n  \"code_review_suggestion\": \"The comment has a minor typo: 'An RealmError' should be 'A RealmError'. While this doesn't affect functionality, fixing it improves documentation clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "175": "{\n  \"code_review_suggestion\": \"The JavaDoc comment has a grammatical error - it should read 'RealmError is a Realm specific Error used for unrecoverable problems...' rather than 'used when unrecoverable problems'. This small fix improves documentation clarity for developers.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "175": "{\n  \"code_review_suggestion\": \"The comment for RealmError contains a small grammatical error: 'used when unrecoverable problems' should be 'used for unrecoverable problems' or 'used when unrecoverable problems occur' for better clarity.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "175": "{\n  \"code_review_suggestion\": \"Looks like the JavaDoc for `RealmError` was cut off mid-sentence. Could you please complete the description and also correct the grammar from 'An RealmError' to 'A RealmError' for clarity?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "175": "{\n  \"code_review_suggestion\": \"Looks like there's a small typo in the Javadoc. For correct grammar, it should be 'A RealmError' instead of 'An RealmError'.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "175": "{\n  \"code_review_suggestion\": \"The comment block is incomplete and truncated, which reduces clarity. Please finish the class-level Javadoc to clearly explain the purpose and usage of RealmError for better maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "175": "{\n  \"code_review_suggestion\": \"The class-level Javadoc comment appears to be incomplete and abruptly cut off; please finish it to clearly explain the purpose and usage of RealmError for better maintainability and clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "175": "{\n  \"code_review_suggestion\": \"This file stops after a partial Javadoc and never declares the RealmError class—looks like an incomplete commit. Add the actual class (e.g., public class RealmError extends Error with proper constructors) and finish the Javadoc sentence so the file compiles and the intent is clear.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "175": "{\"code_review_suggestion\":\"The file ends after an incomplete Javadoc and never declares the RealmError class, so it won’t compile. Add `public class RealmError extends Error` with message/cause constructors and finish the Javadoc explaining when it’s thrown.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

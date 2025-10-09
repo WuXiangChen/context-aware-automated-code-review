@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "207": "pandas-dev/pandas:5340"
+        },
+        "selected_nodeLs": {
+            "207": "['PR-5340']"
+        },
+        "codediff": {
+            "207": "@@ -488,7 +488,14 @@ def test_constructor_infer_freq(self):\n \n         p = Period('2007-01-01 07:10:15.123400')\n         self.assert_(p.freq == 'U')\n-\n+        \n+    def test_asfreq_MS(self):\n+        initial = Period(\"2013\")\n+        \n+        self.assertEqual(initial.asfreq(freq=\"M\", how=\"S\"), Period('2013-01', 'M'))\n+        self.assertRaises(ValueError, initial.asfreq, freq=\"MS\", how=\"S\")"
+        },
+        "groundTruth": {
+            "207": "please change one of these to have (a portion of) the text of the error message. Much easier to maintain that way (and adds really minimal performance hit)."
+        },
+        "ds_dnContext": {
+            "207": "{\n  \"code_review_suggestion\": \"The test 'test_asfreq_MS' mixes testing a valid frequency ('M') and an invalid one ('MS'), which can make it harder to pinpoint issues. Consider splitting it into two separate tests for better clarity and maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "207": "{\n  \"code_review_suggestion\": \"The test should validate the specific error message for 'MS' frequency to ensure it's informative, not just the exception type. Consider using assertRaisesRegex to check the actual error message matches expected improvements from #5332.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "207": "{\n  \"code_review_suggestion\": \"The test_constructor_infer_freq test is missing an assertion for the Period constructor with microseconds. Consider adding a specific assertion like `self.assertEqual(p, Period('2007-01-01 07:10:15.123400', freq='U'))` to ensure both the value and frequency are correctly inferred.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "207": "{\n    \"code_review_suggestion\": \"The test correctly validates that 'MS' frequency raises a ValueError, but it would be more helpful to also verify the specific error message content to ensure users get meaningful feedback about why 'MS' is invalid.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "207": "{\n  \"code_review_suggestion\": \"Great test case! For improved readability and to align with modern testing patterns, consider using the context manager for checking the exception: `with self.assertRaises(ValueError): initial.asfreq(freq=\\\"MS\\\", how=\\\"S\\\")`. This makes it clearer which specific call is expected to fail.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "207": "{\n  \"code_review_suggestion\": \"This is a great test case. To fully validate the 'more informative exception' goal, could you use `assertRaisesRegex` instead of `assertRaises`? That would allow you to assert that the specific error message is being raised, making the test more robust.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "207": "{\n  \"code_review_suggestion\": \"The test uses 'assertRaises' without a context manager, which is less clear and less compatible with newer unittest patterns; switching to a 'with self.assertRaises(ValueError):' block would improve readability and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "207": "{\n  \"code_review_suggestion\": \"The test correctly checks that using 'MS' as a frequency raises a ValueError, but improving the assertion to also verify the exception message would make the test more informative and aligned with the PR goal.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "207": "{\"code_review_suggestion\":\"The test name test_asfreq_MS is misleading because it first asserts behavior for freq='M' before checking that freq='MS' raises; either split into two tests or rename to reflect both cases for clarity (e.g., test_asfreq_M_and_MS) so intent is unambiguous.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "207": "{\"code_review_suggestion\": \"Since the PR goal is a more informative error for using MS with Period, this test should assert the message, not just that a ValueError occurs. Replace assertRaises with assertRaisesRegex (or assertRaisesRegexp in older unittest) to match the expected text, ensuring the improved clarity doesn’t silently regress.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

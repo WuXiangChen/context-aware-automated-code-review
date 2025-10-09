@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "119": "doctrine/dbal:3666"
+        },
+        "selected_nodeLs": {
+            "119": "['PR-3666', 'Issue-3632']"
+        },
+        "codediff": {
+            "119": "@@ -0,0 +1,39 @@\n+<?php\n+\n+namespace Doctrine\\DBAL\\Platforms;\n+\n+use function strlen;\n+use function substr;\n+\n+/**\n+ * Provides behaviour name longer than 32 chars since Oracle 12.2\n+ */\n+class Oracle122Platform extends OraclePlatform\n+{\n+    /**\n+     * {@inheritDoc}\n+     *\n+     * @param string $schemaElementName\n+     *\n+     * @return string\n+     */\n+    public function fixSchemaElementName($schemaElementName)\n+    {\n+        if (strlen($schemaElementName) > 128) {"
+        },
+        "groundTruth": {
+            "119": "You can use `getMaxIdentifierLength()` here."
+        },
+        "ds_dnContext": {
+            "119": "{\n  \"code_review_suggestion\": \"The new `fixSchemaElementName` method duplicates the truncation logic from the parent class. To avoid code duplication and ensure future maintainability, consider calling the parent method first (e.g., `$name = parent::fixSchemaElementName($schemaElementName);`) and then applying the new 128-character limit only if needed.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "119": "{\n  \"code_review_suggestion\": \"The new Oracle122Platform correctly handles 128-character identifiers in fixSchemaElementName, but it should also override getMaxIdentifierLength() to return 128 for consistency with Oracle 12.2's actual limits. Without this, other DBAL components might still enforce the old 30-character limit.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "119": "{\n  \"code_review_suggestion\": \"The method name `fixSchemaElementName` suggests it handles general schema element names, but the comment specifically mentions 'behaviour name longer than 32 chars since Oracle 12.2'. Consider renaming the method to something more specific like `fixLongBehaviorName` or updating the comment to clarify it handles general schema elements up to 128 characters for better maintainability.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "119": "{\n    \"code_review_suggestion\": \"The Oracle122Platform class should also override getMaxIdentifierLength() to return 128, not just fixSchemaElementName(), to ensure consistent behavior across all identifier length checks as mentioned in the original issue #3632.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "119": "{\n  \"code_review_suggestion\": \"Great start on adding support for longer identifiers! However, using `strlen` can cause issues with multi-byte character sets like UTF-8. To avoid potential data corruption, could we use `mb_strlen` and `mb_substr` instead?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "119": "{\n  \"code_review_suggestion\": \"Thanks for adding this new platform! The class docblock is a little imprecise, mentioning 'longer than 32 chars'. For clarity, could you update it to specify that this platform supports the new 128-character identifier limit introduced in Oracle 12.2, which is an increase from the previous 30-"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "119": "{\n  \"code_review_suggestion\": \"The method fixSchemaElementName uses a hardcoded length limit of 128 without explaining its source or confirming compatibility across Oracle versions; adding a class constant for the limit with a clear comment would improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "119": "{\n  \"code_review_suggestion\": \"Add the corresponding getMaxIdentifierLength() method overriding to return 128, ensuring this platform correctly reflects the new identifier length limit and maintains consistency.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "119": "{\"code_review_suggestion\":\"The docblock says 'longer than 32 chars' but Oracle pre-12.2 limit was 30 and 12.2+ is 128; plus the hard-coded 128 is a magic number. Clarify the comment and replace 128 with a named constant (e.g. const MAX_IDENTIFIER_LENGTH = 128) to avoid confusion and make intent explicit.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "119": "{\n  \"code_review_suggestion\": \"To fully enable 128‑char identifiers, also override getMaxIdentifierLength() to return 128 and have fixSchemaElementName use that value (avoid hard‑coding 128), e.g. if (strlen($name) > $this->getMaxIdentifierLength()) { return substr($name, 0, $this->getMaxIdentifierLength()); }. Right now only fixSchemaElementName is (partially) added, so the platform will still report 30 and downstream logic may truncate incorrectly.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

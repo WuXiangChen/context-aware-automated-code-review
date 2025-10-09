@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "57": "fontforge/fontforge:3616"
+        },
+        "selected_nodeLs": {
+            "57": "['PR-2082', 'PR-1']"
+        },
+        "codediff": {
+            "57": "@@ -526,8 +526,11 @@ return( false );\n     }\n     fclose( os );\n     /* we just read a copyright notice? That's no use */\n-    if ( sub_num<=0 )\n+    if ( sub_num<=0 ) {\n+\tfree(co);\n+\tfree(lines);\n return( false );\n+    }"
+        },
+        "groundTruth": {
+            "57": "I don't envy you this one; it's a mess. So I'll be less didactic. `co`: ``` for ( i=0; co[i]!=NULL; i++) free(co[i]); free(co) ``` `lines`: ``` for ( i=0; i<l; i++) free(lines[i]); free(lines); ``` Both of these should occur before `return` above, and the `lines` part should go below where `free(lines)` is right now on 543. (I don't actually know if `l` can be `> 0` coming out of that loop, but the loop itself doesn't imply that it can't.)"
+        },
+        "ds_dnContext": {
+            "57": "{\n  \"code_review_suggestion\": \"Good job fixing the memory leak by freeing 'co' and 'lines' before returning false when sub_num is non-positive. This ensures proper resource management and prevents potential performance issues.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "57": "{\n  \"code_review_suggestion\": \"Good catch adding the memory cleanup with free(co) and free(lines)! To make this even more robust, consider also setting these pointers to NULL after freeing to prevent any potential double-free issues if this code path is extended later.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "57": "{\n  \"code_review_suggestion\": \"Good catch adding the memory cleanup! However, there's a potential memory leak - the 'co' variable was allocated earlier but isn't being freed in this error path. Consider adding free(co); before the return to ensure all allocated memory is properly released.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "57": "{\"code_review_suggestion\": \"Good fix for preventing the NULL pointer dereference crash! However, you should also free 'co' and 'lines' in the other early return paths above this code to ensure complete memory leak prevention.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "57": "{\n  \"code_review_suggestion\": \"Great job fixing this memory leak! For even better maintainability, you might consider a `goto cleanup` pattern. This centralizes all resource deallocation to a single point at the end of the function, which helps prevent similar leaks if more exit paths are added later.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "57": "{\n  \"code_review_suggestion\": \"Great catch on preventing this memory leak! For consistency and readability, could you please indent the `return( false );` statement to align with the `free()` calls within the new block?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "57": "{\n  \"code_review_suggestion\": \"Great catch on freeing memory when sub_num <= 0! To improve readability and maintain consistency, consider always using braces for if statements, and ensure all allocated resources are freed before returning.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "57": "{\n  \"code_review_suggestion\": \"Great catch on freeing memory before returning false, but make sure the braces are properly aligned and consistent with the project's coding style for readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "57": "{\n  \"code_review_suggestion\": \"Nice catch adding the frees, but doing it inline in this one branch risks missing other early returns. Refactor to a single cleanup label (free co, lines, fclose, then return) so every exit path goes through it and you avoid future leaks or double‑free confusion about ownership.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "57": "{\n  \"code_review_suggestion\": \"Good catch adding the frees, but introducing an ad‑hoc cleanup block here risks divergence from other early returns and the mis-indented return hints at that. Consider funneling all failure paths (including sub_num<=0) through a single cleanup label that frees co, lines (and any future resources) for consistency and easier maintenance.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

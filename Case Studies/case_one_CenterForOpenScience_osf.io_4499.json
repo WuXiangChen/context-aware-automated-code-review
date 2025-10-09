@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "39": "CenterForOpenScience/osf.io:4499"
+        },
+        "selected_nodeLs": {
+            "39": "['PR-4499', 'PR-4027']"
+        },
+        "codediff": {
+            "39": "@@ -1128,6 +1146,36 @@ def can_comment(self, auth):\n             )\n         return self.is_contributor(auth.user)\n \n+    def set_node_license(self, data, auth, save=True):"
+        },
+        "groundTruth": {
+            "39": "It might make sense to check the permissions of `auth` in this method, as other Node methods do."
+        },
+        "ds_dnContext": {
+            "39": "{\n  \"code_review_suggestion\": \"This method lacks authorization checks—any user could potentially change the node's license. Add a permission check (e.g., `self.is_contributor(auth.user)`) to ensure only authorized users can modify licenses.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"Ensure the new set_node_license method includes proper permission checks to prevent unauthorized license changes, as this could allow non-admin users to modify project licensing. Consider adding an explicit admin-only check similar to other sensitive node operations.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"The new set_node_license method should include input validation to ensure the license data is properly formatted before saving, preventing potential data corruption or security issues.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"The set_node_license method should include validation for copyright year ranges (e.g., '2010-2015') since the context shows the current validation only allows single years, which conflicts with common license practices.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"The `data` parameter in the new `set_node_license` method is a bit generic. To improve clarity and maintainability, consider renaming it to something more descriptive like `license_details` to better reflect its expected content.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"This looks like a good placeholder for the license-setting logic. As you implement this, please make sure to start with a permission check to ensure the user from the `auth` object has 'write' permissions on the node before any changes are made.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"The new set_node_license method lacks input validation and error handling, which could cause unexpected failures or security issues; consider adding checks for the license data format and proper exception management to improve robustness and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"The set_node_license method should include validation and error handling to ensure license data integrity before saving, preventing inconsistent or invalid license states.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"The new set_node_license method is just a bare signature with no body, which will cause a syntax/error or silent no-op; implement the logic (or at least add a pass and docstring / raise NotImplementedError) before committing so callers don’t fail unpredictably.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "39": "{\n  \"code_review_suggestion\": \"set_node_license is added as an empty stub (no body shown); as-is it will cause a SyntaxError/AttributeError if called and undermines the license picker work. Flesh it out (docstring, permission check via auth, validate required license fields, apply/update record atomically, then optionally save) or omit the stub until implemented.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

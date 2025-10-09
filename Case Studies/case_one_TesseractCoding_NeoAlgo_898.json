@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "170": "TesseractCoding/NeoAlgo:898"
+        },
+        "selected_nodeLs": {
+            "170": "['PR-898', 'Issue-825']"
+        },
+        "codediff": {
+            "170": "@@ -0,0 +1,57 @@\n+def sort_matrix(mat, size):\n+    temp_mat = [0]*(size*size)\n+    count = 0\n+    for i in range(size):\n+        for j in range(size):\n+            temp_mat[count] = mat[i][j]\n+            count += 1\n+    temp_mat.sort()\n+\n+    count = 0\n+    for i in range(size):\n+        for j in range(size):\n+            mat[i][j] = temp_mat[count]\n+            count += 1\n+    return mat\n+\n+\n+def display_matrix(mat, size):\n+    for i in range(size):\n+        for j in range(size):\n+            print(mat[i][j], end=' ')\n+        print()\n+\n+\n+if __name__ == '__main__':\n+    size = int(input('Enter size: '))\n+    mat = []\n+    for i in range(size):\n+        print(f'Enter all elements of row {i+1} separated by space: ', end='')\n+        row = list(map(int, input().split()))\n+        mat.append(row)\n+\n+    print('Before sorting: ')\n+    display_matrix(mat, size)\n+    mat = sort_matrix(mat, size)\n+    print('After sorting: ')\n+    display_matrix(mat, size)\n+\n+\n+# Sample Output\n+\n+# Enter size: 3\n+# Enter all elements of row 1 separated by space: 8 3 5\n+# Enter all elements of row 2 separated by space: 9 1 2\n+# Enter all elements of row 3 separated by space: 4 7 6\n+# Before sorting:\n+# 8 3 5\n+# 9 1 2\n+# 4 7 6\n+# After sorting:\n+# 1 2 3\n+# 4 5 6\n+# 7 8 9\n+\n+\n+# time complexity = O(n^2)"
+        },
+        "groundTruth": {
+            "170": "@rohangawhade I think the time complexity will be `O(n^2log2(n))` since you have used `sort()` function."
+        },
+        "ds_dnContext": {
+            "170": "{\n  \"code_review_suggestion\": \"The code lacks input validation, which can cause crashes if the user enters rows with incorrect lengths or non-integer values. Add checks to ensure each row has exactly 'size' elements and handle invalid inputs gracefully for better robustness.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"The code correctly sorts the matrix but uses a straightforward approach with O(n² log n) complexity, while the issue expected an optimized O(n√n log √n) algorithm. Consider implementing a more efficient method like using a min-heap for row-wise sorted insertion to meet the expected performance.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"The sort_matrix function modifies the input matrix in-place but also returns it, which can be confusing. Consider either returning a new sorted matrix (pure function) or modifying in-place without returning anything, but not both to avoid ambiguity.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"The current implementation has O(n²) time complexity, but the PR context mentions a more efficient O(n√nlog√n) algorithm was expected. Consider implementing a more optimal sorting approach that leverages matrix properties rather than flattening and sorting.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"Hey, nice work on the sorting logic! To make the functions more robust, you could remove the `size` parameter. The matrix size can be safely determined within the function using `len(mat)`, which avoids potential bugs if an incorrect size is passed.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"Thanks for this contribution! I noticed the time complexity comment at the bottom. Since sorting `n*n` elements is the dominant operation, the complexity would be closer to O(n² * log(n)) rather than O(n²). Could you please update the comment for accuracy?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"To improve clarity and maintainability, consider using Python's built-in list flattening and slicing methods instead of manual counting in sort_matrix—for example, flatten the matrix with a list comprehension and reconstruct it using slicing, which makes the code more concise and readable.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"Consider simplifying sort_matrix by flattening the matrix using a list comprehension and reconstructing it without manual counting; this will improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"Biggest risk: you trust the provided size and row inputs without validating each row length, so a short or long row triggers an IndexError in sort_matrix. Derive size from len(mat) and assert all rows match (e.g., if any len(row) != size: raise ValueError) before sorting; then drop the size parameter entirely.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "170": "{\n  \"code_review_suggestion\": \"The final comment says time complexity = O(n^2), but flattening to a list of size^2 elements and calling sort() is actually O(size^2 log size); please correct the note or (if true O(n^2) is desired) use a linear-time approach like counting sort when value ranges are known. You could also infer size via len(mat) to avoid a redundant parameter.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

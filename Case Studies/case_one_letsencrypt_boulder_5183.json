@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "58": "letsencrypt/boulder:5183"
+        },
+        "selected_nodeLs": {
+            "58": "['PR-5183']"
+        },
+        "codediff": {
+            "58": "@@ -74,39 +111,15 @@ func (f *ocspFilter) check(req *ocsp.Request) error {\n \treturn nil\n }\n \n-// newFilter creates a new ocspFilter which will filter out all requests for\n-// certs which were not issued by one of the issuerCerts (here, paths to PEM\n-// certs on disk) or which have a serial which does not start with one of the\n-// given prefixes. The resulting filter will also reject all requests which\n-// identify their issuer with a hash other than sha1.\n-func newFilter(issuerCerts []string, serialPrefixes []string) (*ocspFilter, error) {\n-\tif len(issuerCerts) < 1 {\n-\t\treturn nil, errors.New(\"Filter must include at least 1 issuer cert\")\n+// checkResponse returns a boolean if the the retrieved OCSP response is not\n+// in fact for a certificate issued by the requested issuer (i.e. if the serial\n+// is one we issued, but from a different issuer)."
+        },
+        "groundTruth": {
+            "58": "```suggestion // responseMatchesIssuer returns true if the CertificateStatus (from the DB) was generated // by an issuer matching the issuerKeyHash from the OCSP request. This rejects, // for instance, requests for a serial number that we issued, but from a different issuer // than was indicated in the OCSP request. ``` (note the renaming of the method)"
+        },
+        "ds_dnContext": {
+            "58": "{\n  \"code_review_suggestion\": \"The removed newFilter function previously enforced critical issuer and serial validation. If this logic isn't preserved elsewhere, it could allow unauthorized OCSP responses. Consider retaining these security checks in the new checkResponse function or another appropriate location.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n  \"code_review_suggestion\": \"The comment for checkResponse has a typo ('the the') and could be clearer. Consider rewording to: 'checkResponse returns true if the retrieved OCSP response is not for a certificate issued by the requested issuer (i.e., the serial matches our prefix but the issuer key hash differs).' This aligns with the PR's goal of preventing cross-issuer responses.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n  \"code_review_suggestion\": \"The function comment for checkResponse doesn't match its name - it says it returns a boolean but the function isn't shown. Also, the grammar 'the the' should be fixed to 'the' for clarity.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n    \"code_review_suggestion\": \"The checkResponse function should validate that the OCSP response's issuer key hash matches the one from the original request to prevent responding for certificates issued by other issuers, as described in the PR context.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n  \"code_review_suggestion\": \"The new comment for `checkResponse` has a small typo ('the the'). To improve clarity, how about rephrasing it to something like: `// checkResponse verifies the OCSP response is for a certificate issued by the requested issuer.`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n  \"code_review_suggestion\": \"The new comment for `checkResponse` is a great addition for context. To make it even clearer and more direct, how about we rephrase it slightly and fix the typo? For example: `// checkResponse verifies that the issuer of the retrieved OCSP response matches // the issuer specified in the original request.`\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n  \"code_review_suggestion\": \"It looks like the newFilter function was removed but the comment seems incomplete and unrelated to that logic; please restore or clarify the filtering logic and comments to ensure issuer and serial validations are properly documented and implemented for maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n  \"code_review_suggestion\": \"The removed newFilter function contained important validation logic ensuring issuer cert presence and serial prefix checks; consider preserving or migrating that validation to ensure requests are properly filtered before response verification to avoid potential mismatches or security issues.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n  \"code_review_suggestion\": \"You deleted newFilter (and its issuer/serial/hash validation) and only left a comment about checkResponse, so the construction-time safeguards are gone—likely a functional regression. Reintroduce equivalent validation (length check, issuer hash restriction, serial prefix filtering) either by restoring newFilter or integrating that logic where filters are now built.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "58": "{\n  \"code_review_suggestion\": \"The new checkResponse comment is ambiguous (and has a 'the the' typo): it says it returns a boolean if the response is NOT for the requested issuer, but the name checkResponse suggests a generic check. Clarify the return semantics (e.g., rename to responseIssuerMismatch or return an error) and fix the typo to avoid future misuse.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

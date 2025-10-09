@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "423": "ClickHouse/ClickHouse:13017"
+        },
+        "selected_nodeLs": {
+            "423": "['PR-13017']"
+        },
+        "codediff": {
+            "423": "@@ -97,4 +99,86 @@ std::optional<PartitionCommand> PartitionCommand::parse(const ASTAlterCommand *\n         return {};\n }\n \n+std::string PartitionCommand::typeToString() const"
+        },
+        "groundTruth": {
+            "423": "Maybe we can use this method later in `ASTAlterCommand::formatImpl`"
+        },
+        "ds_dnContext": {
+            "423": "{\n  \"code_review_suggestion\": \"The new `typeToString()` function appears to return a `std::string` by value, which could cause unnecessary copies. Consider returning a `std::string_view` if the string is based on static data or member variables, or ensure return value optimization (RVO) is applicable if dynamic construction is needed.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "423": "{\n  \"code_review_suggestion\": \"The new typeToString() method should handle all possible PartitionCommand types, including ATTACH and FREEZE, to ensure accurate verbose output. Consider adding a default case or enum mapping to prevent unhandled types in switch statements.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "423": "{\"code_review_suggestion\": \"The new typeToString() method should be declared as const to ensure it doesn't modify the PartitionCommand object, making it safe to call on const instances and maintaining consistency with const-correctness best practices.\"}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "423": "{\n    \"code_review_suggestion\": \"The new typeToString() method should include the new partition command types mentioned in the PR description (ATTACH and FREEZE) to ensure verbose output works correctly for these operations.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "423": "{\n  \"code_review_suggestion\": \"For the new `typeToString` function, consider returning a `std::string_view` instead of `std::string`. This would be more efficient by avoiding unnecessary memory allocations, especially if you're returning static string literals from the implementation.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "423": "{\n  \"code_review_suggestion\": \"This is a helpful addition for providing more verbose output. Since `typeToString()` is unlikely to throw exceptions, consider marking it `noexcept`. This clarifies the function's contract and can aid compiler optimizations.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "423": "{\n  \"code_review_suggestion\": \"It looks like you're adding a new method but the diff doesn't show its implementation; make sure to include the full function body for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "423": "{\n  \"code_review_suggestion\": \"The new method typeToString() lacks an implementation, so consider providing a complete and clear mapping of partition command types to their string representations to support verbose output effectively.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "423": "{\n  \"code_review_suggestion\": \"You've added the typeToString() signature without a body, so this won't compile; implement it (e.g., a switch over the enum covering all cases) or move this to a header as a declaration and provide the full definition elsewhere.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "423": "{\n  \"code_review_suggestion\": \"The new typeToString() helper will be central to the verbose ALTER output; make sure its switch covers every PartitionCommand type explicitly (no silent default) and uses something like [[fallthrough]]/assert for unknown values so adding a new enum later won’t produce misleading empty strings. This prevents silent omissions in verbose results.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

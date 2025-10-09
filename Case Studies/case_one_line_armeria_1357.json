@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "400": "line/armeria:1357"
+        },
+        "selected_nodeLs": {
+            "400": "['PR-1357']"
+        },
+        "codediff": {
+            "400": "@@ -0,0 +1,110 @@\n+/*\n+ * Copyright 2018 LINE Corporation\n+ *\n+ * LINE Corporation licenses this file to you under the Apache License,\n+ * version 2.0 (the \"License\"); you may not use this file except in compliance\n+ * with the License. You may obtain a copy of the License at:\n+ *\n+ *   https://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT\n+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the\n+ * License for the specific language governing permissions and limitations\n+ * under the License.\n+ */\n+package com.linecorp.armeria.common.thrift;\n+\n+import static com.spotify.futures.CompletableFutures.exceptionallyCompletedFuture;\n+import static java.util.concurrent.CompletableFuture.completedFuture;\n+import static org.awaitility.Awaitility.await;\n+import static org.mockito.ArgumentMatchers.any;\n+import static org.mockito.ArgumentMatchers.argThat;\n+import static org.mockito.ArgumentMatchers.isA;\n+import static org.mockito.Mockito.doThrow;\n+import static org.mockito.Mockito.mock;\n+import static org.mockito.Mockito.never;\n+import static org.mockito.Mockito.times;\n+import static org.mockito.Mockito.verify;\n+\n+import java.util.concurrent.CompletionException;\n+import java.util.concurrent.ExecutorService;\n+import java.util.concurrent.Executors;\n+\n+import org.apache.thrift.async.AsyncMethodCallback;\n+import org.junit.Test;\n+\n+import com.linecorp.armeria.testing.internal.AnticipatedException;\n+\n+public class AsyncMethodCallbacksTest {\n+\n+    @Test\n+    public void transferSuccess() {\n+        @SuppressWarnings(\"unchecked\")\n+        final AsyncMethodCallback<String> callback = mock(AsyncMethodCallback.class);\n+        AsyncMethodCallbacks.transfer(completedFuture(\"foo\"), callback);\n+\n+        verify(callback, times(1)).onComplete(\"foo\");\n+        verify(callback, never()).onError(any());\n+    }\n+\n+    @Test\n+    public void transferFailure_Exception() {\n+        @SuppressWarnings(\"unchecked\")\n+        final AsyncMethodCallback<String> callback = mock(AsyncMethodCallback.class);\n+        AsyncMethodCallbacks.transfer(exceptionallyCompletedFuture(new AnticipatedException()), callback);\n+\n+        verify(callback, never()).onComplete(any());\n+        verify(callback, times(1)).onError(isA(AnticipatedException.class));\n+    }\n+\n+    @Test\n+    public void transferFailure_Throwable() {\n+        @SuppressWarnings(\"unchecked\")\n+        final AsyncMethodCallback<String> callback = mock(AsyncMethodCallback.class);\n+        AsyncMethodCallbacks.transfer(exceptionallyCompletedFuture(new Throwable(\"foo\")), callback);\n+\n+        verify(callback, never()).onComplete(any());\n+        verify(callback, times(1)).onError(argThat(argument -> {\n+            return argument instanceof CompletionException &&\n+                   \"foo\".equals(argument.getCause().getMessage());\n+        }));\n+    }\n+\n+    @Test\n+    public void transferCallbackError() {\n+        @SuppressWarnings(\"unchecked\")\n+        final AsyncMethodCallback<String> callback = mock(AsyncMethodCallback.class);\n+        doThrow(new AnticipatedException()).when(callback).onComplete(any());\n+        AsyncMethodCallbacks.transfer(completedFuture(\"foo\"), callback);"
+        },
+        "groundTruth": {
+            "400": "Is it better to add assertions here? `verify(callback, only()).onComplete(\"foo\");`"
+        },
+        "ds_dnContext": {
+            "400": "{\n  \"code_review_suggestion\": \"The custom argThat lambda in transferFailure_Throwable is a bit complex and could make the test brittle; using ArgumentCaptor instead would make the assertions clearer and easier to maintain.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "400": "{\n  \"code_review_suggestion\": \"In the transferFailure_Throwable test, avoid checking the exact error message ('foo') as it makes the test brittle. Instead, verify that onError is called with a CompletionException having the expected cause, without message comparison, to ensure robustness against message changes.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "400": "{\n  \"code_review_suggestion\": \"The test 'transferCallbackError' verifies that callback errors are handled, but it doesn't actually test error propagation or verify that the error isn't swallowed. Consider adding verification that the error is properly logged or handled to ensure robustness.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "400": "{\"code_review_suggestion\": \"The tests look good overall, but consider adding a test case where the callback's onError method throws an exception to ensure the transfer method handles callback errors consistently in both success and failure paths.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "400": "{\n  \"code_review_suggestion\": \"Great job adding tests for these edge cases! In `transferCallbackError`, the test sets up a scenario where the callback throws an exception, but it doesn't assert what happens. To make the test's intent explicit, could you wrap the call in a `try-catch` block or use `assertThrows` to verify that the exception is propagated correctly?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "400": "{\n  \"code_review_suggestion\": \"Great work on adding tests for the new `AsyncMethodCallbacks` utility! The `transferCallbackError` test case looks like a good scenario to cover, but it seems to be missing assertions. Could you please add a `verify` or another form of assertion to ensure the code behaves as expected when the callback itself throws an error?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "400": "{\n  \"code_review_suggestion\": \"The tests are missing assertions to verify that exceptions thrown inside the callback (like in transferCallbackError) are properly handled or propagated; adding such checks will improve test robustness and clarity about error handling behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "400": "{\n  \"code_review_suggestion\": \"Great tests overall! To improve clarity and maintainability, consider adding comments explaining the purpose of each test case and ensure that exceptions thrown by callbacks (like in transferCallbackError) are properly handled or logged to avoid silent failures.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "400": "{\n  \"code_review_suggestion\": \"In transferCallbackError you don't assert anything, so the test will pass even if AsyncMethodCallbacks.transfer changes or swallows the exception incorrectly. Add verifications (e.g., verify(callback).onComplete(\\\"foo\\\"); verify(callback, never()).onError(any());) and explicitly assert no exception leaks to avoid a false‑positive test.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "400": "{\n  \"code_review_suggestion\": \"The transferCallbackError test sets up a throwing onComplete but never asserts anything, so it will pass even if behavior regresses. Add verifications (e.g., verify(callback).onComplete(\\\"foo\\\"); verify(callback, never()).onError(any())) to ensure the exception is swallowed as intended, and remove unused imports (await, ExecutorService) for clarity.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

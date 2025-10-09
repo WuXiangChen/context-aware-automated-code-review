@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "291": "home-assistant/core:5334"
+        },
+        "selected_nodeLs": {
+            "291": "['PR-5334', 'PR-1771']"
+        },
+        "codediff": {
+            "291": "@@ -20,28 +20,31 @@\n \n _LOGGER = logging.getLogger(__name__)\n \n+ADDITIONAL_ARGS = 'arguments'"
+        },
+        "groundTruth": {
+            "291": "This should be renamed to `CONF_ARGUMENTS`."
+        },
+        "ds_dnContext": {
+            "291": "{\n  \"code_review_suggestion\": \"The new constant `ADDITIONAL_ARGS` should include a brief comment explaining its purpose, as the name alone doesn't clarify its role in the codebase.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "291": "{\n  \"code_review_suggestion\": \"Consider renaming ADDITIONAL_ARGS to a more descriptive name like CONFIG_ARGUMENTS_KEY to clearly indicate it's for handling configuration arguments, improving code clarity and maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "291": "{\n  \"code_review_suggestion\": \"The constant name 'ADDITIONAL_ARGS' should follow Python's naming convention for constants, which is UPPER_SNAKE_CASE. Consider renaming it to 'ADDITIONAL_ARGS' to maintain consistency with Python best practices and improve code readability.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "291": "{\"code_review_suggestion\": \"The constant name 'ADDITIONAL_ARGS' should be more descriptive to match its purpose - consider renaming it to 'CONF_ARGUMENTS' to align with Home Assistant's configuration constant naming convention and make its purpose clearer.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "291": "{\n  \"code_review_suggestion\": \"The new constant name `ADDITIONAL_ARGS` is a bit generic. For better long-term clarity, could we make it more descriptive of its specific use, for example `SERVICE_CALL_ARGUMENTS`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "291": "{\n  \"code_review_suggestion\": \"Thanks for adding this feature! To align with Home Assistant's coding standards, could we please rename `ADDITIONAL_ARGS` to `CONF_ARGUMENTS`? We generally use the `CONF_` prefix for configuration keys.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "291": "{\n  \"code_review_suggestion\": \"The new constant name 'ADDITIONAL_ARGS' is quite generic; consider renaming it to something more descriptive to clarify its purpose and improve code readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "291": "{\n  \"code_review_suggestion\": \"Consider renaming the constant 'ADDITIONAL_ARGS' to 'ARGUMENTS' to directly match the configuration key used ('arguments'), ensuring clarity and consistency in the codebase.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "291": "{\n  \"code_review_suggestion\": \"You added ADDITIONAL_ARGS but it isn’t referenced anywhere, which is dead code and will likely trip linters. Either remove it now or add a brief comment and actual usage so its purpose is clear.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "291": "{\n  \"code_review_suggestion\": \"Consider renaming ADDITIONAL_ARGS to the conventional Home Assistant style CONF_ARGUMENTS for consistency with other config keys (e.g. CONF_NAME, CONF_HOST). This keeps the schema clear and avoids future confusion or duplicate constants.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

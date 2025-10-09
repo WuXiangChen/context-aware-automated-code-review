@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "77": "Submitty/Submitty:3181"
+        },
+        "selected_nodeLs": {
+            "77": "['PR-3181']"
+        },
+        "codediff": {
+            "77": "@@ -786,13 +786,17 @@ private function ajaxUploadSplitItem() {\n         if (!@file_put_contents(FileUtils::joinPaths($version_path, \".submit.timestamp\"), $current_time_string_tz.\"\\n\")) {\n             return $this->uploadResult(\"Failed to save timestamp file for this submission.\", false);\n         }\n-        $upload_time_string_tz = $timestamp . \" \" . $this->core->getConfig()->getTimezone()->getName() . \"\\n\";\n+\n+        $upload_time_string_tz = $timestamp . \" \" . $this->core->getConfig()->getTimezone()->getName();\n        \n-        $bulk_upload_data_json = array(\"submit_timestamp\" =>  $current_time_string_tz,\n-                                       \"upload_timestamp\" =>  $upload_time_string_tz,\n-                                       \"filepath\" => $uploaded_file);\n+        $bulk_upload_data = array(\"submit_timestamp\" =>  $current_time_string_tz,\n+                                  \"upload_timestamp\" =>  $upload_time_string_tz,\n+                                  \"filepath\" => $uploaded_file);\n+        \n+        $bulk_upload_data_json = json_encode($bulk_upload_data, JSON_PRETTY_PRINT);\n         \n-        if (!@file_put_contents(FileUtils::joinPaths($version_path, \"bulk_upload_data.json\"), serialize($bulk_upload_data_json).\"\\n\")) {\n+        if (!@file_put_contents(FileUtils::joinPaths($version_path, \"bulk_upload_data.json\"), $bulk_upload_data_json.\"\\n\")) { \n+\n             return $this->uploadResult(\"Failed to create bulk upload file for this submission.\", false);\n         }"
+        },
+        "groundTruth": {
+            "77": "Use `FileUtils::writeJsonFile` for writing PHP arrays to JSON files. There's not a ton of point to adding the `\\n` to the end of the file. ``` $bulk_upload_data = [ \"submit_timestamp\" => $current_time_string_tz, \"upload_timestamp\" => $upload_time_string_tz, \"filepath\" => $uploaded_file ]; if (FileUtils::writeJsonFile(FileUtils::joinPaths($version_path, \"bulk_upload_data.json\"), $bulk_upload_data)) { return $this->uploadResult(\"Failed to create bulk upload file for this submission.\", false); } ```"
+        },
+        "ds_dnContext": {
+            "77": "{\n  \"code_review_suggestion\": \"Changing the data format from PHP serialization to JSON is a good move for interoperability, but ensure any existing code that reads 'bulk_upload_data.json' is updated to parse JSON instead of unserialize().\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n  \"code_review_suggestion\": \"The code now properly encodes data as JSON, but consider adding error handling for `json_encode()` in case it returns `false` (e.g., on UTF-8 encoding issues) to ensure the file always contains valid JSON.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n  \"code_review_suggestion\": \"Good change from serialize() to json_encode() for better interoperability, but you should add JSON_UNESCAPED_SLASHES flag to prevent unnecessary escaping of file paths in the JSON output.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n    \"code_review_suggestion\": \"Good job converting the bulk upload data to proper JSON format! However, I noticed you're still appending a newline character to the JSON string before writing to file. Since JSON_PRETTY_PRINT already formats the output nicely, the extra newline is unnecessary and might cause parsing issues if this file is read by other systems.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n  \"code_review_suggestion\": \"Great fix! Using `json_encode` instead of `serialize` is a significant improvement. This correctly aligns the file content with its `.json` extension, making the data more portable and readable by other systems.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n  \"code_review_suggestion\": \"This looks great, it correctly generates a proper JSON file now. As a minor improvement, consider removing the error suppression operator (`@`) from `file_put_contents`. Explicitly checking the return value for `false` would make potential file system errors easier to debug in the future.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n  \"code_review_suggestion\": \"Great move switching to JSON encoding! However, removing error handling the '@' error suppression on file_put_contents could help catch real file write errors more transparently and improve maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n  \"code_review_suggestion\": \"Great improvement switching from serialized JSON string to proper JSON encoding; just ensure error handling remains robust around file writes and consider removing the unused trailing newline from timestamps for consistency.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n  \"code_review_suggestion\": \"You changed the file format from serialized PHP to JSON, so any existing code expecting to unserialize this file will now break—update the reader (or add a version/migration), and consider checking json_encode() didn’t return false before writing.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "77": "{\n  \"code_review_suggestion\": \"Nice move switching to pretty-printed JSON, but consider checking json_encode’s return value—if encoding fails it returns false and you’ll silently write an invalid file. Add an error check (or use JSON_THROW_ON_ERROR) before file_put_contents to fail fast with a clear message.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

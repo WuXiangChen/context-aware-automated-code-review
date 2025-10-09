@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "87": "ClickHouse/ClickHouse:28981"
+        },
+        "selected_nodeLs": {
+            "87": "['PR-16240']"
+        },
+        "codediff": {
+            "87": "@@ -32,4 +34,177 @@ void CoordinationSettings::loadFromConfig(const String & config_elem, const Poco\n     }\n }\n \n+KeeperSettings::KeeperSettings()\n+    : server_id(NOT_EXIST)\n+    , tcp_port(NOT_EXIST)\n+    , tcp_port_secure(NOT_EXIST)\n+    , standalone_keeper(false)\n+    , coordination_settings(std::make_shared<CoordinationSettings>())\n+{\n+}\n+\n+\n+void KeeperSettings::dump(WriteBufferFromOwnString & buf) const\n+{\n+    auto write = [&buf](const String & content) { buf.write(content.data(), content.size()); };\n+\n+    auto write_int = [&buf](Int64 value)\n+    {\n+        String str_val = std::to_string(value);\n+        buf.write(str_val.data(), str_val.size());\n+        buf.write('\\n');\n+    };\n+\n+    auto write_bool = [&buf](bool value)\n+    {\n+        String str_val = value ? \"true\" : \"false\";\n+        buf.write(str_val.data(), str_val.size());\n+        buf.write('\\n');\n+    };\n+\n+    write(\"server_id=\");\n+    write_int(server_id);\n+\n+    if (tcp_port != NOT_EXIST)\n+    {\n+        write(\"tcp_port=\");\n+        write_int(tcp_port);\n+    }\n+    if (tcp_port_secure != NOT_EXIST)\n+    {\n+        write(\"tcp_port_secure=\");\n+        write_int(tcp_port_secure);\n+    }\n+    if (!super_digest.empty())\n+    {\n+        write(\"superdigest=\");\n+        write(super_digest);\n+        buf.write('\\n');\n+    }\n+\n+    write(\"log_storage_path=\");\n+    write(log_storage_path);\n+    buf.write('\\n');\n+\n+    write(\"snapshot_storage_path=\");\n+    write(snapshot_storage_path);\n+    buf.write('\\n');\n+\n+    /// coordination_settings\n+\n+    write(\"max_requests_batch_size=\");\n+    write_int(coordination_settings->max_requests_batch_size);\n+    write(\"session_timeout_ms=\");\n+    write_int(UInt64(coordination_settings->session_timeout_ms));\n+    write(\"operation_timeout_ms=\");\n+    write_int(UInt64(coordination_settings->operation_timeout_ms));\n+    write(\"dead_session_check_period_ms=\");\n+    write_int(UInt64(coordination_settings->dead_session_check_period_ms));\n+\n+    write(\"heart_beat_interval_ms=\");\n+    write_int(UInt64(coordination_settings->heart_beat_interval_ms));\n+    write(\"election_timeout_lower_bound_ms=\");\n+    write_int(UInt64(coordination_settings->election_timeout_lower_bound_ms));\n+    write(\"election_timeout_upper_bound_ms=\");\n+    write_int(UInt64(coordination_settings->election_timeout_upper_bound_ms));\n+\n+    write(\"reserved_log_items=\");\n+    write_int(coordination_settings->reserved_log_items);\n+    write(\"snapshot_distance=\");\n+    write_int(coordination_settings->snapshot_distance);\n+\n+    write(\"auto_forwarding=\");\n+    write_bool(coordination_settings->auto_forwarding);\n+    write(\"shutdown_timeout=\");\n+    write_int(UInt64(coordination_settings->shutdown_timeout));\n+    write(\"startup_timeout=\");\n+    write_int(UInt64(coordination_settings->startup_timeout));\n+\n+    write(\"raft_logs_level=\");\n+    write(coordination_settings->raft_logs_level.toString());\n+    buf.write('\\n');\n+\n+    write(\"snapshots_to_keep=\");\n+    write_int(coordination_settings->snapshots_to_keep);\n+    write(\"rotate_log_storage_interval=\");\n+    write_int(coordination_settings->rotate_log_storage_interval);\n+    write(\"stale_log_gap=\");\n+    write_int(coordination_settings->stale_log_gap);\n+    write(\"fresh_log_gap=\");\n+    write_int(coordination_settings->fresh_log_gap);\n+\n+    write(\"max_requests_batch_size=\");\n+    write_int(coordination_settings->max_requests_batch_size);\n+    write(\"quorum_reads=\");\n+    write_bool(coordination_settings->quorum_reads);\n+    write(\"force_sync=\");\n+    write_bool(coordination_settings->force_sync);\n+\n+    write(\"compress_logs=\");\n+    write_bool(coordination_settings->compress_logs);\n+    write(\"compress_snapshots_with_zstd_format=\");\n+    write_bool(coordination_settings->compress_snapshots_with_zstd_format);\n+    write(\"configuration_change_tries_count=\");\n+    write_int(coordination_settings->configuration_change_tries_count);\n+}\n+\n+std::shared_ptr<KeeperSettings>\n+KeeperSettings::loadFromConfig(const Poco::Util::AbstractConfiguration & config, bool standalone_keeper_)\n+{\n+    std::shared_ptr<KeeperSettings> ret = std::make_shared<KeeperSettings>();\n+\n+    ret->server_id = config.getInt(\"keeper_server.server_id\");\n+    ret->standalone_keeper = standalone_keeper_;\n+\n+    if (config.has(\"keeper_server.tcp_port\"))\n+    {\n+        ret->tcp_port = config.getInt(\"keeper_server.tcp_port\");\n+    }\n+    if (config.has(\"keeper_server.tcp_port_secure\"))\n+    {\n+        ret->tcp_port_secure = config.getInt(\"keeper_server.tcp_port_secure\");\n+    }\n+    if (config.has(\"keeper_server.superdigest\"))\n+    {\n+        ret->super_digest = config.getString(\"keeper_server.tcp_port_secure\");"
+        },
+        "groundTruth": {
+            "87": "typo. And are we sure that we are going to expose `super_digest`?)"
+        },
+        "ds_dnContext": {
+            "87": "{\n  \"code_review_suggestion\": \"There's a bug in the superdigest config loading: it incorrectly reads from 'keeper_server.tcp_port_secure' instead of 'keeper_server.superdigest'. This will cause the wrong value to be loaded. Change the key to 'keeper_server.superdigest' to fix this.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "87": "{\n  \"code_review_suggestion\": \"In KeeperSettings::loadFromConfig, the superdigest is incorrectly read from 'keeper_server.tcp_port_secure' instead of 'keeper_server.superdigest'. This will cause the superdigest to use the secure port value, which is unintended. Please fix the config key to ensure proper superdigest loading.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "87": "{\n    \"code_review_suggestion\": \"There's a bug in the config loading where 'superdigest' is being read from 'keeper_server.superdigest' but assigned from 'keeper_server.tcp_port_secure'. This will cause incorrect superdigest values. Fix by using config.getString(\\\"keeper_server.superdigest\\\") instead.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "87": "{\n    \"code_review_suggestion\": \"There's a copy-paste error in the superdigest configuration loading - it's reading from 'keeper_server.tcp_port_secure' instead of 'keeper_server.superdigest'. This will cause the wrong value to be loaded for the superdigest setting.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "87": "{\n  \"code_review_suggestion\": \"Great addition! I spotted a small copy-paste issue in `loadFromConfig`. When loading the `superdigest`, it's currently reading from the `keeper_server.tcp_port_secure` key instead. Let's update that to read from `keeper_server.superdigest` to ensure the correct configuration is loaded.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "87": "{\n  \"code_review_suggestion\": \"Looks like there might be a small copy-paste issue. When loading the `super_digest`, you're reading from `keeper_server.tcp_port_secure` instead of `keeper_server.superdigest`. A quick fix should get that working as expected!\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "87": "{\n  \"code_review_suggestion\": \"There's a clear copy-paste error where 'super_digest' is assigned the value of 'keeper_server.tcp_port_secure' instead of 'keeper_server.superdigest'. Fix this to correctly load 'super_digest' from the intended config key for clarity and correctness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "87": "{\n  \"code_review_suggestion\": \"In KeeperSettings::loadFromConfig, the super_digest is incorrectly loaded from 'keeper_server.tcp_port_secure' instead of 'keeper_server.superdigest'; correcting this key will fix a likely bug.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "87": "{\"code_review_suggestion\":\"Bug: super_digest is loaded with the wrong config key (uses keeper_server.tcp_port_secure instead of keeper_server.superdigest), so the intended credential/digest is never read and could break auth/security. Change getString(\\\"keeper_server.tcp_port_secure\\\") to getString(\\\"keeper_server.superdigest\\\").\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "87": "{\n  \"code_review_suggestion\": \"Bug: in loadFromConfig you read keeper_server.superdigest but assign ret->super_digest from key keeper_server.tcp_port_secure (copy/paste typo), so super digest is never loaded and silently wrong. Replace that getString call with getString(\\\"keeper_server.superdigest\\\") (and maybe add a test); also consider logging if the value is empty.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

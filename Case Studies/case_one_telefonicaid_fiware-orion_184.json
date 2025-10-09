@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "89": "telefonicaid/fiware-orion:184"
+        },
+        "selected_nodeLs": {
+            "89": "['PR-184', 'Issue-182']"
+        },
+        "codediff": {
+            "89": "@@ -599,7 +631,15 @@ static bool processContextAttributeVector (ContextElement* ceP, std::string acti\n \n     }\n \n-    return true;\n+    if (!entityModified) {\n+        /* In this case, the wasn't a fail, but ceP was not set. We need to do it ourselves, as the fucntion caller will\n+         * do a continue without doing it. FIXME P5: this is ugly, it should be improve to the the ceP for the \"happy case\"\n+         * in just one place in the code */"
+        },
+        "groundTruth": {
+            "89": "Look over this text a little ... 1. the wasn't a fail: there wasn't any failure? 2. it should be improve to the the ceP: sorry, I don't get this ... 3. FIXME should start on a new line."
+        },
+        "ds_dnContext": {
+            "89": "{\n  \"code_review_suggestion\": \"Hey, the conditional handling of ceP when entityModified is false is a hack that hurts maintainability. It'd be cleaner to refactor the function to set ceP consistently in one place, avoiding this patchwork fix.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "89": "{\n  \"code_review_suggestion\": \"The change ensures modDate and creDate are properly handled by conditionally setting ceP when entity isn't modified, which aligns with the PR's goal. However, the FIXME comment highlights a maintainability concern—consider refactoring the 'happy case' ceP assignment into a single place to avoid future confusion.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "89": "{\n  \"code_review_suggestion\": \"The current approach of conditionally setting ceP outside the main logic flow is indeed fragile. Instead, refactor to ensure ceP is always properly set in one consistent place within the main processing logic, eliminating the need for this post-processing fix.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "89": "{\"code_review_suggestion\": \"The comment mentions this is an 'ugly' fix that should be improved. Since this change is related to proper date handling for entity creation, consider refactoring to handle the 'happy case' in one place as suggested, making the date modification logic more maintainable.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "89": "{\n  \"code_review_suggestion\": \"I see you've added a `FIXME` comment here, and I agree. Instead of patching this specific case at the end, perhaps we could refactor the function to handle setting `ceP` in a single, unified way for all successful paths? This would simplify the control flow and make the logic easier to follow.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "89": "{\n  \"code_review_suggestion\": \"That `FIXME` comment is very insightful. Instead of adding this patch for the 'happy case', could we refactor the calling function to handle setting `ceP` more consistently? It would make the control flow much cleaner and easier to follow.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "89": "{\n  \"code_review_suggestion\": \"The added comment highlights a design smell around setting 'ceP' only in certain cases, which complicates flow and maintainability; consider refactoring the logic so 'ceP' is consistently assigned in one clear place to improve clarity and reduce fragile code paths.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "89": "{\n  \"code_review_suggestion\": \"The added comment highlights a needed fix but leaves the code messy; consider refactoring so the ContextElement pointer is set consistently in one place to improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "89": "{\"code_review_suggestion\":\"You removed the unconditional 'return true;' and only left an if (!entityModified) with a comment—now the function can fall off without returning a bool, causing undefined behavior. Restore an explicit return on all paths (e.g., keep the logic to set ceP if needed, then 'return true;'), and implement or remove the FIXME instead of a placeholder comment.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "89": "{\"code_review_suggestion\":\"You removed the unconditional 'return true;' and started an if (!entityModified) block but never return a bool now—this will either fail compilation or change control flow. Restore a clear return path (e.g., set ceP once, then a single 'return true;' at the end) and avoid this late patch block; refactor so ceP assignment happens in one place instead of adding this FIXME hotspot.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "366": "aws/copilot-cli:1701"
+        },
+        "selected_nodeLs": {
+            "366": "['PR-1320']"
+        },
+        "codediff": {
+            "366": "@@ -271,15 +271,15 @@ func (o *initStorageOpts) askStorageName() error {\n \treturn nil\n }\n \n-func (o *initStorageOpts) askStorageSvc() error {\n-\tif o.storageSvc != \"\" {\n+func (o *initStorageOpts) askStorageWl() error {\n+\tif o.storageWl != \"\" {\n \t\treturn nil\n \t}\n-\tsvc, err := o.sel.Service(storageInitSvcPrompt, storageInitSvcHelp)\n+\tsvc, err := o.sel.Workload(storageInitSvcPrompt, storageInitSvcHelp)"
+        },
+        "groundTruth": {
+            "366": "nit: ```suggestion workload, err := o.sel.Workload(storageInitSvcPrompt, storageInitSvcHelp) ```"
+        },
+        "ds_dnContext": {
+            "366": "{\n  \"code_review_suggestion\": \"The variable and method names were updated from 'svc' to 'wl' (likely for 'workload'), but the prompt constants still reference 'Svc' (e.g., `storageInitSvcPrompt`). Consider renaming these constants to match the workload context for consistency and clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "366": "{\n    \"code_review_suggestion\": \"The terminology change from 'svc' to 'wl' for scheduled tasks is good, but ensure all related variables and methods across the codebase consistently use 'workload' terminology to avoid confusion.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "366": "{\n  \"code_review_suggestion\": \"The variable name 'svc' is now misleading since you're selecting a workload, not a service. Consider renaming it to 'wl' or 'workload' for better clarity and to match the method name change.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "366": "{\n    \"code_review_suggestion\": \"The method name `askStorageWl` and variable `storageWl` should be more descriptive - consider renaming to `askStorageWorkload` and `storageWorkload` to clearly indicate this handles workload selection rather than service selection, which aligns better with the `sel.Workload` method call.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "366": "{\n  \"code_review_suggestion\": \"Great job refactoring from Service to Workload! To complete the change, it looks like the prompt and help text variables (`storageInitSvcPrompt` and `storageInitSvcHelp`) should also be renamed to reflect they now refer to a Workload.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "366": "{\n  \"code_review_suggestion\": \"Great job generalizing from 'Service' to 'Workload' here! To complete the refactor, could you also rename the `storageInitSvcPrompt` and `storageInitSvcHelp` variables to reflect that the user is now selecting a workload, not just a service?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "366": "{\n  \"code_review_suggestion\": \"The renaming of variables and method from 'storageSvc' to 'storageWl' is inconsistent within the function, which may cause confusion; ensure that all related identifiers and comments consistently reflect this change for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "366": "{\n  \"code_review_suggestion\": \"The function renaming from askStorageSvc to askStorageWl and related variable changes are good for clarity, but consider updating all related comments and error messages to reflect 'workload' instead of 'service' to keep the terminology consistent and avoid confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "366": "{ \"code_review_suggestion\": \"Looks like a partial rename: askStorageSvc -> askStorageWl and storageSvc -> storageWl, plus Service() -> Workload(). If the struct field/call sites weren’t all updated, this will fail to compile or confuse future readers. Do a project‑wide rename (including the struct field) or add a temporary wrapper to keep backward compatibility.\" }"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "366": "{\n  \"code_review_suggestion\": \"After renaming askStorageSvc -> askStorageWl, verify you also persist the selected value (e.g., o.storageWl = wl) and update the local var name from svc to wl for clarity. Right now it still uses svc from o.sel.Workload(...), which is confusing and easy to miss if the assignment happens later.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "33": "influxdata/influxdb:2569"
+        },
+        "selected_nodeLs": {
+            "33": "['PR-2569', 'Issue-1477']"
+        },
+        "codediff": {
+            "33": "@@ -876,6 +906,48 @@ func (s *SelectStatement) Validate(tr targetRequirement) error {\n \t\t}\n \t}\n \n+\tif err := s.validateDerivative(); err != nil {\n+\t\treturn err\n+\t}\n+\n+\treturn nil\n+}\n+\n+func (s *SelectStatement) validateDerivative() error {\n+\tif !s.HasDerivative() {\n+\t\treturn nil\n+\t}\n+\n+\t// If a derivative is requested, it must be the only field in the query. We don't support\n+\t// multiple fields in combination w/ derivaties yet.\n+\tif len(s.Fields) != 1 {\n+\t\treturn fmt.Errorf(\"derivative cannot be used with other fields\")\n+\t}\n+\n+\taggr := s.FunctionCalls()\n+\tif len(aggr) != 1 {\n+\t\treturn fmt.Errorf(\"derivative cannot be used with other fields\")\n+\t}\n+\n+\t// Derivative requires two arguments\n+\tderivativeCall := aggr[0]\n+\tif len(derivativeCall.Args) != 2 {\n+\t\treturn fmt.Errorf(\"derivative requires a field and duration argument\")"
+        },
+        "groundTruth": {
+            "33": "ideally, duration would be an optional parameter. Where the default if it's a nested aggregate is the same as the group by time. And the default for the raw would be `1s`."
+        },
+        "ds_dnContext": {
+            "33": "{\n  \"code_review_suggestion\": \"The error message for multiple function calls should be more specific. Instead of 'derivative cannot be used with other fields', consider 'derivative cannot be used with other function calls' to clarify the constraint.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n  \"code_review_suggestion\": \"The derivative function allows an optional duration argument, but the validation requires exactly two arguments. This will block queries that omit the duration. Please adjust the validation to allow one or two arguments to match the intended behavior described in the PR.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n  \"code_review_suggestion\": \"The error message 'derivative cannot be used with other fields' is duplicated in two different validation checks. Consider using distinct error messages for each case to make debugging easier - perhaps 'derivative must be the only field selected' for the first check and 'derivative cannot be combined with other aggregate functions' for the second.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n    \"code_review_suggestion\": \"The error message 'derivative requires a field and duration argument' is misleading because the duration argument is actually optional according to the PR description. Consider updating it to 'derivative requires a field and optional duration argument' to match the documented behavior.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n  \"code_review_suggestion\": \"Nice validation! It looks like the check on `len(aggr)` might be redundant. Since you've already confirmed `len(s.Fields) == 1` and that a derivative exists, `s.FunctionCalls()` should only contain that single derivative call. Removing the second check would make this logic a bit cleaner.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n  \"code_review_suggestion\": \"The validation for the `derivative` function seems a bit strict. The PR description mentions the duration argument is optional, but the code requires exactly two arguments. Should we adjust this to allow for one or two arguments, to support cases where the duration is inferred from the `GROUP BY` clause?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n  \"code_review_suggestion\": \"The error messages in validateDerivative() are identical for different validation failures, which could confuse users; make them more specific to clearly indicate which condition failed for better clarity and debugging.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n  \"code_review_suggestion\": \"The error message for the aggregate length check repeats the earlier one and could be more specific; consider refining it to clarify that multiple aggregate functions are not allowed with derivatives for better UX and debugging.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n  \"code_review_suggestion\": \"validateDerivative only checks the arg count, not that the second arg is actually a duration; add a type/format check (e.g., ensure it's a duration literal) so you fail early with a clear error instead of deferring a harder-to-debug runtime issue.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "33": "{\n  \"code_review_suggestion\": \"validateDerivative() now rejects derivative calls without an explicit duration, but the PR description says the duration is optional (defaults from GROUP BY time or 1s). Allow 1 or 2 args instead of forcing exactly 2, and tweak the error message accordingly (also fix the typo 'derivaties' in the comment).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

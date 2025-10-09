@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "265": "slimphp/Slim:1450"
+        },
+        "selected_nodeLs": {
+            "265": "['PR-1450', 'Issue-1449']"
+        },
+        "codediff": {
+            "265": "@@ -195,7 +195,7 @@ public static function createFromEnvironment(Environment $env)\n         $virtualPath = $requestUri;\n         if (strpos($requestUri, $requestScriptName) === 0) {"
+        },
+        "groundTruth": {
+            "265": "Should this one be `stripos` too?"
+        },
+        "ds_dnContext": {
+            "265": "{\n  \"code_review_suggestion\": \"The condition `strpos($requestUri, $requestScriptName) === 0` might fail if `$requestScriptName` is an empty string (e.g., `strpos('foo', '')` returns `0`). Consider adding an explicit check for non-empty `$requestScriptName` to avoid unintended matches.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"Changing strpos to stripos for case-insensitive comparison correctly addresses the base path matching issue and aligns with the fix for case-insensitive routes. Ensure this change handles all URL case variations as intended.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"The strpos function returns false when the substring isn't found, but it can also return 0 when found at position 0. Using strict type comparison (=== 0) instead of loose comparison would make this more explicit and prevent potential false positives.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"Good catch! Using `stripos` instead of `strpos` makes the base path comparison case-insensitive, which solves the routing issues when URLs have different casing. This aligns perfectly with the PR's goal to handle case-insensitive base paths.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"To improve readability, you could use the `str_starts_with()` function here, if the project's minimum PHP version is 8.0 or higher. It makes the intent of the check clearer at a glance.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"Excellent! Using `stripos` for a case-insensitive comparison is the perfect fix for the base path detection issue on servers like IIS. This is a clean and direct solution to the problem. Merging this.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"Comparing $requestUri and $requestScriptName directly may cause issues if either contains URL-encoded characters or differing cases; consider normalizing or decoding these values before the strpos check to ensure accurate matching.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"Great catch changing `strpos` to `stripos` for case-insensitive matching; however, ensure this won't affect other logic depending on case-sensitive checks elsewhere to avoid subtle bugs.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"Guard against an empty $requestScriptName before using strpos(... ) === 0; an empty needle returns 0 for any $requestUri, causing unintended path handling. Add a non-empty check (e.g., if ($requestScriptName !== '' && strpos($requestUri, $requestScriptName) === 0)) to avoid incorrect virtual path logic.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "265": "{\n  \"code_review_suggestion\": \"The line still uses strpos, so the base path check remains case-sensitive—switch it to stripos (keeping the === 0) and add a test with mixed-case script/base paths to prevent regression.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

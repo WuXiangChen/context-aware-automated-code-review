@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "29": "home-assistant/core:3639"
+        },
+        "selected_nodeLs": {
+            "29": "['PR-3521', 'PR-3527']"
+        },
+        "codediff": {
+            "29": "@@ -19,6 +19,48 @@\n from homeassistant.util.async import run_callback_threadsafe\n \n \n+import asyncio.tasks\n+\n+\n+def monkey_patch_asyncio():\n+    \"\"\"Replace weakref.WeakSet to address Python 3 bug.\n+\n+    Under heavy threading operations that schedule calls into\n+    the asyncio event loop, Task objects are created. Due to\n+    a bug in Python, GC may have an issue when switching between\n+    the threads and objects with __del__ (which various components\n+    in HASS have).\n+\n+    This monkey-patch removes the weakref.Weakset, and replaces it\n+    with an object that ignores the only call utilizing it (the\n+    Task.__init__ which calls _all_tasks.add(self)). It also removes\n+    the __del__ which could trigger the future objects __del__ at\n+    unpredictable times.\n+\n+    The side-effect of this manipulation of the Task is that\n+    Task.all_tasks() is no longer accurate, and there will be no\n+    warning emitted if a Task is GC'd while in use.\n+\n+    On Python 3.6, after the bug is fixed, this monkey-patch can be"
+        },
+        "groundTruth": {
+            "29": "Does this have any bad side effects if it's still applied to 3.6? As long as 3.4 is supported, this would be needed, and I suspect that would be awhile because 3.4 is the latest on raspbian. If that's the case, can it dynamically be only applied to python 3.4 and 3.5?"
+        },
+        "ds_dnContext": {
+            "29": "{\n  \"code_review_suggestion\": \"Monkey patching asyncio is risky and may break in future Python versions. Instead of modifying core library behavior, consider implementing a version check to only apply this patch for Python versions <3.6 where the bug exists, and add clear warnings about the side effects.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "29": "{\n  \"code_review_suggestion\": \"The monkey patch replaces asyncio's WeakSet unconditionally, which might cause issues on Python 3.6+ where the original bug is fixed. Consider adding a version check to only apply this patch for Python versions < 3.6 to avoid unnecessary side effects.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "29": "{\n    \"code_review_suggestion\": \"This monkey patch introduces significant risk by breaking asyncio's task tracking functionality. Instead of modifying core Python behavior, consider addressing the root cause by ensuring proper cleanup of Task objects or using a more targeted approach that doesn't disable critical debugging features.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "29": "{\n    \"code_review_suggestion\": \"The monkey patch removes asyncio.Task._all_tasks which breaks Task.all_tasks() functionality. Since this PR is about template optimization, consider if this aggressive asyncio modification is necessary or if there's a more targeted fix that doesn't break core asyncio functionality.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "29": "{\n  \"code_review_suggestion\": \"This is a clever workaround for a tricky bug! To make it safer long-term, could we wrap this monkey patch in a condition to only apply it on specific Python versions known to be affected? This will prevent it from causing unexpected issues when Python is upgraded.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "29": "{\n  \"code_review_suggestion\": \"This is a significant workaround. To make it safer and easier to remove later, could we wrap the patch logic in a Python version check so it only applies where needed? Adding a link to the upstream Python bug report in the docstring would also be very helpful for future context.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "29": "{\n  \"code_review_suggestion\": \"Monkey-patching asyncio.Task like this can introduce hard-to-debug side effects and obscure future maintenance; consider documenting this hack prominently and exploring whether upgrading the Python version or patching only affected environments could be safer and clearer.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "29": "{\n  \"code_review_suggestion\": \"Monkey-patching asyncio.Task by removing key functionalities like weakref tracking and __del__ can cause subtle bugs and hide task leaks; consider adding clear warnings and documenting the risk thoroughly to avoid confusion and maintenance issues.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "29": "{\"code_review_suggestion\": \"This monkey patch silently alters core asyncio Task behavior for all Python versions, disabling task tracking and potentially hiding leaks. Add a strict version/bug check (and a one-time warning) before applying it, finish the truncated docstring, and only patch when the specific CPython issue is actually present.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "29": "{\n  \"code_review_suggestion\": \"The monkey_patch_asyncio() silently disables asyncio Task tracking, which can hide leaked or prematurely GC’d tasks, and its docstring is truncated. Consider guarding the patch with an explicit Python-version / bug check (and an env flag), finish the docstring with a CPython issue reference, and log when applied so future upgrades (e.g. 3.6+) don’t unknowingly keep an unnecessary, risky monkey patch.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

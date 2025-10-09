@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "367": "elastic/cloud-on-k8s:1764"
+        },
+        "selected_nodeLs": {
+            "367": "['PR-1764', 'PR-1689']"
+        },
+        "codediff": {
+            "367": "@@ -0,0 +1,145 @@\n+package detector\n+\n+import (\n+\t\"encoding/json\"\n+\t\"errors\"\n+\t\"fmt\"\n+\t\"io\"\n+\t\"path/filepath\"\n+\t\"regexp\"\n+\t\"sort\"\n+\t\"strings\"\n+\t\"time\"\n+\n+\t\"github.com/karrick/godirwalk\"\n+)\n+\n+var errLicenceNotFound = errors.New(\"failed to detect licence\")\n+\n+type Dependencies struct {\n+\tDirect   []LicenceInfo\n+\tIndirect []LicenceInfo\n+}\n+\n+type LicenceInfo struct {\n+\tModule\n+\tLicenceFile string\n+\tError       error\n+}\n+\n+type Module struct {\n+\tPath     string     // module path\n+\tVersion  string     // module version\n+\tMain     bool       // is this the main module?\n+\tTime     *time.Time // time version was created\n+\tIndirect bool       // is this module only an indirect dependency of main module?\n+\tDir      string     // directory holding files for this module, if any\n+\tReplace  *Module    // replace directive\n+}\n+\n+func Detect(data io.Reader, includeIndirect bool) (*Dependencies, error) {\n+\tdependencies, err := parseDependencies(data, includeIndirect)\n+\tif err != nil {\n+\t\treturn nil, err\n+\t}\n+\n+\terr = detectLicences(dependencies)\n+\treturn dependencies, err\n+}\n+\n+func parseDependencies(data io.Reader, includeIndirect bool) (*Dependencies, error) {\n+\tdeps := &Dependencies{}\n+\tdecoder := json.NewDecoder(data)\n+\tfor {\n+\t\tvar mod Module\n+\t\tif err := decoder.Decode(&mod); err != nil {\n+\t\t\tif err == io.EOF {\n+\t\t\t\treturn deps, nil\n+\t\t\t}\n+\t\t\treturn deps, fmt.Errorf(\"failed to parse dependencies: %w\", err)\n+\t\t}\n+\n+\t\tif !mod.Main && mod.Dir != \"\" {\n+\t\t\tif mod.Indirect {\n+\t\t\t\tif includeIndirect {\n+\t\t\t\t\tdeps.Indirect = append(deps.Indirect, LicenceInfo{Module: mod})\n+\t\t\t\t}\n+\t\t\t\tcontinue\n+\t\t\t}\n+\t\t\tdeps.Direct = append(deps.Direct, LicenceInfo{Module: mod})\n+\t\t}\n+\t}\n+\n+\tsort.Slice(deps.Direct, func(i, j int) bool {"
+        },
+        "groundTruth": {
+            "367": "I'm not sure when the previous loop breaks and reach this code."
+        },
+        "ds_dnContext": {
+            "367": "{\n  \"code_review_suggestion\": \"The parseDependencies function doesn't handle module replacements. When a module has a Replace field, you should use the replacement module's directory (mod.Replace.Dir) for license detection instead of the original module's directory to ensure correct license scanning.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"I noticed that the sort.Slice call is incomplete and will cause a compilation error since the comparator function is missing its body. Adding a simple comparator, such as comparing Module.Path, would fix this and ensure dependencies are sorted consistently for the notice file output.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"The sort.Slice call at the end of parseDependencies is unreachable because it's placed after an infinite for loop without a break. Move the sorting logic inside the loop or restructure to make it reachable.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"The sort.Slice call at the end of parseDependencies is unreachable code since it's placed after an infinite for loop. You should move the sorting logic before the return statement to ensure dependencies are properly sorted by module path.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"Great start on the license detector! I'm seeing a potential ambiguity in the `Detect` function. If `detectLicences` returns an error, the caller gets a partially processed list of dependencies, which can be tricky to handle. Consider having `detectLicences` populate the `Error` field on each `LicenceInfo` struct upon failure, allowing the `Detect` function to return a complete list and letting the caller handle individual errors more gracefully.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"This is a great start on parsing the dependencies. To ensure the generated notice file is stable and avoids unnecessary diffs in version control, I'd suggest also sorting the `Indirect` dependencies slice, just as you're doing for the `Direct` one.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"The primary issue is that the function parseDependencies attempts to decode multiple Module JSON objects sequentially, but JSON decoding this way only works if the input is a stream of concatenated JSON objects without separators, which is unusual; it would be clearer and more reliable to read the entire JSON array at once into a slice of Modules, improving maintainability and correctness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"The current implementation decodes modules in a loop but does not handle modules with replace directives consistently—consider normalizing replaced modules before appending to ensure accurate licence detection.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"In parseDependencies you return immediately on io.EOF inside the for loop, making the subsequent sort.Slice call unreachable (so Direct/Indirect are never sorted). Break on EOF instead, move the sort(s) after the loop, and optionally sort Indirect too before returning.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "367": "{\n  \"code_review_suggestion\": \"The sort.Slice call is currently unreachable because the function returns from inside the for loop on io.EOF. This means Direct (and maybe later Indirect) are never sorted. Refactor to break on EOF, perform any needed sorting after the loop, then return—e.g., replace the early return with a break and move the return statement after the sort.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

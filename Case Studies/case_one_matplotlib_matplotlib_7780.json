@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "308": "matplotlib/matplotlib:7780"
+        },
+        "selected_nodeLs": {
+            "308": "['PR-6070', 'Issue-6069']"
+        },
+        "codediff": {
+            "308": "@@ -368,8 +368,9 @@ def _make_image(self, A, in_bbox, out_bbox, clip_bbox, magnification=1.0,\n                     # values to carry the over/under/bad information\n                     rgba = np.empty((A.shape[0], A.shape[1], 4), dtype=A.dtype)\n                     rgba[..., 0] = A  # normalized data\n-                    rgba[..., 1] = A < 0  # under data\n-                    rgba[..., 2] = A > 1  # over data\n+                    with np.errstate(invalid='ignore'):\n+                        rgba[..., 1] = A < 0  # under data\n+                        rgba[..., 2] = A > 1  # over data"
+        },
+        "groundTruth": {
+            "308": "I think this is hiding the real problem. `A` is the output of a norm, which ensures it is a masked array. Otherwise, the line below would fail. Therefore the problem is that the norm is not running its floating point input through `np.ma.masked_invalid` or equivalent, so the bad values are not getting masked, resulting in the warnings and in the line below being incorrect, because it is not finding all of the bad data."
+        },
+        "ds_dnContext": {
+            "308": "{\n  \"code_review_suggestion\": \"Good catch suppressing the NaN comparison warning! To make this more explicit, consider adding a brief comment explaining why we're ignoring invalid comparisons here, since it might not be obvious that this handles NaN values silently.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "308": "{\n  \"code_review_suggestion\": \"The change effectively suppresses warnings for invalid value comparisons, which is good. However, consider also handling the alpha channel for bad values (e.g., setting it to transparent) to ensure consistent rendering of NaN regions, as discussed in the related issue #6069.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "308": "{\n  \"code_review_suggestion\": \"Good catch suppressing the invalid comparison warnings! This prevents distracting runtime warnings when A contains NaN values, making the code more robust and user-friendly.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "308": "{\n    \"code_review_suggestion\": \"Good fix for suppressing the invalid value warnings when checking for under/over data. However, since the context shows this is part of handling NaN values in imshow, we should also ensure the alpha channel (rgba[..., 3]) properly handles NaN/invalid values to maintain transparency where expected.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "308": "{\n  \"code_review_suggestion\": \"This is a great way to handle the `InvalidValueWarning` from NaN comparisons. To make it even clearer for future readers, how about adding a quick comment explaining why the `errstate` is needed here?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "308": "{\n  \"code_review_suggestion\": \"This correctly suppresses the warnings from `NaN` comparisons. For future clarity, consider adding a brief comment explaining that the `errstate` context is specifically for handling expected `NaN` values in the input array `A`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "308": "{\n  \"code_review_suggestion\": \"Good job adding np.errstate to suppress invalid warnings, but consider explicitly converting the boolean masks to the destination dtype to avoid potential type issues and improve clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "308": "{\n  \"code_review_suggestion\": \"Good use of np.errstate to suppress invalid warnings here; consider adding a brief comment explaining why suppressing these warnings is safe to improve maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "308": "{\n  \"code_review_suggestion\": \"np.errstate(invalid='ignore') will quietly hide NaN comparison issues; add a brief comment or explicitly handle NaNs (e.g., set a mask or fill them) so you don't accidentally suppress unexpected data problems.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "308": "{\"code_review_suggestion\": \"Using np.errstate(invalid='ignore') silences all invalid comparisons, which could mask unexpected data issues. Instead, gate the comparisons with a finite mask (e.g., finite = np.isfinite(A); rgba[...,1] = (finite & (A < 0)); rgba[...,2] = (finite & (A > 1))) to avoid the warnings without globally suppressing potentially useful diagnostics.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

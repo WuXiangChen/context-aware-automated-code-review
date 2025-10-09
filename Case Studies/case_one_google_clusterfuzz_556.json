@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "45": "google/clusterfuzz:556"
+        },
+        "selected_nodeLs": {
+            "45": "['PR-556']"
+        },
+        "codediff": {
+            "45": "@@ -170,20 +97,31 @@ def get_similar_issues(testcase,\n         continue\n \n       # Get issue object using ID.\n-      issue = issue_tracker_manager.get_issue(issue_id)\n+      issue = issue_tracker.get_issue(issue_id)\n       if not issue:\n         continue\n \n       # If our search criteria allows open bugs only, then check issue and\n       # testcase status so as to exclude closed ones.\n-      if (can == IssueTrackerManager.CAN_OPEN and\n-          (not issue.open or not testcase.open)):\n+      if (only_open and (not issue.is_open or not testcase.open)):\n         continue\n \n-      issue_objects.append(issue)\n+      issues.append(issue)\n       issue_ids.append(issue_id)\n \n-  return issue_objects\n+  return issues\n+\n+\n+def get_similar_issues_url(issue_tracker, testcase, only_open=True):\n+  \"\"\"Get similar issues web URL.\"\"\"\n+  keywords = get_search_keywords(testcase)\n+  return issue_tracker.find_issues_url(keywords=keywords, only_open=only_open)\n+\n+\n+def get_issue_url(testcase):\n+  \"\"\"Return issue url for a testcase.\"\"\"\n+  issue_tracker = get_issue_tracker_for_testcase(testcase)\n+  return issue_tracker.issue_url(testcase.bug_information)"
+        },
+        "groundTruth": {
+            "45": "Should we check if testcase.bug_information exists, otherwise return None or empty string ?"
+        },
+        "ds_dnContext": {
+            "45": "{\n  \"code_review_suggestion\": \"The condition `(not issue.is_open or not testcase.open)` could be misinterpreted due to operator precedence. Consider using explicit parentheses like `(not issue.is_open) or (not testcase.open)` for clarity, or better yet, simplify to `not (issue.is_open and testcase.open)` to directly express the intent of excluding non-open pairs.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "45": "{\n  \"code_review_suggestion\": \"The condition `not testcase.open` in the open-issue filter seems unrelated to issue tracking—consider removing it to align with the goal of simplifying the search logic and focusing only on issue status.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "45": "{\n  \"code_review_suggestion\": \"The variable name 'issue_objects' was changed to 'issues', which is more concise and follows Python naming conventions. However, consider making the variable names even more descriptive, like 'similar_issues' and 'similar_issue_ids', to clearly indicate their purpose in the context of finding similar issues.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "45": "{\n    \"code_review_suggestion\": \"The refactor looks good overall, but I noticed that `only_open` parameter is now used instead of the previous `can == IssueTrackerManager.CAN_OPEN` check. This simplifies the interface as intended, but we should ensure all callers have been updated to use the new boolean parameter consistently.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "45": "{\n  \"code_review_suggestion\": \"This is a nice simplification! For better API consistency, consider having `get_similar_issues` and `get_similar_issues_url` accept only the `testcase` argument. They could then derive the `issue_tracker` internally, just like the new `get_issue_url` function does, making them easier to call.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "45": "{\n  \"code_review_suggestion\": \"This refactoring simplifies the interface nicely. For consistency, consider having `get_similar_issues_url` also derive the `issue_tracker` from the testcase, similar to how `get_issue_url` is implemented. This would make the API for these new helper functions even cleaner.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "45": "{\n  \"code_review_suggestion\": \"The new functions assume that `issue_tracker` and `testcase` are always valid and have the required methods and attributes without checks; consider adding validation or error handling to improve robustness and avoid potential runtime errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "45": "{\n  \"code_review_suggestion\": \"Nice refactor simplifying issue retrieval and URL generation; consider adding docstrings to the new functions for clarity and consistency with the rest of the codebase.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "45": "{\"code_review_suggestion\": \"You changed issue.open to issue.is_open; if existing Issue objects still expose only .open this will break filtering. For a safe transition, use getattr(issue, 'is_open', issue.open) (or update all implementations) to maintain backward compatibility.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "45": "{\n  \"code_review_suggestion\": \"Looks like you renamed issue_objects to issues but didn’t show an initialization for issues; if the earlier declaration wasn’t updated (e.g. still issue_objects = []), this will raise a NameError. Make sure to add issues = [] (and remove the old name) at the start of the function for consistency.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

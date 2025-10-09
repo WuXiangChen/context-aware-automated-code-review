@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "381": "python/mypy:3648"
+        },
+        "selected_nodeLs": {
+            "381": "['PR-3648']"
+        },
+        "codediff": {
+            "381": "@@ -637,6 +638,9 @@ def visit_ImportFrom(self, n: ast27.ImportFrom) -> ImportBase:\n                            n.level,\n                            [(a.name, a.asname) for a in n.names])\n         self.imports.append(i)\n+        if (n.module == '__future__' and len(n.names) == 1 and"
+        },
+        "groundTruth": {
+            "381": "Will this work if I do `from __future__ import absolute_import, unicode_literals`? That works at runtime. Also, I don't think the `asname` check is necessary. This program: ``` from __future__ import unicode_literals as why_would_you_do_this print(type('')) ``` prints \"unicode\"."
+        },
+        "ds_dnContext": {
+            "381": "{\n  \"code_review_suggestion\": \"The condition for the __future__ import check is incomplete due to a trailing 'and' without a right operand, which will cause a syntax error. Please complete the condition or remove the trailing 'and' if it was added by mistake.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "381": "{\n  \"code_review_suggestion\": \"The condition for handling unicode_literals may not trigger when multiple __future__ imports are present (e.g., `from __future__ import unicode_literals, print_function`). Consider checking for the presence of 'unicode_literals' in the names list rather than requiring exactly one import.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "381": "{\n  \"code_review_suggestion\": \"The __future__ import check looks for a specific pattern that might be too restrictive. Consider using a more flexible approach that checks for any __future__ import containing 'annotations' rather than requiring exactly one import, as other __future__ features might be used alongside it.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "381": "{\n    \"code_review_suggestion\": \"The fix for handling ASCII-only literals with unicode_literals looks good, but consider adding a comment explaining why we're treating ASCII-only literals as str instead of unicode to make the intent clearer for future maintainers.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "381": "{\n  \"code_review_suggestion\": \"Just a small style tip: the parentheses wrapping the entire `if` condition are redundant in Python. Removing them would make the code a bit cleaner and more idiomatic.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "381": "{\n  \"code_review_suggestion\": \"This check seems to assume `unicode_literals` will be the only name imported from `__future__` on a line. This might fail for multi-import statements like `from __future__ import division, unicode_literals`. It would be more robust to check if `unicode_literals` is present in the `n.names` list.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "381": "{\n  \"code_review_suggestion\": \"The new conditional added after appending the import seems incomplete and abruptly cut off; ensure the full condition and corresponding logic are implemented to avoid runtime errors or unexpected behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "381": "{\n  \"code_review_suggestion\": \"The added condition for detecting `from __future__ import unicode_literals` is incomplete and currently cut off; ensure the full check and related handling logic are implemented to properly distinguish ASCII-only literals, improving clarity and correctness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "381": "{\"code_review_suggestion\": \"The newly added line starting with if (n.module == '__future__' is incomplete (missing closing parenthesis, colon, and body), causing a syntax error—either finish the condition and its block now or remove the stray line until the full logic is ready.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "381": "{\"code_review_suggestion\": \"Right now you only handle from __future__ imports when there’s exactly one name (len(n.names) == 1); this will miss common combined forms like `from __future__ import unicode_literals, division`. Drop that length check and instead iterate over n.names to detect unicode_literals so behavior matches real-world usage.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

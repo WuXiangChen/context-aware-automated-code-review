@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "52": "babel/babel:12054"
+        },
+        "selected_nodeLs": {
+            "52": "['PR-12054']"
+        },
+        "codediff": {
+            "52": "@@ -1764,6 +1774,16 @@ export default (superClass: Class<Parser>): Class<Parser> =>\n         this.finishNode(node, bodilessType);\n         return;\n       }\n+      if (bodilessType === \"TSDeclareFunction\" && this.state.isDeclareContext) {\n+        this.raise(node.start, TSErrors.DeclareFunctionHasImplementation);\n+        if (\n+          // $FlowIgnore\n+          node.declare\n+        ) {\n+          this.finishNode(node, bodilessType);\n+          return;\n+        }"
+        },
+        "groundTruth": {
+            "52": "Question: Why do we need to special-case this, rather than just parsing the (invalid) function body?"
+        },
+        "ds_dnContext": {
+            "52": "{\n  \"code_review_suggestion\": \"The // $FlowIgnore comment bypasses type checking for node.declare, which could lead to runtime errors. Consider refining the type definitions or using a type guard for better safety and maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n  \"code_review_suggestion\": \"The inner `node.declare` check is redundant since we're already in `isDeclareContext`. Remove the inner condition and always raise the error when both outer conditions are met to ensure consistent behavior.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n  \"code_review_suggestion\": \"The error handling logic has a potential issue - if `node.declare` exists, the code still creates an invalid node after raising an error. Consider either removing the error case entirely or ensuring consistent error handling without creating partial invalid AST nodes.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n    \"code_review_suggestion\": \"The condition `if (node.declare)` seems redundant since we're already in the `TSDeclareFunction` context where `this.state.isDeclareContext` is true. Consider removing this check to simplify the logic and avoid potential confusion.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n  \"code_review_suggestion\": \"It looks like this new logic block is unreachable. The preceding `if (bodilessType != null)` condition will always be true when `bodilessType` is `\\\"TSDeclareFunction\\\"`, causing an early return. To fix this, you could merge this new check into the preceding `if` block to ensure it executes.\""
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n  \"code_review_suggestion\": \"Nice work adding this validation! The inner `if (node.declare)` check seems a bit redundant, as we're already inside a block for `TSDeclareFunction`. We could probably simplify this by removing the nested condition and just calling `finishNode` and returning.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n  \"code_review_suggestion\": \"Raising an error before checking 'node.declare' can prematurely interrupt processing; consider verifying 'node.declare' first to avoid unnecessary errors and improve flow clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n  \"code_review_suggestion\": \"The condition checking node.declare after raising the error seems redundant or misplaced—consider clarifying its necessity or restructuring this block for clearer logic and to avoid possible unreachable code paths.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n  \"code_review_suggestion\": \"The new if block is effectively dead: you test bodilessType === 'TSDeclareFunction' only after the early return that already handled the bodiless case, so the error can’t trigger where intended. Move this check before that return (or key it off a hasBody/node.declare check) so the DeclareFunctionHasImplementation diagnostic actually fires.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "52": "{\n  \"code_review_suggestion\": \"After raising the error you only finish/return when node.declare is truthy, which could leave the parser state inconsistent for implicit declare contexts. Always finish/return after the raise (or add an else) and eliminate the FlowIgnore by typing node to include declare.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

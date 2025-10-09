@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "21": "adobe/brackets:1224"
+        },
+        "selected_nodeLs": {
+            "21": "['PR-1224']"
+        },
+        "codediff": {
+            "21": "@@ -816,8 +817,6 @@ define(function (require, exports, module) {\n         menu.addMenuItem(Commands.NAVIGATE_GOTO_DEFINITION, \"Ctrl-T\");\n         menu.addMenuDivider();\n         menu.addMenuItem(Commands.TOGGLE_QUICK_EDIT,        \"Ctrl-E\");\n-        menu.addMenuItem(Commands.QUICK_EDIT_PREV_MATCH,    {key: \"Alt-Up\", displayKey: \"Alt-\\u2191\"});\n-        menu.addMenuItem(Commands.QUICK_EDIT_NEXT_MATCH,    {key: \"Alt-Down\", displayKey: \"Alt-\\u2193\"});"
+        },
+        "groundTruth": {
+            "21": "Why did you remove these items from the main menu? I think they should be in both places. Note that it would be nice if these were disabled when the focus is not in an inline editor, but I think that's a separate issue."
+        },
+        "ds_dnContext": {
+            "21": "{\n  \"code_review_suggestion\": \"We're removing the quick edit navigation menu items. If this functionality is still needed, consider adding these commands to a different menu or documenting the keyboard shortcuts elsewhere to maintain discoverability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "21": "{\n  \"code_review_suggestion\": \"The menu divider before the removed quick-edit items is now orphaned and should also be removed to avoid a visual separator with no items below it.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "21": "{\n  \"code_review_suggestion\": \"The removed menu items for navigating between Quick Edit matches (Alt-Up/Alt-Down) appear to be important navigation shortcuts. Consider either restoring these shortcuts or ensuring the functionality is accessible through another method to maintain user productivity.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "21": "{\n    \"code_review_suggestion\": \"The menu items for QUICK_EDIT_PREV_MATCH and QUICK_EDIT_NEXT_MATCH were removed, but according to the PR description, we should be moving them to a new context menu rather than deleting them entirely. Let's make sure these commands are added to the new inline editor context menu instead of being removed completely.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "21": "{\n  \"code_review_suggestion\": \"I see you've removed the menu items for navigating Quick Edit matches. This makes the `Alt-Up/Down` shortcuts less discoverable for users. If this functionality still exists, could we consider reinstating these menu items to help with feature discovery?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "21": "{\n  \"code_review_suggestion\": \"This looks right for removing the items from the main menu. To ensure the feature move is complete, could you confirm these commands have been added to the new context menu for the inline editor elsewhere in this change?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "21": "{\n  \"code_review_suggestion\": \"Removing the menu items for QUICK_EDIT_PREV_MATCH and QUICK_EDIT_NEXT_MATCH might reduce navigational convenience; consider adding a comment explaining why these key bindings were removed or provide alternative navigation options for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "21": "{\n  \"code_review_suggestion\": \"Since these two menu items are being moved to the new inline editor context menu, ensure they are fully removed from the main menu to avoid duplicate entries and maintain clear menu structure.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "21": "{\"code_review_suggestion\":\"By removing the Quick Edit prev/next match menu items, the shortcuts become undiscoverable and may feel like a regression. Either retain at least one discoverability point (e.g., keep them in a submenu or tooltip) or remove/disable the underlying commands and update docs/changelog to avoid orphaned functionality.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "21": "{\n  \"code_review_suggestion\": \"You removed the prev/next quick edit menu items but this diff doesn’t show them being added to the new inline editor context menu, so they may become undiscoverable (and hurt accessibility). Double‑check that the new context menu registers these two commands; if not, add them there (or leave a fallback in the main menu) so users still see and can learn the shortcuts.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "108": "SAP/ui5-webcomponents:4455"
+        },
+        "selected_nodeLs": {
+            "108": "['PR-4455']"
+        },
+        "codediff": {
+            "108": "@@ -371,6 +371,29 @@ describe(\"Table general interaction\", () => {\n \t\t\tassert.strictEqual(await selectionChangeCount.getProperty(\"value\"), \"5\",  \"Enter key over an already selected row should trigger selection-change event\");\n \t\t});\n \n+\t\tit(\"test selectAll functionallity in MultiSelect mode\", async () => {"
+        },
+        "groundTruth": {
+            "108": "could you also add a case, when the checkbox is checked, then you have unselected an item."
+        },
+        "ds_dnContext": {
+            "108": "{\n  \"code_review_suggestion\": \"Hey, there's a typo in the test name: 'functionallity' should be 'functionality'. Correcting this improves readability and maintains code quality standards.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n  \"code_review_suggestion\": \"The test name contains a typo: 'functionallity' should be 'functionality'. Let's fix the spelling for better readability and consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n    \"code_review_suggestion\": \"There's a typo in the test name - 'functionallity' should be 'functionality'. Also, consider using a more descriptive test name like 'should select all rows when selectAll is called in MultiSelect mode' to clearly communicate the expected behavior.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n    \"code_review_suggestion\": \"The test name 'functionallity' has a typo - it should be 'functionality'. Also, consider using a more descriptive test name that explains what specific behavior is being tested when all rows are selected programmatically in MultiSelect mode.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n  \"code_review_suggestion\": \"Great start on the new test case! It looks like a placeholder right now. Could you please add the implementation to verify the 'select all' behavior and also fix the small typo in the description ('functionallity' -> 'functionality')?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n  \"code_review_suggestion\": \"Great job adding a test case for this fix! It looks like there's a small typo in the test name; could you please correct 'functionallity' to 'functionality' for better readability?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n  \"code_review_suggestion\": \"The test description has a typo in 'functionallity' which should be 'functionality' for clarity, and it would be helpful to add assertions verifying the expected selection state after calling selectAll to make the test meaningful.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n  \"code_review_suggestion\": \"The new test case for selectAll functionality is a great addition, but it currently lacks any implementation or assertions; please complete the test to verify that selecting all rows programmatically correctly updates the checkbox state and triggers the expected events.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n  \"code_review_suggestion\": \"The newly added test is just an opening 'it(' block with a misspelled name and no body/closure—this will break the test suite. Either complete the test (including proper async logic and closing braces) and fix the spelling to 'functionality', or remove the placeholder before committing.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "108": "{\n  \"code_review_suggestion\": \"The new test name has a typo ('functionallity') and is a bit vague; consider renaming it to something clearer like `it(\\\"selectAll updates header checkbox in MultiSelect mode\\\", ... )` so the intent of verifying the header checkbox state is immediately obvious.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

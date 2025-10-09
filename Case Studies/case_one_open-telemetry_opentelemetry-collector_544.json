@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "347": "open-telemetry/opentelemetry-collector:544"
+        },
+        "selected_nodeLs": {
+            "347": "['PR-544', 'Issue-141']"
+        },
+        "codediff": {
+            "347": "@@ -0,0 +1,114 @@\n+// Copyright 2020 OpenTelemetry Authors\n+//\n+// Licensed under the Apache License, Version 2.0 (the \"License\");\n+// you may not use this file except in compliance with the License.\n+// You may obtain a copy of the License at\n+//\n+//      http://www.apache.org/licenses/LICENSE-2.0\n+//\n+// Unless required by applicable law or agreed to in writing, software\n+// distributed under the License is distributed on an \"AS IS\" BASIS,\n+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+// See the License for the specific language governing permissions and\n+// limitations under the License.\n+\n+package obsreport\n+\n+import (\n+\t\"go.opencensus.io/stats\"\n+\t\"go.opencensus.io/stats/view\"\n+\t\"go.opencensus.io/tag\"\n+\t\"go.opencensus.io/trace\"\n+\n+\t\"github.com/open-telemetry/opentelemetry-collector/observability\"\n+)\n+\n+// Identifies the type of the observability data being received or exported.\n+type dataType int"
+        },
+        "groundTruth": {
+            "347": "We already have this in configmodels.go. Is it possible to reuse?"
+        },
+        "ds_dnContext": {
+            "347": "{\n  \"code_review_suggestion\": \"Consider using a string type for dataType instead of int to eliminate the need for dataTypeToTagValue conversion. This would simplify the code by directly using the constant values (e.g., \\\"metrics\\\") in tags and traces, improving maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "347": "{\n  \"code_review_suggestion\": \"The new obsreport package imports the legacy observability package, which creates a circular dependency and undermines the goal of replacing it. Consider removing this import and defining the necessary metrics/views directly in obsreport to ensure a clean transition path.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "347": "{\n  \"code_review_suggestion\": \"The `dataType` type should be defined as a string-based type instead of an integer for better readability and maintainability. Consider using `type dataType string` with constants like `dataTypeMetrics`, `dataTypeTraces` to make the code more self-documenting and easier to debug.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "347": "{\n    \"code_review_suggestion\": \"The dataType enum should use a more descriptive naming convention like 'DataType' instead of 'dataType' to align with Go naming best practices and improve code clarity, especially since this is foundational for metrics transition.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "347": "{\n  \"code_review_suggestion\": \"Nice start on the new `obsreport` package! I see you've defined `dataType`. If you plan to use this type in any exported functions or variables, it's a good practice to export the type itself by renaming it to `DataType`. This makes the package's API clearer and more idiomatic.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "347": "{\n  \"code_review_suggestion\": \"Great work on introducing the `obsreport` package to improve observability! For better clarity in this new API, how about renaming `dataType` to `DataType`? A more descriptive name for this foundational type would make it more self-documenting.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "347": "{\n  \"code_review_suggestion\": \"Consider adding meaningful comments and grouping related declarations together to improve the clarity and maintainability of this new package, especially since the current snippet only defines a minimal dataType alias without context.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "347": "{\n  \"code_review_suggestion\": \"Great initial setup! To improve clarity and maintainability, consider adding comments or documentation for the newly introduced dataType enum right away to clarify its intended values and usage.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "347": "{\"code_review_suggestion\":\"This new file adds fresh code that depends on go.opencensus, which the project has been moving away from in favor of OpenTelemetry APIs. Before expanding usage (e.g., adding constants for dataType), switch these imports to the OTel equivalents to avoid accruing new migration debt.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "347": "{\n  \"code_review_suggestion\": \"All the imported packages are currently unused, so this file won’t compile. Either drop the unused imports for now or add the minimal scaffolding (e.g., constants or wrapper funcs) that actually references them. That keeps the transition package buildable while you grow it.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

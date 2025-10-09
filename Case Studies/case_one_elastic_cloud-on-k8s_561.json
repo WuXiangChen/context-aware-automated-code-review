@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "398": "elastic/cloud-on-k8s:561"
+        },
+        "selected_nodeLs": {
+            "398": "['PR-561', 'Issue-580']"
+        },
+        "codediff": {
+            "398": "@@ -0,0 +1,71 @@\n+// Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n+// or more contributor license agreements. Licensed under the Elastic License;\n+// you may not use this file except in compliance with the Elastic License.\n+\n+package main\n+\n+import (\n+\t\"os\"\n+\t\"os/signal\"\n+\t\"syscall\"\n+\n+\t\"github.com/elastic/k8s-operators/operators/pkg/controller/elasticsearch/keystore\"\n+\tpm \"github.com/elastic/k8s-operators/operators/pkg/controller/elasticsearch/processmanager\"\n+\t\"github.com/spf13/cobra\"\n+\n+\tlogf \"sigs.k8s.io/controller-runtime/pkg/runtime/log\"\n+)\n+\n+var (\n+\tname = \"process-manager\"\n+\tlog  = logf.Log.WithName(name)\n+)\n+\n+func main() {\n+\tlogf.SetLogger(logf.ZapLogger(false))\n+\n+\tcmd := &cobra.Command{\n+\t\tUse: name,\n+\t\tRun: func(cmd *cobra.Command, args []string) {\n+\n+\t\t\tprocMgr, err := pm.NewProcessManager()\n+\t\t\texitOnErr(err)\n+\n+\t\t\terr = procMgr.Start()\n+\t\t\texitOnErr(err)\n+\n+\t\t\tsig := waitForStop()\n+\t\t\tlog.Info(\"Forward signal\", \"sig\", sig)\n+\n+\t\t\terr = procMgr.Stop(sig)\n+\t\t\tif err != nil && err.Error() == pm.ErrNoSuchProcess {\n+\t\t\t\texitOnErr(err)\n+\t\t\t}\n+\t\t},\n+\t}\n+\n+\terr := keystore.BindEnvToFlags(cmd)\n+\texitOnErr(err)\n+\n+\terr = pm.BindFlagsToEnv(cmd)\n+\texitOnErr(err)\n+\n+\terr = cmd.Execute()\n+\texitOnErr(err)\n+}\n+\n+func waitForStop() os.Signal {\n+\tstop := make(chan os.Signal)\n+\tsignal.Notify(stop)\n+\tsignal.Ignore(syscall.SIGCHLD)\n+\tsig := <-stop\n+\treturn sig"
+        },
+        "groundTruth": {
+            "398": "Here we are stopping the process manager whatever the signal is, except for SIGCHLD. Is there a risk we would stop on a signal we don't care about? Maybe we could filter on the ones we interested in only? ```go signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM) ```"
+        },
+        "ds_dnContext": {
+            "398": "{\n  \"code_review_suggestion\": \"The signal channel in waitForStop should be buffered to prevent potential signal loss. Use `stop := make(chan os.Signal, 1)` since the Go signal package requires buffered channels for reliable signal delivery.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n  \"code_review_suggestion\": \"The signal handling in waitForStop() may cause issues since it listens to all signals except SIGCHLD. Consider narrowing the signal set to only relevant ones (e.g., SIGTERM, SIGINT) for Kubernetes environments to avoid unintended signal interference.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n  \"code_review_suggestion\": \"The signal handling in waitForStop() has a race condition - it calls signal.Ignore(syscall.SIGCHLD) after signal.Notify(stop), which means SIGCHLD signals might already be captured. Move signal.Ignore(syscall.SIGCHLD) before signal.Notify(stop) to properly ignore child process signals from the start.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n    \"code_review_suggestion\": \"The signal handling logic in waitForStop() ignores SIGCHLD but doesn't handle potential zombie processes properly. Since this is a process manager that starts child processes, you should add a proper SIGCHLD handler that calls waitpid() to prevent zombie processes from accumulating.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n  \"code_review_suggestion\": \"Nice work on the process manager! To make the shutdown behavior more predictable, I'd suggest being more specific about which signals to handle. Instead of `signal.Notify(stop)`, which catches all signals, it's best practice to only listen for explicit termination signals like `syscall.SIGINT` and `syscall.SIGTERM`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n  \"code_review_suggestion\": \"In `waitForStop`, it's a good practice to be explicit about which signals you're waiting for. Instead of catching all signals with `signal.Notify(stop)`, consider listening only for termination signals like `syscall.SIGINT` and `syscall.SIGTERM` to make the process manager's behavior more predictable.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n  \"code_review_suggestion\": \"The signal handling in waitForStop lacks specificity by calling signal.Notify without specifying which signals to listen for, which can lead to unintended behavior; it would be clearer and safer to explicitly list the signals you want to handle (e.g., SIGINT, SIGTERM) to improve maintainability and correctness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n  \"code_review_suggestion\": \"The signal handling in waitForStop subscribes to all signals without filtering, which may cause unexpected behavior; consider specifying only termination signals like SIGINT and SIGTERM to handle graceful shutdowns more predictably.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n  \"code_review_suggestion\": \"The Stop() error check is inverted and brittle: it exits only when the error is ErrNoSuchProcess and silently ignores all other errors, plus it string-compares err.Error(). Use errors.Is and invert the logic, e.g. if err != nil && !errors.Is(err, pm.ErrNoSuchProcess) { exitOnErr(err) }, after importing errors. This prevents masking real failures and compares the sentinel correctly.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "398": "{\n  \"code_review_suggestion\": \"The Stop error handling looks inverted: you only exit on the specific no-such-process case and silently ignore any other errors, plus you compare via err.Error() string. Invert the logic to ignore the benign no-such-process case and fail on other errors, and compare a sentinel error value (e.g. if err != nil && !errors.Is(err, pm.ErrNoSuchProcess) { exitOnErr(err) }).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

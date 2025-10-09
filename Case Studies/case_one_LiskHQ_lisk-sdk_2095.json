@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "140": "LiskHQ/lisk-sdk:2095"
+        },
+        "selected_nodeLs": {
+            "140": "['PR-2095']"
+        },
+        "codediff": {
+            "140": "@@ -336,6 +366,11 @@ __private.dbLoad = function(cb) {\n \t\t\tasync.each(\n \t\t\t\trows,\n \t\t\t\t(peer, eachCb) => {\n+\t\t\t\t\t// Ban peer if it is presented in the array of black listed peers\n+\t\t\t\t\tif (__private.isBlacklisted(peer.ip)) {\n+\t\t\t\t\t\tpeer.state = Peer.STATE.BANNED;\n+\t\t\t\t\t}\n+\n \t\t\t\t\tpeer = library.logic.peers.create(peer);\n \t\t\t\t\tif (library.logic.peers.upsert(peer, true) !== true) {\n \t\t\t\t\t\treturn setImmediate(eachCb);"
+        },
+        "groundTruth": {
+            "140": "Maybe we should change `peer.state > 0` below (on line 378 and also line 838) to `peer.state !== Peer.STATE.BANNED` to be more clear/explicit."
+        },
+        "ds_dnContext": {
+            "140": "{\n  \"code_review_suggestion\": \"The code mixes data loading with business logic for blacklisting, which can make it harder to maintain. Consider moving the blacklisting check into the peer creation or validation logic to keep concerns separated and improve clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "140": "{\n  \"code_review_suggestion\": \"The blacklist check and state setting might be overwritten when the peer is created. Move it after `library.logic.peers.create(peer)` to ensure the BANNED state is applied correctly.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "140": "{\n  \"code_review_suggestion\": \"The blacklist check should happen after the peer object is created using `library.logic.peers.create(peer)`, not before. Currently, you're modifying the raw database row directly, which might not have the proper structure and could cause issues when the create method processes it.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "140": "{\n    \"code_review_suggestion\": \"The blacklist check in dbLoad looks good for banning known peers, but consider adding a similar check in updatePeerStatus to ensure peers are consistently banned across all peer management functions as mentioned in your PR description.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "140": "{\n  \"code_review_suggestion\": \"Great catch on handling blacklisted peers during startup! To improve separation of concerns, consider moving this blacklisting check into the `library.logic.peers.create` method. This would centralize all peer creation logic, making the code easier to maintain.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "140": "{\n  \"code_review_suggestion\": \"Nice work adding the blacklist check here. For better clarity, I'd suggest creating the `peer` object first with `library.logic.peers.create(peer)`, and then checking the blacklist to update its state. This cleanly separates object instantiation from state modification.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "140": "{\n  \"code_review_suggestion\": \"Assigning to the 'peer' parameter inside the async.each callback can cause confusion and potential bugs; instead, create a new variable for the updated peer to keep the code clearer and maintainable.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "140": "{\n  \"code_review_suggestion\": \"Great addition banning blacklisted peers on dbLoad; to improve clarity and avoid side effects, consider creating a new peer object with the banned state instead of mutating the original before calling create.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "140": "{\"code_review_suggestion\":\"You set peer.state = BANNED before calling library.logic.peers.create(), but create() likely rebuilds/normalizes the object and can overwrite that state—so the ban may be ineffective and the peer still upserted. Move the blacklist check (and setting state) after create(), and skip the upsert (early return) for banned peers to ensure they aren’t reintroduced.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "140": "{\n  \"code_review_suggestion\": \"You set peer.state = BANNED before calling peers.create(), but create() probably normalizes/overwrites the object, so the ban flag may be lost. Move the blacklist check (and state assignment) to after create() and before upsert (or make create() preserve an existing state) to ensure blacklisted peers are actually persisted as banned.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

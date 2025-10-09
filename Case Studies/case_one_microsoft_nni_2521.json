@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "266": "microsoft/nni:2521"
+        },
+        "selected_nodeLs": {
+            "266": "['PR-2554']"
+        },
+        "codediff": {
+            "266": "@@ -0,0 +1,148 @@\n+# Copyright (c) Microsoft Corporation.\n+# Licensed under the MIT license.\n+\n+import ctypes\n+import os\n+import shlex\n+import tarfile\n+import time\n+from datetime import datetime\n+from subprocess import Popen\n+\n+import psutil\n+\n+from .log_utils import LogType, RemoteLogger, StdOutputType, nni_log\n+from .base_channel import CommandType\n+\n+trial_output_path_name = \".nni\"\n+\n+\n+class Trial:\n+    def __init__(self, args, data):\n+        self.process = None\n+        self.data = data\n+        self.args = args\n+        self.command_channel = args.command_channel\n+        self.trial_syslogger_stdout = None\n+\n+        global NNI_TRIAL_JOB_ID\n+        self.id = data[\"trialId\"]\n+        if self.id is None:\n+            raise Exception(\"trial_id is not found in %s\" % data)\n+        os.environ['NNI_TRIAL_JOB_ID'] = self.id\n+        NNI_TRIAL_JOB_ID = self.id\n+\n+        # for multiple nodes. If it's None, it means single node.\n+        self.node_id = args.node_id\n+        if self.node_id is None:\n+            self.name = self.id\n+        else:\n+            self.name = \"%s_%s\" % (self.id, self.node_id)\n+\n+    def run(self):\n+        # redirect trial's stdout and stderr to syslog\n+        self.trial_syslogger_stdout = RemoteLogger(self.args.nnimanager_ip, self.args.nnimanager_port, 'trial', StdOutputType.Stdout,\n+                                                   self.args.log_collection, self.id)\n+\n+        nni_log(LogType.Info, \"%s: start to run trial\" % self.name)\n+\n+        trial_working_dir = os.path.realpath(os.path.join(os.curdir, \"..\", \"..\", \"trials\", self.id))"
+        },
+        "groundTruth": {
+            "266": "a little confused about the folder structure. trial_work_dir is in top level?"
+        },
+        "ds_dnContext": {
+            "266": "{\n  \"code_review_suggestion\": \"The global variable NNI_TRIAL_JOB_ID is used but not defined in the module scope, which will cause a NameError. Consider defining it at the top of the file (e.g., NNI_TRIAL_JOB_ID = None) or using os.environ.get() if the global isn't necessary elsewhere.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "266": "{\n  \"code_review_suggestion\": \"The trial working directory path uses hardcoded relative navigation ('../../trials'), which may break in nested experiment scenarios. Consider using a configurable base path instead to support flexible directory structures.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "266": "{\n  \"code_review_suggestion\": \"The trial working directory path construction uses relative paths which could break if the current working directory changes. Consider using absolute paths or os.path.dirname(os.path.abspath(__file__)) for more reliable path resolution.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "266": "{\n    \"code_review_suggestion\": \"The trial_working_dir path construction uses relative paths which may break in nested experiment scenarios. Consider using os.path.join with absolute paths or environment variables to ensure reliable directory creation across different working directory contexts.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "266": "{\n  \"code_review_suggestion\": \"The construction of `trial_working_dir` using `os.curdir` and relative '..' paths is a bit fragile, as it depends on the script's execution directory. A more robust approach would be to pass in a base working directory via arguments, making the path resolution independent of where the script is run.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "266": "{\n  \"code_review_suggestion\": \"The way `trial_working_dir` is constructed using `os.path.join(os.curdir, \\\"..\\\", \\\"..\\\")` seems a bit fragile, as it assumes the script is always run from a specific directory depth. For better reliability, consider constructing this path from a base directory provided via an environment variable or an argument, which would make it independent of the current working directory.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "266": "{\n  \"code_review_suggestion\": \"Using a global variable like NNI_TRIAL_JOB_ID inside the constructor without declaring it as global at the top can cause confusion and errors; instead, explicitly declare it global at the start of the method or avoid globals by encapsulating the ID within the class or passing it as needed.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "266": "{\n  \"code_review_suggestion\": \"Consider avoiding the use of a global variable for NNI_TRIAL_JOB_ID and directly rely on environment variables or instance attributes to improve clarity and reduce potential side effects.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "266": "{\"code_review_suggestion\": \"The trialId is interpolated directly into a relative path (../../trials/{trialId}) without validation, making path traversal or accidental directory escapes possible if trialId is ever untrusted. Sanitize and restrict trialId (e.g., allow only [A-Za-z0-9_-]), then build the path from a fixed absolute base (using pathlib) and verify the resolved path stays within that base before use.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "266": "{\n  \"code_review_suggestion\": \"The hard‑coded relative trial_working_dir path (../../trials/{id}) is brittle for nested experiments; consider passing an explicit base directory (e.g., from args) and using pathlib to resolve it, creating the directory if missing and logging an error if resolution fails.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "401": "pytorch/pytorch:49544"
+        },
+        "selected_nodeLs": {
+            "401": "['PR-49544', 'PR-49545']"
+        },
+        "codediff": {
+            "401": "@@ -151,7 +151,7 @@ std::shared_ptr<SugaredValue> SimpleValue::attr(\n     }\n   } else if (auto classType = value_->type()->cast<ClassType>()) {\n     // This is a class, emit the proper attribute lookup\n-    if (auto method = classType->findMethod(field)) {\n+    if (auto method = classType->findCallable(field)) {"
+        },
+        "groundTruth": {
+            "401": "Are you allowed to call a hook like this, as if it were a method?"
+        },
+        "ds_dnContext": {
+            "401": "{\n  \"code_review_suggestion\": \"Switching from `findMethod` to `findCallable` improves consistency with the codebase's terminology, but let's ensure `findCallable` handles all intended callable types (like static methods) correctly to avoid potential attribute lookup gaps.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "401": "{\n  \"code_review_suggestion\": \"The variable name 'method' is now misleading since findCallable can return hooks too. Consider renaming it to 'callable' or 'fn' for clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "401": "{\n  \"code_review_suggestion\": \"Good change! Using `findCallable()` instead of `findMethod()` is more appropriate since it handles both methods and other callable attributes, making the code more robust and future-proof.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "401": "{\"code_review_suggestion\": \"Good change! Using `findCallable` instead of `findMethod` correctly handles both methods and hooks, which is essential for the static hooks feature to work properly with class types.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "401": "{\n  \"code_review_suggestion\": \"This is a great generalization! Using `findCallable` instead of `findMethod` correctly broadens the scope. To help future maintainers, could you add a small comment clarifying what kinds of \\\"callables\\\" (e.g., static methods, properties) this now includes?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "401": "{\n  \"code_review_suggestion\": \"This generalization from `findMethod` to `findCallable` is a good way to accommodate the new static hooks. To improve clarity for future maintainers, could you add a comment to the `findCallable` definition explaining that it's designed to find both methods and hooks on the class type?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "401": "{\n  \"code_review_suggestion\": \"Changing from findMethod to findCallable might alter behavior if findCallable returns different or additional results; double-check that this change aligns with the intended attribute lookup logic to avoid unexpected method resolution.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "401": "{\n  \"code_review_suggestion\": \"Changing from findMethod to findCallable may affect attribute resolution semantics; verify that this change correctly distinguishes methods from other callables and doesn't introduce unexpected behavior or ambiguity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "401": "{\"code_review_suggestion\": \"Switching from findMethod to findCallable broadens what can be returned (e.g., non-Method callables), but the variable is still named 'method' and downstream code may assume Method semantics. Either ensure the result is validated as a Method or rename to something like 'callable_value' and adjust any method-specific logic to avoid subtle runtime errors.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "401": "{\"code_review_suggestion\":\"Switching from findMethod to findCallable broadens what can be returned, but the local variable is still named 'method'. To avoid confusion or misuse downstream, rename it (e.g. callableFn) and add a brief comment clarifying that hooks are now resolved here, plus assert the expected callable kind if later logic assumes a Method.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

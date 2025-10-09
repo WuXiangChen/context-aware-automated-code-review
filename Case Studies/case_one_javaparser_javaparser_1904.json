@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "446": "javaparser/javaparser:1904"
+        },
+        "selected_nodeLs": {
+            "446": "['PR-1904', 'Issue-1895']"
+        },
+        "codediff": {
+            "446": "@@ -40,13 +40,36 @@\n  */\n public class JavaParserJsonSerializer {\n     public static final String SERIALIZED_CLASS_KEY = \"!\";\n+    public static final String RANGE_PROPERTY_KEY = \"range\";"
+        },
+        "groundTruth": {
+            "446": "I wonder if it could make sense to create an enum for default property keys"
+        },
+        "ds_dnContext": {
+            "446": "{\n  \"code_review_suggestion\": \"Hey, using 'range' as a key might cause naming conflicts in JSON serialization since it's a common term. Consider making it unique, like '!range', to align with SERIALIZED_CLASS_KEY and avoid issues.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "446": "{\n  \"code_review_suggestion\": \"Since the PR aims to improve documentation and use enums for property keys, consider replacing the new string constant with an enum value for better type safety and maintainability, aligning with the goal of standardizing property keys.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "446": "{\n    \"code_review_suggestion\": \"The new RANGE_PROPERTY_KEY constant should be documented with a brief comment explaining its purpose, similar to how SERIALIZED_CLASS_KEY is documented, to improve code clarity and maintainability.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "446": "{\n    \"code_review_suggestion\": \"Since this PR focuses on adding JavaDoc and enum constants for property keys, consider defining RANGE_PROPERTY_KEY as an enum constant instead of a string literal to maintain consistency with the enum pattern established in the rest of the serializer.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "446": "{\n  \"code_review_suggestion\": \"The new key `\\\"range\\\"` is quite generic and could potentially clash with other properties if this JSON is ever merged with other data. To improve clarity and avoid future conflicts, would you consider a more specific name like `\\\"sourceRange\\\"`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "446": "{\n  \"code_review_suggestion\": \"Hey, thanks for centralizing these magic strings! The PR title mentions using enums for property keys, which is a great idea. How about creating a simple `enum` to group `SERIALIZED_CLASS_KEY` and the new `RANGE_PROPERTY_KEY`? It would make the keys more discoverable and type-safe.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "446": "{\n  \"code_review_suggestion\": \"Adding RANGE_PROPERTY_KEY is clear, but consider documenting its purpose or usage in a comment to maintain clarity and ease future maintenance.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "446": "{\n  \"code_review_suggestion\": \"Consider adding a brief JavaDoc comment for the new RANGE_PROPERTY_KEY constant to maintain consistency and improve clarity for future readers.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "446": "{\"code_review_suggestion\": \"You’ve added a new public constant but no usage or Javadoc—this expands the public API unnecessarily. Either document its intended contract (why 'range', expected format) or reduce visibility until it’s actually needed to avoid locking in an unexplained API surface.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "446": "{\"code_review_suggestion\":\"You added RANGE_PROPERTY_KEY but didn’t document it—since this PR is about clarifying serializer property keys, add a short Javadoc explaining when this key appears (e.g. for node position info) and ensure it’s used consistently instead of hardcoded \\\"range\\\" literals elsewhere.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

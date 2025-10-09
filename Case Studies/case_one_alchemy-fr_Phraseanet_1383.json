@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "150": "alchemy-fr/Phraseanet:1383"
+        },
+        "selected_nodeLs": {
+            "150": "['PR-1383', 'PR-543']"
+        },
+        "codediff": {
+            "150": "@@ -921,9 +933,37 @@ private function listEmbeddableMedia(\\record_adapter $record, \\media_subdef $med\n             'substituted' => $media->is_substituted(),\n             'created_on'  => $media->get_creation_date()->format(DATE_ATOM),\n             'updated_on'  => $media->get_modification_date()->format(DATE_ATOM),\n+            'url' => $this->generateSubDefinitionUrl($issuer, $media, $urlTTL),\n+            'url_ttl' => $urlTTL,\n         ];\n     }\n \n+    /**\n+     * @param User          $issuer\n+     * @param \\media_subdef $subdef\n+     * @param int           $url_ttl\n+     * @return string\n+     */\n+    private function generateSubDefinitionUrl(User $issuer, \\media_subdef $subdef, $url_ttl)\n+    {\n+        $payload = [\n+            'iat'  => time(),\n+            'iss'  => $issuer->getId(),\n+            'sdef' => [$subdef->get_sbas_id(), $subdef->get_record_id(), $subdef->get_name()],\n+        ];\n+        if ($url_ttl >= 0) {\n+            $payload['exp'] = $payload['iat'] + $url_ttl;\n+        }\n+\n+        /** @var SecretProvider $provider */\n+        $provider = $this->app['provider.secrets'];\n+        $secret = $provider->getSecretForUser($issuer);\n+\n+        return sprintf('media_accessor', ["
+        },
+        "groundTruth": {
+            "150": "oups... should not be an `sprintf`"
+        },
+        "ds_dnContext": {
+            "150": "{\n  \"code_review_suggestion\": \"The hardcoded string 'media_accessor' in the URL generation will break all media links. It should be replaced with the actual dynamic endpoint URL or configuration value to ensure the generated URLs work correctly.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "150": "{\n  \"code_review_suggestion\": \"The sprintf call is missing the token parameter. You need to generate a JWT from the payload first using the secret, then pass that token to the URL formatter like: `return sprintf('media_accessor/%s', $token);`\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "150": "{\n  \"code_review_suggestion\": \"The sprintf call is missing the token parameter - it should include the generated JWT token to make the URL functional. Consider adding something like `$this->app['url_generator']->generate('media_accessor', ['token' => JWT::encode($payload, $secret)])` to properly construct the URL.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "150": "{\n  \"code_review_suggestion\": \"The sprintf call is missing the token parameter - it should include the generated JWT token to form a complete media access URL.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "150": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "150": "{\n  \"code_review_suggestion\": \"It looks like the implementation of `generateSubDefinitionUrl` is incomplete. The `sprintf` call at the end will cause a fatal error as it's syntactically incorrect. It seems you're missing the step to encode the payload into a token (e.g., JWT) and then use a URL generator to construct the final URL.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "150": "{\n  \"code_review_suggestion\": \"The generateSubDefinitionUrl method builds a payload and retrieves a secret but does not actually generate or return a valid URL string—likely missing a JWT encoding or URL assembly step. To fix this, implement encoding of the payload (e.g., JWT) with the secret and return the complete URL, ensuring the 'sprintf' call uses a format string and its parameters correctly.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "150": "{\n  \"code_review_suggestion\": \"The method generateSubDefinitionUrl ends with an incomplete return statement using sprintf without a format string or arguments—please complete this to properly generate and return the signed URL for media access.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "150": "{\n  \"code_review_suggestion\": \"generateSubDefinitionUrl builds a payload and gets a secret but then just returns the literal string 'media_accessor' via sprintf—payload and secret are unused, so the URL is wrong. Actually encode/sign the payload (e.g. JWT) and use the router: $token = $jwtEncoder->encode($payload, $secret); return $urlGen->generate('media_accessor', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "150": "{\n  \"code_review_suggestion\": \"generateSubDefinitionUrl builds a payload and fetches a secret but never uses either—then returns sprintf('media_accessor', ...) which produces just 'media_accessor', so URLs will be broken and unsigned. Use the framework's route/url generator (e.g. $this->app['url_generator']->generate('media_accessor', ...)), actually encode/sign the payload (JWT/HMAC) with the secret, and include the token in the URL; otherwise the new url field is both non-functional and insecure.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "314": "magento/magento2:29979"
+        },
+        "selected_nodeLs": {
+            "314": "['PR-29979']"
+        },
+        "codediff": {
+            "314": "@@ -98,7 +98,7 @@ public function prepare(): void\n             array_replace_recursive(\n                 (array)$this->getData('config'),\n                 [\n-                    'onInsertUrl' => $this->urlInterface->getUrl('cms/wysiwyg_images/oninsert'),\n+                    'onInsertUrl' => $this->urlInterface->getUrl('media_gallery_renditions/image/oninsert'),"
+        },
+        "groundTruth": {
+            "314": "The issue with this approach is that it makes MediaGalleryUi module dependent on Renditions. It's better to have the reversed dependency. Let's keep the plugin in Renditions module and move the introduced controller to MediaGalleryUi for this purpose"
+        },
+        "ds_dnContext": {
+            "314": "{\n  \"code_review_suggestion\": \"This route change might break existing functionality if the new endpoint doesn't handle the same parameters or behavior as the old 'cms/wysiwyg_images/oninsert'. Double-check that the new controller action expects identical input and returns compatible responses.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "314": "{\n  \"code_review_suggestion\": \"Verify the new URL route 'media_gallery_renditions/image/oninsert' is correctly implemented and returns the expected rendition image data to ensure the fix for incorrect image sizes works as intended.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "314": "{\n  \"code_review_suggestion\": \"The URL endpoint change looks good, but consider adding a comment explaining why this endpoint was changed from the CMS module to media_gallery_renditions to provide context for future maintainers.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "314": "{\n    \"code_review_suggestion\": \"The URL change from 'cms/wysiwyg_images/oninsert' to 'media_gallery_renditions/image/oninsert' correctly addresses the image size issue when renditions are inserted, but we should verify this new endpoint exists and handles the image insertion with proper rendition sizing as described in the PR context.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "314": "{\n  \"code_review_suggestion\": \"Good call updating to the new Media Gallery URL! To make this more robust against future Magento updates, could we replace the hardcoded string 'media_gallery_renditions/image/oninsert' with a class constant if the target module provides one?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "314": "{\n  \"code_review_suggestion\": \"Great catch on the URL! To improve maintainability, consider defining the route path 'media_gallery_renditions/image/oninsert' as a constant in the target module. This will make the code more resilient to future changes in the URL structure.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "314": "{\n  \"code_review_suggestion\": \"Make sure the new URL path 'media_gallery_renditions/image/oninsert' is correct and accessible, and update any related documentation or tests to reflect this change for consistency and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "314": "{\n  \"code_review_suggestion\": \"The URL change aligns with the fix for correct image size on rendition insert, but ensure this new endpoint 'media_gallery_renditions/image/oninsert' is implemented and secured properly to avoid broken functionality or security risks.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "314": "{\"code_review_suggestion\":\"Switching the onInsertUrl to a new route without a backward‑compatible fallback risks breaking existing JS or extensions expecting the old endpoint/response. Consider keeping the old route as a fallback (or documenting and versioning the change) and verify the response contract matches what the consumer code expects.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "314": "{\n  \"code_review_suggestion\": \"Switching the onInsertUrl unconditionally to the renditions route may break instances where renditions (or that module) aren’t enabled. Consider detecting if the renditions feature/module is available and falling back to the original cms/wysiwyg_images/oninsert URL to preserve backward compatibility and avoid 404s.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

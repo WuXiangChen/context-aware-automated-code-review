@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "469": "mantidproject/mantid:17904"
+        },
+        "selected_nodeLs": {
+            "469": "['PR-17904', 'Issue-16983']"
+        },
+        "codediff": {
+            "469": "@@ -20,9 +20,6 @@ ReflMainWindowPresenter::ReflMainWindowPresenter(\n   // Tell the tab presenters that this is going to be the main presenter\n   m_runsPresenter->acceptMainPresenter(this);\n   m_settingsPresenter->acceptMainPresenter(this);\n-\n-  // Trigger the setting of the current instrument name in settings tab\n-  m_runsPresenter->notify(IReflRunsTabPresenter::InstrumentChangedFlag);"
+        },
+        "groundTruth": {
+            "469": "Why was this removed? My understanding is that this notification was triggering the `InstrumentChangedFlag` that would cause `PolarizationCorrections` to be enable/disable depending on the selected instrument. Without this, if my default instrument is for example `INTER`, when I open the interface, even if `INTER` is the selected instrument in the `Runs` tab, in the `Settings` tab `PolarizationCorrections` is not greyed out. I think what you had here was correct."
+        },
+        "ds_dnContext": {
+            "469": "{\n  \"code_review_suggestion\": \"The removed notification call might leave the settings tab uninitialized with the current instrument name at startup. Consider ensuring the instrument is set during initialization through another mechanism, like passing it directly to the settings presenter during construction.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "469": "{\n  \"code_review_suggestion\": \"The removed lines appear to handle instrument change notifications for the settings tab. Since the PR adds instrument-specific defaults, ensure the settings tab still receives instrument updates—perhaps via direct signals from the runs tab—to maintain consistency when the instrument changes.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "469": "{\n  \"code_review_suggestion\": \"The removed notification call was likely triggering a necessary initialization of the settings tab with the current instrument. Without it, the settings might start with incorrect or empty values. Consider adding this initialization back, perhaps in the constructor or through a dedicated initialization method.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "469": "{\"code_review_suggestion\": \"The removed line appears to be triggering an instrument change notification to populate default values in the settings tab. Since this PR adds a 'Get Defaults' button for instrument settings that pulls from the current instrument, ensure this functionality isn't lost and that the defaults button properly handles instrument changes made in the runs tab.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "469": "{\n  \"code_review_suggestion\": \"I see you've removed the notification for the instrument change. This call seemed important for initializing the settings tab correctly on startup. Could you clarify if this logic is now handled elsewhere to avoid a potential state synchronization issue?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "469": "{\n  \"code_review_suggestion\": \"I noticed the removal of the `notify` call that signals an instrument change. This seems important for initializing the settings tab with the correct instrument on startup. Could you clarify the reasoning? I'm concerned that without this, the 'Get Defaults' feature for instrument settings might not function as expected when the application first loads.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "469": "{\n  \"code_review_suggestion\": \"Reconsider removing the call to notify InstrumentChangedFlag on m_runsPresenter, as it may be essential for initializing or updating the settings tab; if it's unnecessary, adding a comment explaining why would improve clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "469": "{\n  \"code_review_suggestion\": \"Removing the explicit call to notify InstrumentChangedFlag from m_runsPresenter may break the sync with settings if the instrument changes at startup; consider replacing this with a more explicit or deferred notification to ensure the settings tab correctly initializes the instrument name.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "469": "{\n  \"code_review_suggestion\": \"Removing the notify(InstrumentChangedFlag) call risks the settings tab never initializing its instrument name. If this was intentional, add (or point to) a new explicit initialization path; otherwise reinstate the notify or move the initialization into a clearer setup method with a test to catch missing instrument setup.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "469": "{\n  \"code_review_suggestion\": \"By deleting the initial notify(InstrumentChangedFlag) you may have lost the startup synchronization that populates instrument‑specific defaults in the new Settings tab. Double‑check that another explicit initialization now sets those values; if not, reintroduce a clearer init call (e.g. m_runsPresenter->initializeInstrumentState()) so defaults appear without requiring a user instrument change.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

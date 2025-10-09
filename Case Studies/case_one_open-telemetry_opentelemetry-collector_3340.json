@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "211": "open-telemetry/opentelemetry-collector:3340"
+        },
+        "selected_nodeLs": {
+            "211": "['PR-3128', 'Issue-3115']"
+        },
+        "codediff": {
+            "211": "@@ -89,7 +117,7 @@ func (hcs *HTTPClientSettings) ToClient() (*http.Client, error) {\n \t}, nil\n }\n \n-// Custom RoundTripper that add headers.\n+// Custom RoundTripper that add headers"
+        },
+        "groundTruth": {
+            "211": "```suggestion // Custom RoundTripper that adds headers. ```"
+        },
+        "ds_dnContext": {
+            "211": "{\n  \"code_review_suggestion\": \"The comment has a grammatical error; it should be 'adds headers' instead of 'add headers' to match the singular subject for better clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "211": "{\n  \"code_review_suggestion\": \"The comment has a grammatical error; it should be 'Custom RoundTripper that adds headers.' for better clarity and consistency with the authentication feature being added.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "211": "{\n    \"code_review_suggestion\": \"The comment should say 'adds headers' instead of 'add headers' to match proper grammar for a third-person singular subject. This small fix improves code documentation clarity.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "211": "{\n  \"code_review_suggestion\": \"The comment should be grammatically correct: 'Custom RoundTripper that adds headers' instead of 'add headers' to maintain code documentation quality.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "211": "{\n  \"code_review_suggestion\": \"Hey there! It looks like the period was removed from this comment. Go's idiomatic style prefers comments to be complete sentences, so it's best practice to end them with a period. Could we add it back?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "211": "{\n  \"code_review_suggestion\": \"Just a small style nitpick. This comment change introduces a trailing space. To improve clarity and adhere to Go conventions, could we rephrase this to be a complete sentence, like `// customRoundTripper is an http.RoundTripper that adds headers to each request.`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "211": "{\n  \"code_review_suggestion\": \"The comment has a small grammar mistake; changing 'add headers' to 'adds headers' will improve clarity and professionalism.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "211": "{\n  \"code_review_suggestion\": \"The comment has a trailing space after 'headers'; remove it for consistency and to satisfy linter rules, keeping the codebase clean and professional.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "211": "{\n  \"code_review_suggestion\": \"Tiny thing: the comment now reads a bit off—'that add headers'. Consider 'Custom RoundTripper that adds headers.' and maybe clarify which headers or why, for future readers.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "211": "{\"code_review_suggestion\":\"The only change here weakens the comment: it now has a trailing space, dropped punctuation, and still has the grammar issue (should be 'adds'). Suggest: // Custom RoundTripper that adds configured headers to each request. This avoids lint noise and clarifies intent.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

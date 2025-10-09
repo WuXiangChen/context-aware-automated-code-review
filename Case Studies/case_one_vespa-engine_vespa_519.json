@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "433": "vespa-engine/vespa:519"
+        },
+        "selected_nodeLs": {
+            "433": "['PR-519']"
+        },
+        "codediff": {
+            "433": "@@ -342,5 +349,21 @@ public boolean remove(String hostname) {\n     private Mutex lock(Node node) {\n         return node.allocation().isPresent() ? lock(node.allocation().get().owner()) : lockUnallocated();\n     }\n+    \n+    private void updateAllowedHosts() {\n+        StringBuilder s = new StringBuilder();\n+        \n+        // Add tenant hosts\n+        for (Node node : getNodes(Node.Type.tenant))\n+            s.append(node.hostname()).append(\",\");\n+\n+        // Add the zooKeeper servers\n+        for (String hostPort : curator.connectionSpec().split(\"/\"))"
+        },
+        "groundTruth": {
+            "433": "Why split on \"/\"? I thought the connection spec was host1:port1,host2:port2,... Maybe add a method in Curator to return just the hosts?"
+        },
+        "ds_dnContext": {
+            "433": "{\n  \"code_review_suggestion\": \"The updateAllowedHosts method might incorrectly parse the ZooKeeper connection string by splitting on '/', which could include paths or ports as host entries. Consider using a dedicated method to extract only the hostnames, like parsing the connection spec properly or leveraging curator's API for accurate host retrieval.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n    \"code_review_suggestion\": \"The string concatenation in `updateAllowedHosts()` could be inefficient for large host lists. Consider using `StringJoiner` with a comma delimiter to handle the trailing comma more elegantly and improve readability.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n    \"code_review_suggestion\": \"The updateAllowedHosts method has a bug where it incorrectly splits the ZooKeeper connection string. Using '/' as the delimiter will fail for standard ZooKeeper connection strings like 'host1:port1,host2:port2/path'. Instead, split on the first '/' to separate hosts from path, then split the host portion on commas.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n    \"code_review_suggestion\": \"The updateAllowedHosts method has a bug where it appends a trailing comma to the host list, which might cause parsing issues. Consider using String.join or removing the trailing comma after the loop to ensure proper formatting.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n  \"code_review_suggestion\": \"Instead of manually building the string with a `StringBuilder` and a loop, you could make this more concise and idiomatic by using a Java Stream. A `stream().map(Node::hostname).collect(Collectors.joining(\\\",\\\"))` would achieve the same result in a single, more readable line and avoid a potential trailing comma.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n  \"code_review_suggestion\": \"This approach of appending a comma within the loop will result in a trailing comma. Consider using a stream with `Collectors.joining(\\\",\\\")` to build the host string, which produces a clean list without a trailing separator.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n  \"code_review_suggestion\": \"Using StringBuilder to concatenate hostnames with trailing commas can lead to an extra comma at the end; consider using a joiner or trimming the final comma for cleaner and safer output.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n  \"code_review_suggestion\": \"In updateAllowedHosts(), splitting curator.connectionSpec() on '/' might not correctly parse host:port entries—consider splitting on comma or the actual delimiter used to list hosts to avoid malformed entries.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n  \"code_review_suggestion\": \"updateAllowedHosts() is splitting curator.connectionSpec() on '/' so you treat the whole comma‑separated server list (and possibly the chroot) as entries; you likely need to strip any '/path' part, then split the server list on ',' to add each host individually (and avoid adding the chroot). Also trim the trailing comma. Refactor the parsing accordingly.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "433": "{\n  \"code_review_suggestion\": \"updateAllowedHosts() looks incomplete: it builds a StringBuilder that’s never applied, and splitting curator.connectionSpec() on '/' won’t enumerate individual ZK hosts (you need to take the first segment and split on ','). Finish the loop body, parse hosts correctly (strip ports if needed), avoid the trailing comma, and actually update the underlying allowed-hosts structure.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

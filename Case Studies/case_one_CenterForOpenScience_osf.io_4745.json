@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "453": "CenterForOpenScience/osf.io:4745"
+        },
+        "selected_nodeLs": {
+            "453": "['PR-4745']"
+        },
+        "codediff": {
+            "453": "@@ -716,7 +731,7 @@ def to_representation(self, obj, envelope='data'):\n         ])\n \n         embeds = self.context.get('embed', {})\n-\n+        esi = self.context.get('esi', {})"
+        },
+        "groundTruth": {
+            "453": "This makes me think that some value in `esi` will be dereferenced below, when in fact it's just a boolean. I think it'd be more readable in the future if it were `enable_esi` and the default were `False` instead of `{}`."
+        },
+        "ds_dnContext": {
+            "453": "{\n  \"code_review_suggestion\": \"The new variable `esi` is assigned but never used in the visible code. If this is intentional, consider adding a comment explaining its purpose; otherwise, remove it to avoid dead code.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "453": "{\n  \"code_review_suggestion\": \"The new 'esi' variable is assigned but not used in the provided code hunk. Ensure it's utilized later in the method to avoid dead code, especially since the PR's purpose relies on ESI context for generating Edge-Side-Include tags.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "453": "{\n  \"code_review_suggestion\": \"The new 'esi' variable is extracted from context but never used in the method, which could indicate incomplete implementation or dead code. Consider either removing it if unnecessary or implementing the ESI (Edge Side Includes) functionality that this variable suggests.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "453": "{\n    \"code_review_suggestion\": \"The ESI context variable should be checked for truthiness before processing, similar to how embeds is handled, to avoid potential issues when esi is None or empty.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "453": "{\n  \"code_review_suggestion\": \"It looks like the new `esi` variable is declared but never used in the surrounding code. To keep things clean, could we remove this line for now?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "453": "{\n  \"code_review_suggestion\": \"Nice work adding the ESI functionality! For long-term clarity, could we use a more descriptive variable name? Something like `esi_options` would be more explicit about its purpose, especially for developers who aren't familiar with this new feature.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "453": "{\n  \"code_review_suggestion\": \"It looks like a minor formatting change added a blank line before the 'esi' assignment; removing that extra line would improve consistency and keep the code tidy.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "453": "{\n  \"code_review_suggestion\": \"Avoid introducing a trailing space before the variable assignment to keep the diff clean and consistent; in this case, initialize 'esi' on the same line without the leading blank line to improve readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "453": "{\"code_review_suggestion\":\"You added esi = self.context.get('esi', {}) but never use it—looks like accidental dead code. Either integrate it into the representation logic or remove it to avoid confusion and keep things clean.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "453": "{\"code_review_suggestion\": \"You added esi = self.context.get('esi', {}) but never use it; either wire this into the ESI rendering logic (e.g., deciding when to call to_esi_representation) or drop it for now to avoid dead code and future confusion.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

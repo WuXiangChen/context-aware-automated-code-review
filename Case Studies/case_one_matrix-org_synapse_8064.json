@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "232": "matrix-org/synapse:8064"
+        },
+        "selected_nodeLs": {
+            "232": "['PR-8064', 'PR-8058']"
+        },
+        "codediff": {
+            "232": "@@ -57,8 +58,10 @@\n     sub_metrics=[\"real_time_max\", \"real_time_sum\"],\n )\n \n+T = TypeVar(\"T\", bound=Callable[..., Any])\n \n-def measure_func(name=None):\n+\n+def measure_func(name: str = None) -> Callable[[T], T]:"
+        },
+        "groundTruth": {
+            "232": "We seem to usually be explicit about optional parameters. ```suggestion def measure_func(name: Optional[str] = None) -> Callable[[T], T]: ```"
+        },
+        "ds_dnContext": {
+            "232": "{\n  \"code_review_suggestion\": \"The TypeVar 'T' should be renamed to something more descriptive like 'FuncType' to improve clarity and avoid potential conflicts with other generic type variables in the codebase.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "232": "{\n  \"code_review_suggestion\": \"The `name` parameter is typed as `str` but defaults to `None`, which can cause type inconsistencies. Consider using `Optional[str]` to align with the default value and improve type safety.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "232": "{\n  \"code_review_suggestion\": \"The TypeVar 'T' should be constrained to 'Callable' rather than using 'bound=Callable[..., Any]' since the ellipsis and Any don't provide meaningful type safety here. Consider using 'T = TypeVar(\\\"T\\\", bound=Callable)' for cleaner type constraints.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "232": "{\n    \"code_review_suggestion\": \"The TypeVar 'T' should be defined with proper constraints to match the decorator's intended use. Since the decorator wraps functions that return Any, consider using 'T = TypeVar(\\\"T\\\", bound=Callable[..., Any]\\\") to ensure type safety while maintaining flexibility.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "232": "{\n  \"code_review_suggestion\": \"This is a great improvement! To make the type hint even more precise, you could use `typing.ParamSpec` to fully preserve the decorated function's argument signature for static type checkers.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "232": "{\n  \"code_review_suggestion\": \"This is a great improvement to the type safety of our decorators! To make it even more explicit, how about using `Optional[str]` for the `name` parameter? It would make the signature `(name: Optional[str] = None)` and align perfectly with the goal of improving type clarity.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "232": "{\n  \"code_review_suggestion\": \"Great addition of type hints! To improve clarity and enforceability, adjust the inner decorator to preserve the original function's signature by using functools.wraps and ensure the returned callable matches the expected type T precisely.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "232": "{\n  \"code_review_suggestion\": \"Great improvement adding proper typing to `measure_func` and defining `T` for better clarity, but consider adding a brief docstring to explain `measure_func`'s purpose and typing to aid maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "232": "{\"code_review_suggestion\": \"The decorator's return type hint is incorrect: Callable[[T], T] implies it returns the original function unchanged, but a wrapper is almost certainly returned. Use ParamSpec for accurate typing, e.g. define P = ParamSpec('P'); R = TypeVar('R'); and annotate as def measure_func(name: Optional[str] = None) -> Callable[[Callable[P, R]], Callable[P, R]]:. This keeps signatures intact and avoids misleading type checking.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "232": "{\n  \"code_review_suggestion\": \"The parameter is typed as str but given a default of None; make it Optional[str] (e.g. def measure_func(name: Optional[str] = None) ...) to avoid a type mismatch. After that, consider ParamSpec later if you want to preserve the wrapped function’s signature more precisely.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

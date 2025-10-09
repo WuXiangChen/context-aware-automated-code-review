@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "9": "home-assistant/core:3888"
+        },
+        "selected_nodeLs": {
+            "9": "['PR-3888']"
+        },
+        "codediff": {
+            "9": "@@ -37,6 +38,7 @@\n         vol.Required(CONF_PASSWORD): cv.string,\n         vol.Required(CONF_SECRET_KEY): cv.string,\n         vol.Required(CONF_USERNAME): cv.string,\n+        vol.Optional(CONF_DEVICES, default=DEFAULT_DEVICES): cv.ensure_list,"
+        },
+        "groundTruth": {
+            "9": "I do not see a use case for making this configurable. It also should get validated against all valid values (which I guess are DEFAULT_DEVICES?)"
+        },
+        "ds_dnContext": {
+            "9": "{\n  \"code_review_suggestion\": \"You're adding a default value `DEFAULT_DEVICES` but it's not defined in this diff. Make sure to define this constant (probably as an empty list `[]`) to avoid a NameError when this code runs.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "9": "{\n  \"code_review_suggestion\": \"The addition of an optional devices list with a default is a good practice, but ensure DEFAULT_DEVICES is defined as an empty list (not None) to avoid unexpected behavior when cv.ensure_list processes the default value.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "9": "{\n    \"code_review_suggestion\": \"The new optional CONF_DEVICES configuration parameter is a good addition, but it would be better to validate the device list format to ensure it contains only valid device identifiers or types, preventing potential configuration errors down the line.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "9": "{\n    \"code_review_suggestion\": \"Good addition making devices optional with a default list! This improves user experience by allowing the configuration to work without explicitly specifying devices while maintaining backward compatibility.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "9": "{\n  \"code_review_suggestion\": \"Nice addition! To make the configuration more robust and prevent potential errors, let's be more specific about what the list can contain. Using `[cv.string]` instead of `cv.ensure_list` will explicitly validate that the input is a list of strings.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "9": "{\n  \"code_review_suggestion\": \"Great addition! For the new `CONF_DEVICES` option, it's safer and more idiomatic to use `default=[]` directly instead of a `DEFAULT_DEVICES` constant. This avoids potential issues with mutable default values.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "9": "{\n  \"code_review_suggestion\": \"Using cv.ensure_list as the validator might accept inputs that are not strictly lists (e.g., strings get converted into lists of characters), so switching to cv.ensure_list_csv or a custom validator to explicitly enforce a list type would improve input validation clarity and prevent potential bugs.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "9": "{\n  \"code_review_suggestion\": \"Consider specifying the expected element type inside `CONF_DEVICES` list for clearer validation, e.g., `cv.list` of `cv.string`, to improve schema robustness and prevent misconfigurations.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "9": "{\n  \"code_review_suggestion\": \"Using cv.ensure_list alone skips validating each device entry; if downstream code expects strings, a bad type could slip in and break later. Wrap it like vol.Optional(CONF_DEVICES, default=DEFAULT_DEVICES): vol.All(cv.ensure_list, [cv.string]) to enforce item types up front.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "9": "{\"code_review_suggestion\":\"Tighten the new devices option validation: cv.ensure_list only forces a list but doesn’t validate item types, so unexpected objects could slip through and break later logic—use vol.All(cv.ensure_list, [cv.string]) to ensure every entry is a string.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

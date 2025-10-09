@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "463": "log2timeline/plaso:1956"
+        },
+        "selected_nodeLs": {
+            "463": "['PR-1955', 'Issue-1950']"
+        },
+        "codediff": {
+            "463": "@@ -35,9 +39,9 @@ def __init__(self, maximum_number_of_queued_items=0, timeout=None):\n     # where 0 represents unlimited.\n \n     # We need to check that we aren't asking for a bigger queue than the\n-    # platform supports, which requires access to this protected member.\n+    # platform supports, which requires access to this internal value."
+        },
+        "groundTruth": {
+            "463": "internal to what? internal value => protected module."
+        },
+        "ds_dnContext": {
+            "463": "{\n  \"code_review_suggestion\": \"The comment update improves clarity by using 'internal value' instead of 'protected member', which better aligns with Python's naming conventions. Consider adding a brief note about why this internal value is necessary for platform compatibility to further enhance context.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "463": "{\n  \"code_review_suggestion\": \"Good terminology update! Since Python doesn't have true protected members, using 'internal value' is more accurate and aligns better with Python's naming conventions. This change improves code clarity for developers familiar with Python's access model.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "463": "{\n  \"code_review_suggestion\": \"The comment change from 'protected member' to 'internal value' is good for clarity, but we should also consider making this value actually private (prefix with underscore) if it's meant to be internal implementation detail rather than part of the public API.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "463": "{\"code_review_suggestion\": \"Good change! The comment update from 'protected member' to 'internal value' better reflects Python's convention of using underscores to indicate implementation details rather than true access protection.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "463": "{\n  \"code_review_suggestion\": \"This is a great clarification, as 'internal value' is more idiomatic in Python than 'protected member'. To make it even more explicit, you could consider naming the specific internal value being accessed for maximum clarity.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "463": "{\n  \"code_review_suggestion\": \"Good call on updating the terminology in the comment. Using 'internal value' is more aligned with Python's conventions than 'protected member'. It makes the code's intent clearer.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "463": "{\n  \"code_review_suggestion\": \"Referring to protected or internal members directly can be fragile and risky; instead, consider using a public API or method to check platform queue limits to improve maintainability and future compatibility.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "463": "{\n  \"code_review_suggestion\": \"Consider retaining the original term 'protected member' instead of 'internal value' to clearly convey the intended access level and maintain consistency with common Python terminology.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "463": "{\n  \"code_review_suggestion\": \"The comment now says 'internal value' but doesn’t name which internal attribute is accessed; clarify the exact attribute and why it’s safe, and add a hasattr check or try/except around the access to avoid breakage if the internals change.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "463": "{\n  \"code_review_suggestion\": \"Since the change is purely wording, consider naming the specific internal attribute being accessed instead of saying 'this internal value,' and (briefly) why it’s safe across Python versions—this makes the rationale clearer for future maintainers.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

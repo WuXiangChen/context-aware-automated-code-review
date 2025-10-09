@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "54": "jekyll/jekyll:3520"
+        },
+        "selected_nodeLs": {
+            "54": "['PR-3520']"
+        },
+        "codediff": {
+            "54": "@@ -222,6 +222,9 @@ def where(input, property, value)\n     #\n     # Returns the filtered array of objects\n     def sort(input, property = nil, nils = \"first\")\n+      if input.nil?\n+          raise ArgumentError.new(\"Invalid object array given. Object array is null.\")"
+        },
+        "groundTruth": {
+            "54": "Let's make this message `Cannot sort a null object.` or something."
+        },
+        "ds_dnContext": {
+            "54": "{\n  \"code_review_suggestion\": \"The error message uses 'null' instead of Ruby's standard term 'nil'; consider updating it to 'Invalid object array given. Object array is nil.' for consistency with Ruby terminology.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "54": "{\n  \"code_review_suggestion\": \"The error message uses 'null' instead of Ruby's conventional 'nil' terminology. Consider updating it to say 'Object array is nil.' for consistency with Ruby conventions.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "54": "{\n  \"code_review_suggestion\": \"The error message 'Object array is null' could be clearer - consider using 'Input array cannot be nil' instead. Also, the indentation looks off (extra spaces) - should be 2 spaces for consistency with Ruby style.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "54": "{\n    \"code_review_suggestion\": \"Good change to validate input, but consider using a more Ruby-idiomatic approach by raising `ArgumentError, \"input cannot be nil\"` instead of the verbose message, as it's more concise and follows Ruby's exception style.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "54": "{\n  \"code_review_suggestion\": \"Instead of raising an error for `nil` input, how about returning an empty array? In a templating context, it's often better to fail gracefully and render nothing rather than halting the entire process with an exception.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "54": "{\n  \"code_review_suggestion\": \"Great addition! To make this more idiomatic, you can raise the exception directly without `.new`. A slightly more concise message like `raise ArgumentError, \\\"Cannot sort a nil object\\\"` would also be a nice improvement.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "54": "{\n  \"code_review_suggestion\": \"The added nil check raises an error but lacks consistent indentation and does not handle non-array inputs, which could lead to unclear failure modes. Consider refining the input validation to check if 'input' is an array, handle nil or invalid types gracefully, and ensure consistent indentation for better readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "54": "{\n  \"code_review_suggestion\": \"To improve readability and consistency, consider aligning the error message formatting and handling style with the rest of the codebase, and ensure the indentation inside the method follows the existing conventions.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "54": "{\"code_review_suggestion\": \"The new nil check raises an ArgumentError, which may break existing callers; better to use a guard clause that returns an empty array (or whatever the previous contract was) instead of raising, and if you do raise, use 'nil' (not 'null') in the message.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "54": "{\n  \"code_review_suggestion\": \"The added nil check opens an if but never closes it—this will cause a syntax error. Add the missing `end` (and consider simplifying to `raise ArgumentError, 'expected array, got nil'`) so the method compiles cleanly.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

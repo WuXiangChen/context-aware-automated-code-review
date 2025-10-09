@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "254": "matplotlib/matplotlib:18626"
+        },
+        "selected_nodeLs": {
+            "254": "['PR-12068']"
+        },
+        "codediff": {
+            "254": "@@ -5334,6 +5334,7 @@ def imshow(self, X, cmap=None, norm=None, aspect=None,\n             define the data range that the colormap covers. By default,\n             the colormap covers the complete value range of the supplied\n             data. It is deprecated to use *vmin*/*vmax* when *norm* is given.\n+            When using multichannel data, parameters *vmin*/*vmax* are ignored."
+        },
+        "groundTruth": {
+            "254": "```suggestion When using RGB(A) data, parameters *vmin*/*vmax* are ignored. ``` I wonder if we should also warn on that case, since they are invalid kwargs oil the data is 3/4-d"
+        },
+        "ds_dnContext": {
+            "254": "{\n  \"code_review_suggestion\": \"The added note about vmin/vmax being ignored for multichannel data is helpful, but consider clarifying whether this behavior is intentional or a limitation. A brief explanation would improve user expectations.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "254": "{\n  \"code_review_suggestion\": \"Good docstring update. To improve clarity, consider specifying what 'multichannel data' means, such as 'for RGB images', to help users understand when vmin/vmax are ignored.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "254": "{\n    \"code_review_suggestion\": \"The new documentation about vmin/vmax being ignored for multichannel data is helpful, but it should be more specific about what 'multichannel data' means. Consider clarifying whether this applies to RGB(A) arrays specifically or any array with multiple channels to prevent confusion.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "254": "{\"code_review_suggestion\": \"The documentation update clarifies that vmin/vmax are ignored for multichannel data, which is good. However, consider adding a brief explanation why this behavior occurs (e.g., 'because multichannel data requires separate normalization per channel') to help users understand the rationale behind this limitation.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "254": "{\n  \"code_review_suggestion\": \"This is a helpful clarification! To make it even more educational for users, consider briefly explaining *why* vmin/vmax are ignored for multichannel data—for example, because the color is determined directly by the channel values, not a colormap.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "254": "{\n  \"code_review_suggestion\": \"Thanks for clarifying this behavior in the docs! For better readability, could we combine this new sentence with the preceding one? For example: '...It is deprecated to use *vmin*/*vmax* when *norm* is given, and these parameters are ignored when using multichannel data.'\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "254": "{\n  \"code_review_suggestion\": \"The added line would be clearer if it used consistent formatting like surrounding *vmin*/*vmax* with asterisks for emphasis, and it would help to clarify that this behavior applies only when multichannel data is detected to avoid confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "254": "{\n  \"code_review_suggestion\": \"The added note about *vmin*/*vmax* being ignored for multichannel data is helpful, but consider clarifying or linking to relevant behavior details to guide users better and prevent confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "254": "{\n  \"code_review_suggestion\": \"The new sentence is vague: define explicitly what counts as multichannel (e.g. shape (M,N,3)/(M,N,4)) and consider noting that vmin/vmax are silently ignored in that case; suggest clarifying wording or adding a brief example so users aren’t surprised by unused parameters.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "254": "{\"code_review_suggestion\":\"The new note is helpful but “multichannel data” is vague; explicitly say “For RGB(A) images of shape (M, N, 3) or (M, N, 4), vmin and vmax are ignored (as are norm/cmap).” That added clarity reduces user confusion about why their vmin/vmax have no effect.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

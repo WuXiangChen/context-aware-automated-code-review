@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "344": "cython/cython:3765"
+        },
+        "selected_nodeLs": {
+            "344": "['PR-3765', 'Issue-3764']"
+        },
+        "codediff": {
+            "344": "@@ -2965,10 +2966,12 @@ def analyse_declarations(self, env):\n             # staticmethod() was overridden - not much we can do here ...\n             self.is_staticmethod = False\n \n-        if env.is_py_class_scope:\n-            if self.name == '__new__':\n+        if env.is_py_class_scope or env.is_c_class_scope:\n+            if self.name == '__new__' and env.is_py_class_scope:\n                 self.is_staticmethod = True\n-            elif not self.is_classmethod and self.name in IMPLICIT_CLASSMETHODS:\n+            elif self.name == INHERITANCE_HOOK and env.is_c_class_scope:\n+                error(self.pos, \"inheritance argument is not supported by extension class\")"
+        },
+        "groundTruth": {
+            "344": "I'd make this more explicit: `\"__init_subclass__ is not supported by extensions class\"`"
+        },
+        "ds_dnContext": {
+            "344": "{\n  \"code_review_suggestion\": \"The condition for handling implicit class methods now applies to both Python and C class scopes, but the logic for `__new__` is restricted to Python classes. This inconsistency might cause issues in C class scopes where `__new__` should also be treated as static. Consider aligning the handling by either extending the `__new__` check to C classes or clarifying why it's Python-specific.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "344": "{\n  \"code_review_suggestion\": \"The error message should clarify it's about the `__init_subclass__` method itself, not just 'inheritance argument'. Consider rewording to: 'The `__init_subclass__` method is not supported by extension classes' for better clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "344": "{\n    \"code_review_suggestion\": \"The condition `env.is_c_class_scope` is being checked for the INHERITANCE_HOOK error, but the __new__ method check only considers `env.is_py_class_scope`. This inconsistency could cause __new__ to be incorrectly handled in C class scopes. Consider making both checks consistent by either handling both class types or clarifying the intended behavior.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "344": "{\n    \"code_review_suggestion\": \"The error message for `__init_subclass__` in extension classes should be more specific and mention the method name directly, like '`__init_subclass__` is not supported by extension classes' to clearly identify the unsupported feature.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "344": "{\n  \"code_review_suggestion\": \"Good catch adding the error for inheritance hooks in C classes! However, it seems the original logic for handling `IMPLICIT_CLASSMETHODS` in regular Python classes was removed. Let's restore that check to avoid a potential regression for Python class analysis.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "344": "{\n  \"code_review_suggestion\": \"This correctly adds the check to disallow `__init_subclass__` on extension classes, as discussed. For a better user experience, could the error message be more direct? Mentioning `__init_subclass__` by name, e.g., '`__init_subclass__` is not supported by extension classes', would be clearer than the more generic 'inheritance argument'.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "344": "{\n  \"code_review_suggestion\": \"The combined condition in the updated if-statement is confusing and mixes concerns; consider splitting checks for Python and C class scopes separately to improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "344": "{\n  \"code_review_suggestion\": \"Great addition of the error for unsupported inheritance hooks in extension classes; consider simplifying the nested conditions by clearly separating Python and C class scopes to improve readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "344": "{\"code_review_suggestion\":\"By replacing the IMPLICIT_CLASSMETHODS branch, you dropped the implicit classmethod handling (likely for __init_subclass__), so such methods in Python classes may no longer be marked as classmethods. Restore the previous logic for py class scopes (e.g. keep the implicit classmethod assignment when env.is_py_class_scope) while adding the new C-class error in a separate env.is_c_class_scope block.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "344": "{\n  \"code_review_suggestion\": \"By replacing the elif for IMPLICIT_CLASSMETHODS with the C-class error branch, Python classes may no longer get implicit classmethod handling (e.g. __class_getitem__/__init_subclass__). Consider keeping the original IMPLICIT_CLASSMETHODS logic under env.is_py_class_scope and adding a separate env.is_c_class_scope block for the inheritance hook error to avoid a regression.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

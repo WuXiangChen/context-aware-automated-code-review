@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "353": "CenterForOpenScience/osf.io:5452"
+        },
+        "selected_nodeLs": {
+            "353": "['PR-5452']"
+        },
+        "codediff": {
+            "353": "@@ -69,6 +69,7 @@ def parent_dir(path):\n CONFIRM_REGISTRATIONS_BY_EMAIL = True\n ALLOW_REGISTRATION = True\n ALLOW_LOGIN = True\n+ENABLE_NOTIFICATION_SUBSCRIPTION_CREATION = True"
+        },
+        "groundTruth": {
+            "353": "Minor: This is a bit of a misnomer; in addition to subscribing a user on project creation, users are also subscribed on when they are added as a contributor. How about something like `SUBSCRIBE_CONTRIBUTORS_TO_NOTIFICATIONS`?"
+        },
+        "ds_dnContext": {
+            "353": "{\n  \"code_review_suggestion\": \"Nice addition of the feature flag! To make this more maintainable, consider adding a brief comment above the constant explaining what this flag controls (e.g., `# Enables users to create new notification subscriptions in the UI`). This will help other developers understand its purpose without digging through the codebase.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n  \"code_review_suggestion\": \"This new flag `ENABLE_NOTIFICATION_SUBSCRIPTION_CREATION` is a great addition for controlling notification behavior. To ensure it works as intended, please verify it's properly validated (e.g., as a boolean) when used in the subscription logic and tests mentioned in the PR description.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n  \"code_review_suggestion\": \"The new feature flag ENABLE_NOTIFICATION_SUBSCRIPTION_CREATION should be documented with a comment explaining its purpose and default behavior, making it easier for other developers to understand when and how to use it.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n    \"code_review_suggestion\": \"The new flag ENABLE_NOTIFICATION_SUBSCRIPTION_CREATION should include a comment explaining its purpose and default behavior, as it controls automatic notification subscriptions for new projects and contributors. This will help other developers understand when and why to toggle this setting.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n  \"code_review_suggestion\": \"Thanks for adding this feature flag! To avoid enabling new functionality unexpectedly for existing installations upon upgrade, it's often best practice to set the default to `False`. This makes it a deliberate opt-in for administrators.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n  \"code_review_suggestion\": \"Great work adding this feature flag! To make its purpose more explicit, how about renaming `ENABLE_NOTIFICATION_SUBSCRIPTION_CREATION` to `ENABLE_AUTOMATIC_NOTIFICATION_SUBSCRIPTIONS`? This would clarify that it specifically controls the automatic creation of subscriptions on events like project creation.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n  \"code_review_suggestion\": \"Consider grouping all related feature flags into a single configuration class or dictionary for better organization and easier management as the project scales.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n  \"code_review_suggestion\": \"Consider grouping related feature flags together or documenting the new ENABLE_NOTIFICATION_SUBSCRIPTION_CREATION setting to clearly communicate its purpose and usage.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n  \"code_review_suggestion\": \"New flag ENABLE_NOTIFICATION_SUBSCRIPTION_CREATION is added enabled-by-default with no comment or docs—this can silently change behavior. Consider defaulting to False (or deriving from an env var with a sensible default) and add a brief comment/doc entry so deployers explicitly opt in.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "353": "{\n  \"code_review_suggestion\": \"Consider making ENABLE_NOTIFICATION_SUBSCRIPTION_CREATION configurable via an environment variable (and add a short comment) so ops/tests can toggle it without modifying code; hard‑coding True here limits its usefulness as a feature flag.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

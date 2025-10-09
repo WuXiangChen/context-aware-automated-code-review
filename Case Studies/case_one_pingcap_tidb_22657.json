@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "285": "pingcap/tidb:22657"
+        },
+        "selected_nodeLs": {
+            "285": "['PR-22657']"
+        },
+        "codediff": {
+            "285": "@@ -0,0 +1,392 @@\n+// Copyright 2021 PingCAP, Inc.\n+//\n+// Licensed under the Apache License, Version 2.0 (the \"License\");\n+// you may not use this file except in compliance with the License.\n+// You may obtain a copy of the License at\n+//\n+//     http://www.apache.org/licenses/LICENSE-2.0\n+//\n+// Unless required by applicable law or agreed to in writing, software\n+// distributed under the License is distributed on an \"AS IS\" BASIS,\n+// See the License for the specific language governing permissions and\n+// limitations under the License.\n+\n+package sqlexec\n+\n+import (\n+\t\"encoding/json\"\n+\t\"testing\"\n+\t\"time\"\n+\n+\t. \"github.com/pingcap/check\"\n+\t\"github.com/pingcap/tidb/util/hack\"\n+)\n+\n+func TestT(t *testing.T) {\n+\tTestingT(t)\n+}\n+\n+var _ = Suite(&testUtilsSuite{})\n+\n+type testUtilsSuite struct{}\n+\n+func (s *testUtilsSuite) TestReserveBuffer(c *C) {\n+\tres0 := reserveBuffer(nil, 0)\n+\tc.Assert(res0, HasLen, 0)\n+\n+\tres1 := reserveBuffer(res0, 3)\n+\tc.Assert(res1, HasLen, 3)\n+\tres1[1] = 3\n+\n+\tres2 := reserveBuffer(res1, 9)\n+\tc.Assert(res2, HasLen, 12)\n+\tc.Assert(cap(res2), Equals, 15)\n+\tc.Assert(res2[:3], DeepEquals, res1)\n+}\n+\n+func (s *testUtilsSuite) TestEscapeBackslash(c *C) {\n+\ttype TestCase struct {\n+\t\tname   string\n+\t\tinput  []byte\n+\t\toutput []byte\n+\t}\n+\ttests := []TestCase{\n+\t\t{\n+\t\t\tname:   \"normal\",\n+\t\t\tinput:  []byte(\"hello\"),\n+\t\t\toutput: []byte(\"hello\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"0\",\n+\t\t\tinput:  []byte(\"he\\x00lo\"),\n+\t\t\toutput: []byte(\"he\\\\0lo\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"break line\",\n+\t\t\tinput:  []byte(\"he\\nlo\"),\n+\t\t\toutput: []byte(\"he\\\\nlo\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"carry\",\n+\t\t\tinput:  []byte(\"he\\rlo\"),\n+\t\t\toutput: []byte(\"he\\\\rlo\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"substitute\",\n+\t\t\tinput:  []byte(\"he\\x1alo\"),\n+\t\t\toutput: []byte(\"he\\\\Zlo\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"single quote\",\n+\t\t\tinput:  []byte(\"he'lo\"),\n+\t\t\toutput: []byte(\"he\\\\'lo\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"double quote\",\n+\t\t\tinput:  []byte(\"he\\\"lo\"),\n+\t\t\toutput: []byte(\"he\\\\\\\"lo\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"back slash\",\n+\t\t\tinput:  []byte(\"he\\\\lo\"),\n+\t\t\toutput: []byte(\"he\\\\\\\\lo\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"double escape\",\n+\t\t\tinput:  []byte(\"he\\x00lo\\\"\"),\n+\t\t\toutput: []byte(\"he\\\\0lo\\\\\\\"\"),\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"chinese\",\n+\t\t\tinput:  []byte(\"中文?\"),\n+\t\t\toutput: []byte(\"中文?\"),\n+\t\t},\n+\t}\n+\tfor _, t := range tests {\n+\t\tcommentf := Commentf(\"%s\", t.name)\n+\t\tc.Assert(escapeBytesBackslash(nil, t.input), DeepEquals, t.output, commentf)\n+\t\tc.Assert(escapeStringBackslash(nil, string(hack.String(t.input))), DeepEquals, t.output, commentf)\n+\t}\n+}\n+\n+func (s *testUtilsSuite) TestEscapeSQL(c *C) {\n+\ttype TestCase struct {\n+\t\tname   string\n+\t\tinput  string\n+\t\tparams []interface{}\n+\t\toutput string\n+\t\terr    string\n+\t}\n+\ttime2, err := time.Parse(\"2006-01-02 15:04:05\", \"2018-01-23 04:03:05\")\n+\tc.Assert(err, IsNil)\n+\ttests := []TestCase{\n+\t\t{\n+\t\t\tname:   \"normal 1\",\n+\t\t\tinput:  \"select * from 1\",\n+\t\t\tparams: []interface{}{},\n+\t\t\toutput: \"select * from 1\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"normal 2\",\n+\t\t\tinput:  \"WHERE source != 'builtin'\",\n+\t\t\tparams: []interface{}{},\n+\t\t\toutput: \"WHERE source != 'builtin'\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"discard extra arguments\",\n+\t\t\tinput:  \"select * from 1\",\n+\t\t\tparams: []interface{}{4, 5, \"rt\"},\n+\t\t\toutput: \"select * from 1\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"%? missing arguments\",\n+\t\t\tinput:  \"select %? from %?\",\n+\t\t\tparams: []interface{}{4},\n+\t\t\terr:    \"missing arguments.*\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"nil\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{nil},\n+\t\t\toutput: \"select NULL\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"int\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{int(3)},\n+\t\t\toutput: \"select 3\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"int8\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{int8(4)},\n+\t\t\toutput: \"select 4\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"int16\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{int16(5)},\n+\t\t\toutput: \"select 5\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"int32\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{int32(6)},\n+\t\t\toutput: \"select 6\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"int64\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{int64(7)},\n+\t\t\toutput: \"select 7\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"uint\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{uint(8)},\n+\t\t\toutput: \"select 8\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"uint8\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{uint8(9)},\n+\t\t\toutput: \"select 9\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"uint16\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{uint16(10)},\n+\t\t\toutput: \"select 10\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"uint32\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{uint32(11)},\n+\t\t\toutput: \"select 11\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"uint64\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{uint64(12)},\n+\t\t\toutput: \"select 12\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"float32\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{float32(0.13)},\n+\t\t\toutput: \"select 0.13\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"float64\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{float64(0.14)},\n+\t\t\toutput: \"select 0.14\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"bool on\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{true},\n+\t\t\toutput: \"select 1\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"bool off\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{false},\n+\t\t\toutput: \"select 0\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"time 0\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{time.Time{}},\n+\t\t\toutput: \"select '0000-00-00'\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"time 1\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{time.Date(2019, 1, 1, 0, 0, 0, 0, time.UTC)},\n+\t\t\toutput: \"select '2019-01-01 00:00:00'\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"time 2\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{time2},\n+\t\t\toutput: \"select '2018-01-23 04:03:05'\",\n+\t\t\terr:    \"\",\n+\t\t},\n+\t\t{\n+\t\t\tname:   \"time 3\",\n+\t\t\tinput:  \"select %?\",\n+\t\t\tparams: []interface{}{time.Unix(0, 888888888)},\n+\t\t\toutput: \"select '1970-01-01 08:00:00.888888'\","
+        },
+        "groundTruth": {
+            "285": "In my timezone this fails. ```suggestion params: []interface{}{time.Unix(0, 888888888).UTC()}, output: \"select '1970-01-01 00:00:00.888888'\", ```"
+        },
+        "ds_dnContext": {
+            "285": ""
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "285": "{\n  \"code_review_suggestion\": \"The escapeSQL function seems to format times in the local time zone, as seen in the test for time.Unix, which could result in inconsistent SQL queries across different environments. To ensure reliability when used in other packages, consider formatting times in UTC for consistent behavior.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "285": "{\n  \"code_review_suggestion\": \"The time formatting in the test case 'time 3' uses a hardcoded timezone offset ('08:00:00'), which may fail in different timezone environments. Consider using time.UTC or explicitly setting the timezone in the test to ensure consistent behavior across environments.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "285": "{\n    \"code_review_suggestion\": \"The test for time.Unix(0, 888888888) expects '1970-01-01 08:00:00.888888' but this hardcodes the +8 timezone offset. Consider using time.UTC in time.Unix to make the test timezone-independent and avoid potential failures in different environments.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "285": "{\n  \"code_review_suggestion\": \"The time-related tests rely on the system's local timezone, which can cause them to fail in different environments. To make these tests deterministic, please refactor them to use a fixed timezone, like UTC, for creating all `time.Time` values and adjust the expected outputs accordingly.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "285": "{\n  \"code_review_suggestion\": \"Thanks for adding these tests! The time-related tests in `TestEscapeSQL` appear to be dependent on the local timezone of the execution environment. For example, the 'time 3' test case hardcodes an output that assumes a UTC+8 timezone, which could lead to flaky tests. To make them deterministic, could you"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "285": "{\n  \"code_review_suggestion\": \"The tests for SQL escaping rely on custom functions and manual assertions but don't show any handling for SQL injection edge cases or malformed inputs; consider adding explicit tests and centralizing parameter escaping logic to ensure robust, secure SQL generation and prevent injection vulnerabilities.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "285": "{\n  \"code_review_suggestion\": \"The tests are thorough and well-structured, but consider adding more explicit checks or comments around handling edge cases for time formatting to ensure clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "285": "{\"code_review_suggestion\":\"Test case 'time 3' hardcodes a +8 hour offset ('1970-01-01 08:00:00.888888'), making the test timezone‑dependent and flaky outside a UTC+8 environment. Pin the timezone explicitly (e.g., use time.Unix(...).In(time.UTC) and adjust the expected string) or set a fixed location in the code under test.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "285": "{\"code_review_suggestion\":\"The time-based test (expecting '1970-01-01 08:00:00.888888') implicitly relies on the host’s local TZ being UTC+8, making it flaky in other environments. Force a deterministic location (e.g. use time.Unix(0, 888888888).In(time.FixedZone(\\\"UTC+8\\\", 8*3600)) or construct with time.Date and a fixed zone) and assert against that to avoid timezone-dependent failures.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

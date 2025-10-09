@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "218": "mantidproject/mantid:14499"
+        },
+        "selected_nodeLs": {
+            "218": "['PR-14499']"
+        },
+        "codediff": {
+            "218": "@@ -167,24 +177,27 @@ void BackgroundHelper::deleteUnitsConverters() {\n }\n \n /** Initialization method:\n-@param bkgWS    -- shared pointer to the workspace which contains background\n-@param sourceWS -- shared pointer to the workspace to remove background from\n-@param emode    -- energy conversion mode used during internal units conversion\n-(0 -- elastic, 1-direct, 2 indirect, as defined in Units conversion\n-@param pLog     -- pointer to the logger class which would report errors\n-@param nThreads -- number of threads to be used for background removal\n-@param inPlace  -- if the background removal occurs from the existing workspace\n+*@param bkgWS    -- shared pointer to the workspace which contains background\n+*@param sourceWS -- shared pointer to the workspace to remove background from\n+*@param emode    -- energy conversion mode used during internal units conversion\n+*           (0 -- elastic, 1-direct, 2 indirect, as defined in Units conversion\n+*@param pLog     -- pointer to the logger class which would report errors\n+*@param nThreads -- number of threads to be used for background removal\n+*@param inPlace  -- if the background removal occurs from the existing workspace\n+*@param NullifyNegative -- if true, negative signals are nullified and error is\n+*                          modified appropriately\n or target workspace has to be cloned.\n */\n void BackgroundHelper::initialize(const API::MatrixWorkspace_const_sptr &bkgWS,\n                                   const API::MatrixWorkspace_sptr &sourceWS,\n                                   int emode, Kernel::Logger *pLog, int nThreads,\n-                                  bool inPlace) {\n+                                  bool inPlace, bool NullifyNegative) {"
+        },
+        "groundTruth": {
+            "218": "should be nullifyNegative"
+        },
+        "ds_dnContext": {
+            "218": "{\n  \"code_review_suggestion\": \"The documentation for the `inPlace` parameter is now broken across lines and interrupted by the new `NullifyNegative` parameter, which could cause confusion. Consider moving the `NullifyNegative` documentation after completing the `inPlace` description to maintain clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"The new NullifyNegative parameter should use camelCase naming (nullifyNegative) to match the existing parameter style (e.g., nThreads, inPlace) for consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"The new NullifyNegative parameter needs documentation in the method header comment. Please add a clear description explaining what it does and when it should be used, similar to the other parameters.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"The new NullifyNegative parameter should be documented in the method's doxygen comment to explain its purpose and behavior, similar to how the other parameters are documented.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"The parameter list for `initialize` is becoming long. To improve readability and maintainability, consider grouping configuration parameters like `emode`, `nThreads`, `inPlace`, and `NullifyNegative` into a single options struct. This would also prevent documentation errors like the one that split the description for `inPlace`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"Thanks for adding this flexibility! Just a small style suggestion: the new parameter `NullifyNegative` uses PascalCase, while the other parameters in this function use camelCase. Would you mind changing it to `nullifyNegative` to maintain consistency?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"The new parameter 'NullifyNegative' lacks clear naming consistency—consider following standard camelCase or snake_case conventions (e.g., 'nullifyNegative'). Also, update all relevant comments and documentation to reflect this parameter clearly, ensuring maintainability and clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"Great addition of the NullifyNegative flag to control negative signal handling; consider adding explicit parameter validation or default behavior documentation to ensure clarity and prevent misuse.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"The new required parameter 'NullifyNegative' changes the initialize() signature and will break existing callers; make it backward compatible by giving it a default (e.g. bool nullifyNegative = false) or adding an overload, and align its name/style (lowerCamelCase) plus fix the Doxygen lines to use '* @param' so they’re parsed.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "218": "{\n  \"code_review_suggestion\": \"The new parameter NullifyNegative breaks the existing lowerCamelCase style (all others start lowercase) and its Doxygen comment formatting is slightly inconsistent; rename it to nullifyNegative (or nullifyNegativeSignal to mirror the property name) and update the @param line accordingly for clearer, consistent documentation.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

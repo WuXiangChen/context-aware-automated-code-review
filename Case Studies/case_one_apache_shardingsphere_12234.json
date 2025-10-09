@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "359": "apache/shardingsphere:12234"
+        },
+        "selected_nodeLs": {
+            "359": "['PR-12234', 'Issue-12216']"
+        },
+        "codediff": {
+            "359": "@@ -0,0 +1,62 @@\n+/*\n+ * Licensed to the Apache Software Foundation (ASF) under one or more\n+ * contributor license agreements.  See the NOTICE file distributed with\n+ * this work for additional information regarding copyright ownership.\n+ * The ASF licenses this file to You under the Apache License, Version 2.0\n+ * (the \"License\"); you may not use this file except in compliance with\n+ * the License.  You may obtain a copy of the License at\n+ *\n+ *     http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+\n+package org.apache.shardingsphere.singletable.rule.builder;\n+\n+import java.util.Arrays;\n+import java.util.Collection;\n+import java.util.Properties;\n+import org.apache.shardingsphere.infra.config.properties.ConfigurationProperties;\n+import org.apache.shardingsphere.infra.config.properties.ConfigurationPropertyKey;\n+import org.apache.shardingsphere.infra.rule.ShardingSphereRule;\n+import org.apache.shardingsphere.infra.rule.builder.schema.SchemaRuleBuilder;\n+import org.apache.shardingsphere.infra.rule.builder.schema.SchemaRulesBuilderMaterials;\n+import org.apache.shardingsphere.infra.rule.identifier.scope.SchemaRule;\n+import org.apache.shardingsphere.singletable.config.SingleTableRuleConfiguration;\n+import org.apache.shardingsphere.singletable.rule.SingleTableRule;\n+import org.apache.shardingsphere.spi.ShardingSphereServiceLoader;\n+import org.apache.shardingsphere.spi.ordered.OrderedSPIRegistry;\n+import org.junit.Test;\n+import org.junit.runner.RunWith;\n+import org.mockito.junit.MockitoJUnitRunner;\n+\n+import static org.hamcrest.CoreMatchers.instanceOf;\n+import static org.junit.Assert.assertThat;\n+import static org.mockito.Mockito.mock;\n+import static org.mockito.Mockito.when;\n+\n+@RunWith(MockitoJUnitRunner.class)\n+public class SingleTableRuleBuilderTest {"
+        },
+        "groundTruth": {
+            "359": "Hi, @hoorf Thanks for your work, sorry to feedback a little late. Do you think it is better to define it as a final class as it is just for a test? Apart from that, this PR looks good to me. ;-)"
+        },
+        "ds_dnContext": {
+            "359": "{\n  \"code_review_suggestion\": \"The test class setup looks good, but consider adding actual test methods to validate the SingleTableRuleBuilder behavior—currently, there are no test cases implemented to verify functionality.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "359": "{\n  \"code_review_suggestion\": \"The test class setup looks good, but ensure you add actual test methods (e.g., @Test) to validate SingleTableRuleBuilder behavior, as the current diff only shows class structure without test logic.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "359": "{\n  \"code_review_suggestion\": \"The test imports unused classes like Arrays, Collection, Properties, ConfigurationProperties, ConfigurationPropertyKey, ShardingSphereRule, ShardingSphereServiceLoader, and OrderedSPIRegistry. Consider removing these unused imports to improve code clarity and maintainability.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "359": "{\"code_review_suggestion\": \"The test should verify that SingleTableRuleBuilder correctly builds a SingleTableRule instance with the proper configuration, but currently it's missing assertions to validate the actual rule configuration and behavior beyond just instance type checking.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "359": "{\n  \"code_review_suggestion\": \"Great start on the new test class! I noticed we're using the JUnit 4 runner. To keep our testing practices modern and consistent across the project, could we use JUnit 5 with `@ExtendWith(MockitoExtension.class)` instead?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "359": "{\n  \"code_review_suggestion\": \"Thanks for adding this test case for the `SingleTableRuleBuilder`! It looks like a great start, but the test method itself appears to be missing. To complete this, could you please add the test logic to verify that the builder correctly constructs a `SingleTableRule`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "359": "{\n  \"code_review_suggestion\": \"This diff includes test code within the main source package, which risks mixing test and production code; consider moving the SingleTableRuleBuilderTest class to a dedicated test directory with appropriate package naming to improve project structure and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "359": "{\n  \"code_review_suggestion\": \"The test class lacks actual test methods and assertions to verify SingleTableRuleBuilder behavior; consider adding meaningful test cases to effectively validate the builder's functionality.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "359": "{\n  \"code_review_suggestion\": \"The class ends without a closing brace and contains no @Test methods—this will fail compilation and provides no coverage. Add the missing } and implement an actual test (or remove the class) and prune unused imports.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "359": "{\n  \"code_review_suggestion\": \"The class is declared as a test for SingleTableRuleBuilder but contains no @Test method and a bunch of unused imports, so it currently doesn’t validate anything. Add a concrete @Test that builds a SingleTableRule via the builder and asserts the expected SchemaRule type/behavior, and drop unused imports to keep it clean.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "274": "strimzi/strimzi-kafka-operator:4045"
+        },
+        "selected_nodeLs": {
+            "274": "['PR-4045']"
+        },
+        "codediff": {
+            "274": "@@ -87,8 +91,8 @@ private static KafkaConnectBuilder defaultKafkaConnect(KafkaConnect kafkaConnect\n             .endSpec();\n     }\n \n-    private static DoneableKafkaConnect deployKafkaConnect(KafkaConnect kafkaConnect) {\n-        if (Environment.DEFAULT_TO_DENY_NETWORK_POLICIES) {\n+    private static DoneableKafkaConnect deployKafkaConnect(KafkaConnect kafkaConnect, boolean allowNP) {"
+        },
+        "groundTruth": {
+            "274": "Shouldn't be `allowNP` based on env variable for NetowkrPolicies?"
+        },
+        "ds_dnContext": {
+            "274": "{\n  \"code_review_suggestion\": \"The parameter name 'allowNP' is unclear and could lead to confusion; consider renaming it to 'allowNetworkPolicies' for better readability and maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "274": "{\n  \"code_review_suggestion\": \"The new `allowNP` parameter isn't being used in the condition. To properly control network policy creation as intended, update the condition to use this parameter instead of `Environment.DEFAULT_TO_DENY_NETWORK_POLICIES`.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "274": "{\n  \"code_review_suggestion\": \"The parameter name 'allowNP' is unclear - consider renaming it to something more descriptive like 'allowNetworkPolicies' to improve code readability and maintainability.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "274": "{\n    \"code_review_suggestion\": \"The method signature change to add `allowNP` parameter looks good for controlling network policy creation, but consider renaming the parameter to something more descriptive like `allowNetworkPolicies` to improve code clarity and maintain consistency with the existing `DEFAULT_TO_DENY_NETWORK_POLICIES` constant.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "274": "{\n  \"code_review_suggestion\": \"This is a great refactoring. Passing the network policy flag as a parameter instead of relying on a global `Environment` variable makes the method's dependencies explicit and improves testability.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "274": "{\n  \"code_review_suggestion\": \"Nice work on making the test setup more flexible! For better readability, how about we use a more descriptive name for the new parameter? Renaming `allowNP` to `allowNetworkPolicies` would make the method's purpose clearer at a glance.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "274": "{\n  \"code_review_suggestion\": \"Passing the network policy flag as a method parameter is good, but the parameter name 'allowNP' is ambiguous; consider renaming it to something clearer like 'allowNetworkPolicy' to improve code readability and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "274": "{\n  \"code_review_suggestion\": \"Consider adding a clear Javadoc comment for the new allowNP parameter to explain its purpose and usage, ensuring better maintainability and clarity for future developers.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "274": "{\"code_review_suggestion\":\"You removed the Environment.DEFAULT_TO_DENY_NETWORK_POLICIES guard and added an unused allowNP parameter, so the network policy logic will now execute unconditionally. Either apply the new flag (e.g. if (!allowNP) { ... }) or retain the env check to avoid an unintended behavior change.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "274": "{\n  \"code_review_suggestion\": \"The new boolean allowNP replaces Environment.DEFAULT_TO_DENY_NETWORK_POLICIES but its polarity vs the old deny-default flag can be confusing (double negative risk). Consider renaming to something explicit like createNetworkPolicies or networkPoliciesEnabled (or use an enum) and/or keep an overload without the param to preserve old callers. A short Javadoc explaining precedence over the env var would prevent misuse.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

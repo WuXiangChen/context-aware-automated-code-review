@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "425": "ballerina-platform/ballerina-lang:29282"
+        },
+        "selected_nodeLs": {
+            "425": "['PR-29282']"
+        },
+        "codediff": {
+            "425": "@@ -35,15 +35,14 @@\n     public void testSemanticErrors() {\n         CompileResult compile = BCompileUtil.compile(\n                 \"test-src/expressions/checkedexpr/checked_expr_semantics_negative.bal\");\n-        Assert.assertEquals(compile.getErrorCount(), 4, compile.toString());\n+        Assert.assertEquals(compile.getErrorCount(), 5, compile.toString());\n         BAssertUtil.validateError(compile, 0, \"invalid usage of the 'check' expression \" +\n                 \"operator: no expression type is equivalent to error type\", 11, 25);\n-        BAssertUtil.validateError(compile, 1, \"invalid usage of the 'check' expression \" +\n-                \"operator: all expression types are equivalent to error type\", 16, 25);\n-        BAssertUtil.validateError(compile, 2, \"invalid usage of the 'check' expression \" +\n-                \"operator: all expression types are equivalent to error type\", 30, 25);\n+        BAssertUtil.validateError(compile, 1, \"incompatible types: expected 'string', found 'never'\", 16, 19);"
+        },
+        "groundTruth": {
+            "425": "Example is here is ``` function testCheckedExprSemanticErrors2() returns error? { string line = checkpanic readLineError(); } ``` The diagnostic is correct, But I think we can improve this."
+        },
+        "ds_dnContext": {
+            "425": "{\n  \"code_review_suggestion\": \"The test update increases the expected error count to 5 but only validates 2 errors. This could hide regressions if the test passes without checking all expected errors. Please add validation for the remaining 3 error cases to ensure complete test coverage.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "425": "{\n  \"code_review_suggestion\": \"The error message for index 1 has changed from a semantic error to a type error; verify that 'incompatible types: expected 'string', found 'never'' correctly reflects the intended behavior for 'check' keyword validation and that the column number 19 is accurate after the code changes.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "425": "{\n  \"code_review_suggestion\": \"The test update appears to have a mismatch between the expected error count (5) and the actual error validations provided (only 2). This could cause test failures. Please verify that all 5 expected errors are properly validated with BAssertUtil.validateError calls to ensure the test accurately reflects the semantic error scenarios.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "425": "{\n  \"code_review_suggestion\": \"The test update looks good for adding the new semantic error case, but the error message format should be consistent - consider using the same 'invalid usage of the check expression operator' pattern for the new error at line 16, 19 to maintain consistency with the existing error messages.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "425": "{\n  \"code_review_suggestion\": \"Great job updating the error messages! I noticed the expected error count is now 5, but we're only validating the first two. To make the test more thorough and prevent future regressions, it would be best to add assertions for all five errors.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "425": "{\n  \"code_review_suggestion\": \"The total error count has increased to 5, but the diff only shows explicit validation for the first two errors. To improve test clarity and robustness, could you please ensure all 5 expected errors are validated with `BAssertUtil.validateError`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "425": "{\n  \"code_review_suggestion\": \"The test's expected error count and messages are inconsistent and outdated; please update all asserted errors to match the current compiler output for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "425": "{\n  \"code_review_suggestion\": \"The test updates error count and messages but removes validations for errors at indices 2 and onwards, which may cause incomplete verification; consider adding assertions for all expected errors to maintain thoroughness and test clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "425": "{\"code_review_suggestion\": \"You bumped the expected error count to 5 but now only assert two errors; the test no longer validates the remaining diagnostics and could mask regressions. Add validateError calls for indices 2–4 (or fix the count) so every reported error is explicitly checked.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "425": "{\n  \"code_review_suggestion\": \"You bumped the expected error count to 5 but now only assert two error messages, weakening the test. Add validateError calls (indexes 2–4) for the newly expected diagnostics (or lower the count) so the test actually verifies all reported errors.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "142": "jellyfin/jellyfin-web:309"
+        },
+        "selected_nodeLs": {
+            "142": "['PR-309', 'Issue-306']"
+        },
+        "codediff": {
+            "142": "@@ -343,7 +342,6 @@ define(['loading', 'globalize', 'events', 'viewManager', 'layoutManager', 'skinM\n                 hashbang: options.hashbang !== false,\n                 enableHistory: enableHistory()\n             });\n-        }).finally(function () {"
+        },
+        "groundTruth": {
+            "142": "This may end up in the loading indicator not being hidden if an error occurs. We may want to do something like `.catch().then(function() { ... })` to emulate the behavior of `.finally()`."
+        },
+        "ds_dnContext": {
+            "142": "{\n  \"code_review_suggestion\": \"Removing the finally block might unintentionally skip critical cleanup logic or error handling. Consider verifying if any necessary post-processing (like resetting UI states or logging) was dependent on this block, and if so, relocate it appropriately.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n  \"code_review_suggestion\": \"The removal of `.finally()` addresses webOS 3.3 compatibility since Promise.finally isn't supported in older Chromium versions. However, ensure any cleanup logic from the finally block is handled in both success and error cases to maintain proper resource management.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n    \"code_review_suggestion\": \"The .finally() block was removed but it might have contained important cleanup logic. Consider checking if any resource cleanup or final state management was handled there and ensure it's properly moved elsewhere if needed.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n    \"code_review_suggestion\": \"Good job removing the Promise.finally() call to maintain compatibility with older WebKit/Chromium versions on webOS 3.3. This aligns perfectly with the PR's goal of fixing compatibility issues in legacy environments where finally() isn't supported.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n  \"code_review_suggestion\": \"Good catch removing the empty `.finally()` block. It's a nice little cleanup that improves readability by removing unnecessary code.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n  \"code_review_suggestion\": \"Good catch removing `.finally()` for compatibility with older JavaScript engines. If the logic inside the original `finally` block was important for cleanup, consider replacing it with a `.then(callback, callback)` pattern to ensure it still runs on both success and failure.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n  \"code_review_suggestion\": \"Removing the .finally block likely skips crucial cleanup or follow-up actions; consider retaining it or ensuring its intended logic is handled elsewhere to maintain predictable behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n  \"code_review_suggestion\": \"Removing the `.finally()` call is good for compatibility, but ensure that any cleanup or post-promise logic that was inside it is properly handled elsewhere to avoid unintended side effects or resource leaks.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n  \"code_review_suggestion\": \"You removed the .finally( opener but didn’t show corresponding cleanup being moved—this risks either a syntax error (if the body remains) or lost always-run cleanup logic. Double‑check that any code formerly in finally is relocated (or reintroduce .finally) so both success and failure paths still trigger necessary teardown.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "142": "{\n  \"code_review_suggestion\": \"You dropped the .finally( start but didn’t show any equivalent cleanup; if that block contained teardown (e.g. hiding a loader) it’s now lost. For older Chromium, replace finally with a helper like promise.then(cb, cb) (where cb does the cleanup) or a small finalize(p, f) util so both resolve and reject paths still run the code without relying on Promise.finally.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

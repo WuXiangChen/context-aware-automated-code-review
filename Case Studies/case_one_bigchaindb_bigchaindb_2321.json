@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "478": "bigchaindb/bigchaindb:2321"
+        },
+        "selected_nodeLs": {
+            "478": "['PR-2321', 'Issue-2204']"
+        },
+        "codediff": {
+            "478": "@@ -90,7 +90,7 @@ def _process_status_code(self, status_code, failure_msg):\n \n     def get_latest_block_height_from_tendermint(self):\n         r = requests.get(ENDPOINT + 'status')\n-        return r.json()['result']['latest_block_height']\n+        return r.json()['result']['sync_info']['latest_block_height']"
+        },
+        "groundTruth": {
+            "478": "Does `'sync_info'` parameter hold the syncing state with network or the abci proxy app? On my FDN node I see the following information, `/abci_info` ```json { \"jsonrpc\": \"2.0\", \"id\": \"\", \"result\": { \"response\": { \"last_block_height\": 135, \"last_block_app_hash\": \"NmJjM2FiZjY0M2JhMGQwYjY0ODIwODk5N2UwZGVkYTY4MzYwMjFmODI3YTRlNmQyNTlmMThmNTVkMTM3MzgyOQ==\" } } } ``` `/status` ```json \"sync_info\": { \"latest_block_hash\": \"0C37B9B3CCD6B243096B971F329342993DD4C29E\", \"latest_app_hash\": \"36626333616266363433626130643062363438323038393937653064656461363833363032316638323761346536643235396631386635356431333733383239\", \"latest_block_height\": 136, \"latest_block_time\": \"2018-05-30T14:13:49.76567914Z\", \"syncing\": false } ``` Also, there is another option to get the latest height stored by bigchaindb i.e. `bigchain.get_latest_block()`"
+        },
+        "ds_dnContext": {
+            "478": "{\n  \"code_review_suggestion\": \"The updated JSON path is correct for Tendermint's API structure, but consider adding a try-except block to handle potential KeyError exceptions if the API response format changes unexpectedly.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"The change correctly accesses the latest block height from the 'sync_info' field, but consider adding error handling for the network request and JSON parsing to avoid uncaught exceptions if the Tendermint RPC response structure changes.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"Good catch updating the JSON path! The API response structure changed, and your fix ensures we're accessing the correct nested field for the latest block height.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"The change correctly accesses the latest block height from Tendermint's sync_info, but consider adding error handling for the API response structure in case Tendermint's JSON format changes or the endpoint is unavailable.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"This chained dictionary access is a bit fragile and could cause a crash if the API response changes or an error occurs. It would be more robust to wrap this logic in a `try...except` block to gracefully handle potential `KeyError` or other request-related issues.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"Nice fix for the Tendermint API change! This nested dictionary access is a bit fragile, though. If the API response isn't what we expect, it could raise a `KeyError`. To make this more robust, could we wrap it in a `try/except` block to gracefully handle unexpected responses?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"Great fix accessing the correct nested key, but you should add error handling to safely manage cases where the JSON structure or keys might be missing, preventing potential crashes.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"Great fix updating the JSON path to the correct `latest_block_height`. To make this more robust, consider adding error handling in case the response structure changes or the keys are missing.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"Good fix pointing to sync_info, but Tendermint returns latest_block_height as a string—consider casting and guarding for missing keys (e.g., int(r.json()['result']['sync_info']['latest_block_height'])) with basic error handling to avoid uncaught KeyErrors or type surprises downstream.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "478": "{\n  \"code_review_suggestion\": \"Accessing latest_block_height via the new result['sync_info'] path may break on older Tendermint versions and still returns a string; add a defensive lookup (fallback to the old key) and cast to int, e.g. sync = r.json().get('result', {}); height = sync.get('sync_info', {}).get('latest_block_height') or sync.get('latest_block_height'); return int(height) if height else handle error.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

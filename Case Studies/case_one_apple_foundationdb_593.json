@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "64": "apple/foundationdb:593"
+        },
+        "selected_nodeLs": {
+            "64": "['PR-593', 'Issue-433']"
+        },
+        "codediff": {
+            "64": "@@ -366,61 +368,61 @@ int FDBLibTLSSession::handshake() {\n \tcase TLS_WANT_POLLOUT:\n \t\treturn WANT_WRITE;\n \tdefault:\n-\t\tpolicy->logf(\"FDBLibTLSHandshakeError\", uid, false, \"LibTLSErrorMessage\", tls_error(tls_ctx), NULL);\n+\t\tTraceEvent(\"FDBLibTLSHandshakeError\", uid).detail(\"LibcryptoErrorMessage\", tls_error(tls_ctx)).suppressFor(1.0, true);"
+        },
+        "groundTruth": {
+            "64": "Why did you change this and only this to lib crypto and not TLS...?"
+        },
+        "ds_dnContext": {
+            "64": "{\n  \"code_review_suggestion\": \"The log detail key changed from 'LibTLSErrorMessage' to 'LibcryptoErrorMessage', but the error still comes from `tls_error()`. Consider keeping the key consistent with the error source or renaming it to better reflect the actual library (e.g., 'LibTLSError') for clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "64": "{\n  \"code_review_suggestion\": \"The detail key changed from 'LibTLSErrorMessage' to 'LibcryptoErrorMessage'; verify this is correct for the library to ensure accurate logging.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "64": "{\n  \"code_review_suggestion\": \"The error message key changed from 'LibTLSErrorMessage' to 'LibcryptoErrorMessage' but the function call still uses tls_error(). This inconsistency could confuse debugging - either update the function to match the new key name or revert the key to maintain consistency with the error source.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "64": "{\n  \"code_review_suggestion\": \"Great job replacing the C-style variadic logging with TraceEvent! This eliminates the unsafe variadic function and the undefined behavior from passing bool to va_start. Just note that suppressFor(1.0, true) will suppress all occurrences of this event for 1 second, which might hide important debugging information during TLS handshake failures.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "64": "{\n  \"code_review_suggestion\": \"Good call on migrating to the `TraceEvent` API. However, TLS handshake failures are pretty critical. Suppressing these logs, even for a second, might hide flapping connections or other serious issues. I'd recommend removing `.suppressFor(1.0, true)` to ensure we capture every failure.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "64": "{\n  \"code_review_suggestion\": \"Great job replacing the C-style logging function with `TraceEvent`! It looks like this handshake error is being logged with the default informational severity. To ensure these important failures are easy to spot, could you add the `.error()` modifier to the `TraceEvent` call?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "64": "{\n  \"code_review_suggestion\": \"Switching to TraceEvent improves structured logging, but you should preserve the original log context and error key consistently—consider aligning the detail key name with the original ('LibTLSErrorMessage') for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "64": "{\n  \"code_review_suggestion\": \"The switch to TraceEvent logging is good for consistency, but ensure the key name 'LibcryptoErrorMessage' aligns with the original 'LibTLSErrorMessage' for clarity and traceability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "64": "{\"code_review_suggestion\":\"Changing the detail key from LibTLSErrorMessage to LibcryptoErrorMessage risks breaking existing log parsers/alerts. Keep the original key (or add both) to preserve backward compatibility while introducing the new name if needed.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "64": "{\n  \"code_review_suggestion\": \"Nice move to TraceEvent, but you changed the detail key from LibTLSErrorMessage to LibcryptoErrorMessage—if any tooling or tests parse the old field, this will silently break them. Either keep the original key name or add both details to preserve backward compatibility.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

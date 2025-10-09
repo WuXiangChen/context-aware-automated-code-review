@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "158": "cakephp/cakephp:1597"
+        },
+        "selected_nodeLs": {
+            "158": "['PR-3936', 'PR-1597']"
+        },
+        "codediff": {
+            "158": "@@ -1520,8 +1520,13 @@ public function radio($fieldName, $options = array(), $attributes = array()) {\n \t\t\t);\n \n \t\t\tif ($label) {\n-\t\t\t\t$optTitle = $this->Html->useTag('label', $tagName, '', $optTitle);\n+\t\t\t\tif(is_array($label)) {\n+\t\t\t\t\t$optTitle = $this->label($tagName, $optTitle, $label);\n+\t\t\t\t}else{"
+        },
+        "groundTruth": {
+            "158": "The coding standards require spaces around control structure keywords. So `} else {` and `if (`"
+        },
+        "ds_dnContext": {
+            "158": "{\n  \"code_review_suggestion\": \"There's a syntax error in the condition: an extra closing parenthesis in `if(is_array($label))`. It should be `if (is_array($label))` to avoid a parse error and ensure proper array checks.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "158": "{\n  \"code_review_suggestion\": \"The call to `$this->label` might be passing `$tagName` (likely an ID) instead of the field name, which could misalign the 'for' attribute. Verify that the parameters match `FormHelper::label`'s expected signature to ensure proper label generation.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "158": "{\n  \"code_review_suggestion\": \"The condition `is_array($label)` should be checked before calling `$this->label()` to avoid potential errors when `$label` is not an array. Consider adding a type check or using a more robust approach to handle different label formats.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "158": "{\n  \"code_review_suggestion\": \"Good fix for supporting label options in radio buttons! Since this addresses Lighthouse Ticket #3936, you should also apply the same array check and use of `$this->label()` method to the checkbox() function to maintain consistency across both input types.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "158": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "158": "{\n  \"code_review_suggestion\": \"Great idea to add support for label attributes! However, it looks like the `else` block is empty. To preserve the original functionality for when `$label` is simply `true`, you'll want to move the original `useTag` call into that `else` block.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "158": "{\n  \"code_review_suggestion\": \"The new conditional handling of $label as an array is incomplete—ensure the else branch properly assigns $optTitle and the if block is consistently closed to avoid potential syntax errors or unexpected behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "158": "{\n  \"code_review_suggestion\": \"Good fix for handling label arrays properly; consider adding a matching check and fix for checkboxes as noted, to keep consistent behavior across input types.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "158": "{\"code_review_suggestion\":\"Your new is_array($label) branch is fine, but the else is empty (or incomplete), so non-array labels no longer wrap in a <label>, likely breaking output (and may even cause a syntax error if not closed). Restore the original behavior in the else: assign $optTitle = $this->Html->useTag('label', $tagName, '', $optTitle); and close the braces properly.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "158": "{\n  \"code_review_suggestion\": \"Using $this->label($tagName, ...) risks generating a mismatched or regenerated 'for' attribute; preserve the original explicit association by merging it: if (is_array($label)) { $label += array('for' => $tagName); $optTitle = $this->label(null, $optTitle, $label); } This keeps the fix while ensuring the label still targets the exact radio input id.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

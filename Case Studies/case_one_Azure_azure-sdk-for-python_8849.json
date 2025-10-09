@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "327": "Azure/azure-sdk-for-python:8849"
+        },
+        "selected_nodeLs": {
+            "327": "['PR-8849', 'Issue-7787']"
+        },
+        "codediff": {
+            "327": "@@ -95,27 +94,33 @@ class ClientClosedError(EventHubError):\n \n \n class ConnectionLostError(EventHubError):\n-    \"\"\"Connection to event hub is lost. SDK will retry. So this shouldn't happen.\"\"\"\n+    \"\"\"Connection to the Event Hub is lost.\n+\n+    In most cases the client will automatically retry on this error.\"\"\"\n \n \n class ConnectError(EventHubError):\n-    \"\"\"Fail to connect to event hubs.\"\"\"\n+    \"\"\"Failed to connect to the Event Hubs service.\"\"\"\n \n \n class AuthenticationError(ConnectError):\n-    \"\"\"Fail to connect to event hubs because of authentication problem.\"\"\"\n+    \"\"\"Failed to connect to the Event Hubs service because of an authentication issue.\"\"\"\n \n \n class EventDataError(EventHubError):\n-    \"\"\"Problematic event data so the send will fail at client side.\"\"\"\n+    \"\"\"Problematic event data that was prevented from sending by the client.\"\"\""
+        },
+        "groundTruth": {
+            "327": "Nit: Trying to keep tense consistent across errors: \"Client prevented problematic event data from being sent\""
+        },
+        "ds_dnContext": {
+            "327": "{\n  \"code_review_suggestion\": \"The original exception docstrings were vague and informal, risking developer confusion; the updates make them clearer and more professional, greatly improving error handling guidance.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "327": "{\n  \"code_review_suggestion\": \"The docstring updates improve clarity, but there's an inconsistency in service naming: 'Event Hub' (singular) in ConnectionLostError vs 'Event Hubs' (plural) in ConnectError/AuthenticationError. Consider aligning with the official service name 'Azure Event Hubs' for consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "327": "{\n  \"code_review_suggestion\": \"The error message improvements are great for clarity, but consider adding specific guidance for developers. For example, the ConnectionLostError could mention typical retry timeframes or suggest checking network connectivity if persistent.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "327": "{\n    \"code_review_suggestion\": \"The docstring updates improve clarity, but consider adding specific examples or guidance for handling ConnectionLostError since it mentions automatic retries - developers might benefit from knowing when manual intervention is needed.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "327": "{\n  \"code_review_suggestion\": \"Great job clarifying these exception docstrings! The update for `ConnectionLostError` is especially valuable, as the original text was a bit confusing about when a user might actually see this error.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "327": "{\n  \"code_review_suggestion\": \"Great work on clarifying these docstrings! For `EventDataError`, the new description is a bit passive. To make it more direct for the user, how about something like: 'The client prevented sending event data due to an issue with its content or structure.'?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "327": "{\n  \"code_review_suggestion\": \"The docstring updates improve clarity, but consider standardizing phrasing across all errors for consistency and to enhance maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "327": "{\n  \"code_review_suggestion\": \"Nice improvements to the docstrings for clarity and professionalism! To keep consistency, consider standardizing the phrasing style across all error messages, such as using 'Failed to...' or 'Connection to the Event Hubs service...' uniformly.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "327": "{\"code_review_suggestion\": \"ConnectionLostError docstring now says 'In most cases' the client will retry, but doesn’t clarify when it is actually raised (e.g., after retries exhausted vs transient). Clarify the lifecycle: note whether this is surfaced only after retry attempts fail, or if users should catch it and decide to recreate the client. This will prevent misuse and confusion.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "327": "{\n  \"code_review_suggestion\": \"Nice cleanup for consistency, but the updated docstrings still just restate the exception names without helping users act. Consider adding a brief ‘Typical causes / What to do’ note—e.g. AuthenticationError (expired SAS token, clock skew, wrong key), EventDataError (exceeds max size, unsupported body type), ConnectionLostError (will auto-retry for X attempts, when to recreate the client)—to make these errors meaningfully actionable.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

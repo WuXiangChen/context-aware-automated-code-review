@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "241": "snapcore/snapd:307"
+        },
+        "selected_nodeLs": {
+            "241": "['PR-307']"
+        },
+        "codediff": {
+            "241": "@@ -209,14 +185,13 @@ func (db *Database) findAccountKeys(authorityID, keyID string) ([]*AccountKey, e\n \t\t}\n \t}\n \t// consider stored account keys\n-\tfoundKeyCb := func(a Assertion) {\n+\ta, err := db.bs.Get(AccountKeyType, []string{\"account-id\", \"public-key-id\"}, []string{authorityID, keyID})"
+        },
+        "groundTruth": {
+            "241": "We shouldn't be duplicating knowledge about the assertion types like this. Can we please define something like: ``` func primaryKey(t AssertionType) []string { if typeData, ok := typeRegistry[t] if !ok { panic(\"unknown assertion type used as value: \" + string(t)) } return typeData.primaryKey } ``` and then use it as ``` db.bs.Get(AccountKeyType, primaryKey(AccountKeyType), []string{...}) ``` At some point perhaps assertion types should be richer, so we don't need to be even passing that information around independently like that."
+        },
+        "ds_dnContext": {
+            "241": "{\n  \"code_review_suggestion\": \"The call to db.bs.Get returns an error that isn't handled, which could lead to unexpected behavior if the fetch fails. Please add error checking immediately after this line to ensure robustness.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n  \"code_review_suggestion\": \"The function findAccountKeys suggests it returns multiple keys, but the change uses db.bs.Get which returns a single assertion. Consider using a search method instead of Get if multiple keys are expected, or rename the function to findAccountKey for clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n  \"code_review_suggestion\": \"The error handling for db.bs.Get() call is missing - if this operation fails, the function will continue execution without accounting for the potential error. Consider adding proper error handling to avoid silent failures and ensure data integrity.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n    \"code_review_suggestion\": \"The change replaces a callback-based approach with a direct Get() call, which simplifies the code and aligns with the PR's goal of explicit backstore handling. However, ensure proper error handling for the new Get() call since it now returns an error that wasn't being handled in the previous callback approach.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n  \"code_review_suggestion\": \"This change simplifies the lookup, which is great. However, the function `findAccountKeys` is expected to return a slice of keys, but `db.bs.Get` likely retrieves only a single record. If multiple keys can match, we should probably use a query method instead to avoid potentially missing results.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n  \"code_review_suggestion\": \"This looks like a nice simplification! However, the error returned by `db.bs.Get` isn't being checked. Could you please add error handling right after this call to ensure potential failures are managed correctly?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n  \"code_review_suggestion\": \"The introduced call to db.bs.Get replaces the original callback but lacks error handling and proper integration, which likely breaks the function logic; consider restoring the callback structure or fully adapting this retrieval with clear error checks and result processing to maintain functionality.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n  \"code_review_suggestion\": \"Looks like you replaced a callback function with a direct call to db.bs.Get but didn't handle the returned error or capture the result properly; make sure to check the error and store the retrieved data to prevent runtime issues.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n  \"code_review_suggestion\": \"You replaced the callback definition with a direct Get call, but now there's no error handling and the surrounding code that likely invokes foundKeyCb will break. Either restore the foundKeyCb func or refactor the later usage to work with the single Get result, and handle err explicitly before proceeding.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "241": "{\n  \"code_review_suggestion\": \"The new direct Get call assigns a and err but (from the snippet) neither error nor nil cases are handled—this risks silently returning wrong results after the refactor. Add proper err check (return or propagate) and clarify the variable name (e.g. ak or assertion) to avoid shadowing the prior callback param.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

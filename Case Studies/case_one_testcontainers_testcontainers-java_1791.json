@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "42": "testcontainers/testcontainers-java:1791"
+        },
+        "selected_nodeLs": {
+            "42": "['PR-1791', 'PR-1410']"
+        },
+        "codediff": {
+            "42": "@@ -89,45 +88,36 @@ public SELF withVaultToken(String token) {\n      *\n      * @param port the port number you want to have the Vault container listen on for tests.\n      * @return this\n+     * @deprecated exposed host will be random, this customization does not make a lot of sense"
+        },
+        "groundTruth": {
+            "42": "Agreed. Could we please state clearly what the user should do if they get a deprecation warning? e.g. ```suggestion * @deprecated the exposed port will be randomized automatically. As calling this method provides no additional value, you are recommended to remove the call. getFirstMappedPort() may be used to obtain the listening vault port. ```"
+        },
+        "ds_dnContext": {
+            "42": "{\n  \"code_review_suggestion\": \"Deprecating the port setting method is a good move since the host is random, but the message could be clearer. Consider updating it to suggest using dynamic port allocation or provide an example in the javadoc to guide users.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n  \"code_review_suggestion\": \"The deprecation comment is a bit vague; consider clarifying it by explaining that random ports are now used for better test isolation and suggest using standard container methods for dynamic port handling instead.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n  \"code_review_suggestion\": \"The @deprecated annotation is a good start, but we should also add a clear explanation of what to use instead - likely a note about using the automatically assigned random port and retrieving it via getFirstMappedPort() for test reliability.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n    \"code_review_suggestion\": \"The deprecation notice is helpful, but we should also add a @see tag pointing to the preferred alternative method for port configuration to guide users toward the correct approach.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n  \"code_review_suggestion\": \"Good call on deprecating `withVaultPort`. To ensure developers get compiler warnings and IDE hints, could you also add the `@Deprecated` annotation directly on the method itself?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n  \"code_review_suggestion\": \"Deprecating the fixed port is a great step towards more robust testing. To make this change clearer for users, could we enhance the `@deprecated` Javadoc to also suggest the alternative approach, like retrieving the dynamically assigned port from the container after it has started?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n  \"code_review_suggestion\": \"Since the method is deprecated due to inconsistent behavior with exposed host ports, consider removing it in future versions and clearly documenting the recommended alternative to avoid confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n  \"code_review_suggestion\": \"The deprecation note could be clarified by explicitly marking the method with @Deprecated annotation and suggesting an alternative approach to avoid confusion for users.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n  \"code_review_suggestion\": \"You marked the method deprecated only in Javadoc; add the @Deprecated annotation (and ideally guidance on an alternative) so callers actually get compiler warnings and understand what to use instead.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "42": "{\n  \"code_review_suggestion\": \"You added a Javadoc @deprecated note but didn’t add the @Deprecated annotation or suggest an alternative. Add @Deprecated to the method and expand the message (e.g. why it’s ineffective and what to use instead), so tooling and users get a clear, actionable deprecation warning.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

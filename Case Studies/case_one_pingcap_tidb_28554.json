@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "44": "pingcap/tidb:28554"
+        },
+        "selected_nodeLs": {
+            "44": "['PR-28554']"
+        },
+        "codediff": {
+            "44": "@@ -1237,7 +1237,7 @@ func (h *Handle) RecalculateExpectCount(q *statistics.QueryFeedback) error {\n \tif !ok {\n \t\treturn nil\n \t}\n-\ttablePseudo := t.Pseudo || t.IsOutdated()"
+        },
+        "groundTruth": {
+            "44": "Given the potential pervasive impact of this change that can cause massive regression, I'd suggest to add a session parameter to mitigate the risk. By default it uses the old behavior of pseudo and the new behavior can be turned on for the case that using pseudo stats instead of outdated stats causes problem. Later we may gradually turn on the new behavior with more customer cases, and eventually to make new behavior the default at some point."
+        },
+        "ds_dnContext": {
+            "44": "{\n  \"code_review_suggestion\": \"Removing the assignment to tablePseudo might cause a compilation error if it's used later in the function. Double-check if tablePseudo is still referenced or remove any dependencies to avoid issues.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "44": "{\n  \"code_review_suggestion\": \"The Handle is global, but the variable tidb_enable_pseudo_for_outdated_stats is per-session. Using a field in the global Handle for this purpose is incorrect because it cannot support different values for different sessions. Consider passing the session variable value as a parameter to this function or storing it in the QueryFeedback structure.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "44": "{\n  \"code_review_suggestion\": \"The condition `t.Pseudo || t.IsOutdated()` should be checked before the type assertion to avoid potential nil pointer dereference if `t` is nil, making the code more robust.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "44": "{\n    \"code_review_suggestion\": \"The code change removes the outdated statistics check when determining if pseudo stats should be used, but it should instead check the new `tidb_enable_pseudo_for_outdated_stats` variable to respect the user's configuration. Consider adding a condition like `&& h.ctx.GetSessionVars().EnablePseudoForOutdatedStats` to maintain the intended behavior.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "44": "{\n  \"code_review_suggestion\": \"Good catch removing the unused `tablePseudo` variable. Combining `Pseudo` and `IsOutdated` into a single flag can obscure the specific reason for recalculation, so handling these conditions separately generally leads to clearer and more maintainable logic.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "44": "{\n  \"code_review_suggestion\": \"To improve readability as you add the new session variable, consider extracting the logic for when to use pseudo stats for an outdated table into its own well-named variable. This will make the condition clearer and easier to maintain.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "44": "{\n  \"code_review_suggestion\": \"Using the logical OR operator (||) can be error-prone if t.Pseudo or t.IsOutdated() involve more complex logic or side effects; consider clarifying the intent by explicitly checking each condition or adding comments for readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "44": "{\n  \"code_review_suggestion\": \"Consider integrating the new session/global variable check (`tidb_enable_pseudo_for_outdated_stats`) explicitly here to respect the flag instead of always using `t.Pseudo || t.IsOutdated()`, ensuring consistent behavior with the new feature.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "44": "{\"code_review_suggestion\":\"You removed the tablePseudo assignment (t.Pseudo || t.IsOutdated()); if later logic still relies on that flag, this will either fail to compile or skip the outdated-stats check. Restore it or inline the expression where used to preserve correctness and clarity.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "44": "{\n  \"code_review_suggestion\": \"Since you’re changing the fallback condition from (t.Pseudo || t.IsOutdated()) to logic gated by the new tidb_enable_pseudo_for_outdated_stats variable, centralize that decision in a helper (e.g. shouldUsePseudo(t, sessVars)) and call it here instead of inlining. It reduces the risk of missing other call sites and prevents future divergence when the flag or ‘outdated’ semantics evolve.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "67": "letsencrypt/boulder:4613"
+        },
+        "selected_nodeLs": {
+            "67": "['PR-4613', 'PR-4573']"
+        },
+        "codediff": {
+            "67": "@@ -95,12 +95,15 @@ func (ssa *SQLStorageAuthority) AddPrecertificate(ctx context.Context, req *sapb\n \t\t\targs = append(args, req.IssuerID)\n \t\t}\n \n-\t\t_, err = ssa.dbMap.WithContext(ctx).Exec(fmt.Sprintf(\n+\t\t_, err = txWithCtx.Exec(fmt.Sprintf(\n \t\t\t\"INSERT INTO certificateStatus (%s) VALUES (%s)\",\n \t\t\tcsFields,\n \t\t\tstrings.Join(qmarks, \",\"),\n \t\t), args...)\n \t\tif err != nil {\n+\t\t\tif db.IsDuplicate(err) {"
+        },
+        "groundTruth": {
+            "67": "It seems like the `ssa.dbMap` -> `txWithCtx` change is enough to fix the bug at hand. Making certificateStatus inserts return with a `berrors.DuplicateError` is in keeping with our general practice, but I think may introduce unintended consequences here. For instance, if there is somehow a similar inconsistency in the future, this could cause the CA to believe an orphan is fully integrated when only the certificateStatus entry exists. The CA would remove the orphan from its queue and forget about it. I think to be conservative, we should omit this `berrors.DuplicateError` change for now, unless it's crucial to the fix in a way that I'm missing."
+        },
+        "ds_dnContext": {
+            "67": "{\n  \"code_review_suggestion\": \"The duplicate error check is a good addition, but consider handling the duplicate case explicitly (e.g., logging or returning a specific error) rather than just detecting it, to avoid silent failures or ambiguous states.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "67": "{\n  \"code_review_suggestion\": \"Good move using txWithCtx for atomicity with the transaction. The duplicate error check is key for handling orphaned rows; ensure it's fully implemented to avoid masking other errors and provide clear messaging.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "67": "{\n  \"code_review_suggestion\": \"The duplicate check should be moved before the INSERT operation to avoid unnecessary database writes and handle potential duplicates more efficiently.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "67": "{\n    \"code_review_suggestion\": \"Good catch on moving the certificateStatus insertion into the transaction! However, the duplicate error check should be removed since certificateStatus should be unique per certificate and a duplicate here indicates a serious data inconsistency that should fail the transaction rather than being silently ignored.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "67": "{\n  \"code_review_suggestion\": \"Nice catch on handling duplicate errors! However, building SQL queries with `fmt.Sprintf` is a security risk. To prevent potential SQL injection, it would be safer to use a static query string instead of dynamically formatting the column names.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "67": "{\n  \"code_review_suggestion\": \"Great job ensuring the `certificateStatus` insertion is part of the transaction by using `txWithCtx`. This correctly fixes the bug. For improved maintainability, consider adding a comment explaining why duplicate errors are being intentionally ignored here, likely for idempotency during deployments, as it's not immediately obvious.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "67": "{\n  \"code_review_suggestion\": \"It looks like the transaction context `txWithCtx` is used for the Exec call, replacing `ssa.dbMap.WithContext(ctx)`, which is good for atomicity, but the error handling starts with checking `db.IsDuplicate(err)` without completing or returning; make sure to properly handle or return after detecting duplicate errors to prevent silent failures.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "67": "{\n  \"code_review_suggestion\": \"Great fix wrapping the certificateStatus insertion in the transaction; to improve clarity, consider explicitly logging or handling the duplicate error case to distinguish it from other failures and aid future debugging.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "67": "{\"code_review_suggestion\":\"You added an if db.IsDuplicate(err) but never handle it—right now it’s either a compile error or confusing no-op. Decide the intent and implement it (e.g., return nil to treat duplicates as success, or wrap/return a specific error) and close the block; otherwise just remove the stray if and propagate err.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "67": "{\n  \"code_review_suggestion\": \"Good move putting the certificateStatus INSERT inside the transaction. Just make sure that when you detect a duplicate (db.IsDuplicate(err)) you return immediately (after translating to the intended sentinel error) so the surrounding code doesn’t continue and accidentally commit other writes—otherwise you could reintroduce inconsistency you’re trying to eliminate.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

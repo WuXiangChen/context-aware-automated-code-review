@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "55": "python/cpython:17269"
+        },
+        "selected_nodeLs": {
+            "55": "['PR-17269', 'Issue-83040']"
+        },
+        "codediff": {
+            "55": "@@ -138,14 +138,43 @@ def foo(): pass\n         self.assertTrue(inspect.iscoroutinefunction(mock))\n \n     def test_future_isfuture(self):\n-        loop = asyncio.new_event_loop()\n-        asyncio.set_event_loop(loop)\n         fut = asyncio.Future()\n-        loop.stop()\n-        loop.close()\n         mock = AsyncMock(fut)\n         self.assertIsInstance(mock, asyncio.Future)\n \n+    async def test_return_value_awaitable(self):"
+        },
+        "groundTruth": {
+            "55": "Requested offline some tests that will cover the functionality of setting AsyncMock's as the return_value and side_effects of AsyncMock's."
+        },
+        "ds_dnContext": {
+            "55": "{\n  \"code_review_suggestion\": \"Removing the event loop setup in test_future_isfuture could lead to test failures if no loop is set; consider adding a context manager or using asyncio.run to ensure proper isolation.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n  \"code_review_suggestion\": \"The test_future_isfuture method removes the event loop setup, which might cause issues when creating the Future if no event loop is set in the test environment. Consider restoring the loop creation or using asyncio.get_event_loop() to ensure Future instantiation works reliably.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n  \"code_review_suggestion\": \"The test_future_isfuture test creates an unnecessary event loop that's immediately stopped and closed. Since asyncio.Future() doesn't require a running event loop to be instantiated, you can safely remove the loop creation and cleanup code to simplify the test.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n    \"code_review_suggestion\": \"The test_future_isfuture test should be updated to properly handle the event loop lifecycle, as removing the loop creation/cleanup could cause resource leaks in test environments. Consider using asyncio.run() or a proper async test setup to ensure clean event loop management.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n  \"code_review_suggestion\": \"Excellent simplification! Removing the manual event loop management is a great move. It makes the test cleaner and more robust, as explicit loop handling is often unnecessary and can introduce side effects in a test suite.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n  \"code_review_suggestion\": \"Nice cleanup in `test_future_isfuture`! Removing the manual event loop management is a great simplification, as the test itself isn't asynchronous. This makes the code cleaner and avoids potential conflicts with the test runner's loop.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n  \"code_review_suggestion\": \"Avoid creating and setting a new event loop manually in tests as it can cause interference; instead, use the existing event loop or leverage the pytest-asyncio plugin for cleaner async test management.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n  \"code_review_suggestion\": \"The test creates a new event loop but does not set or close it properly, which might lead to warnings or resource leaks; consider explicitly setting and closing the event loop to ensure clean test isolation.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n  \"code_review_suggestion\": \"The newly added async test 'test_return_value_awaitable' has no body, which will cause a SyntaxError at import time. Add a 'pass' or real assertions (or remove the placeholder) so the test suite can run.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "55": "{\n  \"code_review_suggestion\": \"The newly added async def test_return_value_awaitable(self): has no body, which will raise a SyntaxError—add at least a pass or the intended assertions so the test suite remains runnable.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

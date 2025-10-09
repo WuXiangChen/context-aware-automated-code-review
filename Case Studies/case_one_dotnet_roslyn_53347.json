@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "427": "dotnet/roslyn:53347"
+        },
+        "selected_nodeLs": {
+            "427": "['PR-53347', 'Issue-53346']"
+        },
+        "codediff": {
+            "427": "@@ -28,6 +28,11 @@ internal interface ISpanMappingService : IDocumentService\n         /// </summary>\n         bool SupportsMappingImportDirectives { get; }\n \n+        Task<ImmutableArray<(string mappedFilePath, TextChange mappedTextChange)>> GetTextChangesAsync("
+        },
+        "groundTruth": {
+            "427": "Hmm, not a fan of using tuples for the array item type. Would it be possible to have a more concrete descriptive type? Also, given the expectation in the method that mapping should occur that should probably exist somewhere in the name. Maybe `GetMappedTextChangesAsync`?"
+        },
+        "ds_dnContext": {
+            "427": "{\n  \"code_review_suggestion\": \"The new GetTextChangesAsync method lacks parameters to specify the input context (e.g., original file path or span), making it unclear how callers would use it. Consider adding required parameters like `string originalFilePath` or `TextSpan span` to define the mapping scope.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "427": "{\n  \"code_review_suggestion\": \"The new method `GetTextChangesAsync` should include parameters to specify the document and original text changes, ensuring it can compute the minimal diff for the correct context.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "427": "{\n  \"code_review_suggestion\": \"The method name GetTextChangesAsync is quite generic and doesn't clearly indicate its purpose in the span mapping context. Consider renaming it to something more descriptive like GetMappedSpanTextChangesAsync to better reflect that it returns text changes for mapped spans.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "427": "{\n    \"code_review_suggestion\": \"The method name GetTextChangesAsync should be more specific to its purpose in the rename scenario, perhaps RenameTextChangesAsync or MinimalRenameTextChangesAsync, to clearly indicate it's providing minimal diffs for Razor rename operations rather than general text changes.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "427": "{\n  \"code_review_suggestion\": \"Looks like the new `GetTextChangesAsync` method signature is incomplete. It's missing its parameter list and a closing semicolon, which will cause a compilation error. Could you please add the necessary parameters to finish the declaration?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "427": "{\n  \"code_review_suggestion\": \"Given the context that this method is specifically for generating a minimal diff to work around a Razor issue, would a more descriptive name like `GetMinimalTextChangesAsync` be clearer? This would help future developers understand its specific purpose.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "427": "{\n  \"code_review_suggestion\": \"The new method signature is incomplete and lacks a closing parenthesis and semicolon; completing it will improve clarity and prevent compilation errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "427": "{\n  \"code_review_suggestion\": \"Consider adding the missing closing parenthesis and return type to the GetTextChangesAsync method signature for completeness and to avoid syntax errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "427": "{\"code_review_suggestion\":\"The new GetTextChangesAsync method declaration is truncated (no parameters or terminating semicolon), which will break compilation—complete the signature (e.g., add needed parameters plus a CancellationToken) and end it properly to follow async API conventions.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "427": "{\n  \"code_review_suggestion\": \"Add a CancellationToken parameter to GetTextChangesAsync; Roslyn async document/mapping services are expected to be cancellable, and without it long-running rename diffs can’t be aborted, risking UI delays.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

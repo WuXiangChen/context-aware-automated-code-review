@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "80": "rotki/rotki:1024"
+        },
+        "selected_nodeLs": {
+            "80": "['PR-1024']"
+        },
+        "codediff": {
+            "80": "@@ -1650,6 +1650,19 @@ def set_rotkehlchen_premium(self, credentials: PremiumCredentials) -> None:\n         # an empty last write ts in that case\n         # self.update_last_write()\n \n+    def del_rotkehlchen_premium(self) -> bool:\n+        \"\"\"Delete the rotki premium credentials in the DB for the logged-in user\"\"\"\n+        try:\n+            cursor = self.conn.cursor()\n+            cursor.execute(\n+                'DELETE FROM user_credentials WHERE name =?', ('rotkehlchen',),"
+        },
+        "groundTruth": {
+            "80": "can you remove the space between `name` and `=`? Just for consistency with the rest of the file."
+        },
+        "ds_dnContext": {
+            "80": "{\n  \"code_review_suggestion\": \"The SQL query has a syntax error due to an extra parenthesis in the tuple parameter. Also, consider adding a commit to persist the deletion and handle the cursor resource with a context manager for safety.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n  \"code_review_suggestion\": \"The DELETE operation should include error handling and a commit to ensure the database change is saved and exceptions are properly managed, preventing inconsistent states.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n  \"code_review_suggestion\": \"The SQL query is missing a WHERE clause to filter by user_id, which could delete premium credentials for all users instead of just the logged-in user. Consider adding 'AND user_id=?' with the appropriate user identifier parameter.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n    \"code_review_suggestion\": \"The SQL query should use a parameter placeholder that matches the database adapter - change `=?` to `=?` (with a space) for proper parameter binding and to avoid potential SQL syntax errors.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n  \"code_review_suggestion\": \"Great start on this deletion method! However, it seems to be missing a `self.conn.commit()` call after the `execute`. Without it, the change won't be saved to the database. Let's add that in to make sure the deletion is persisted.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n  \"code_review_suggestion\": \"To make the boolean return value more meaningful, you could check `cursor.rowcount` after the `execute` call. This would allow you to return `True` only if a row was actually deleted, providing clearer feedback to the caller.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n  \"code_review_suggestion\": \"The new method opens a database cursor but never commits the transaction or closes the cursor, which could lead to uncommitted changes and resource leaks. Make sure to commit the deletion and properly close or use a context manager for the cursor.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n  \"code_review_suggestion\": \"The method currently opens a cursor but does not close it explicitly; consider using a context manager (with statement) to ensure the cursor is properly closed and resources are released.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n  \"code_review_suggestion\": \"The new del_rotkehlchen_premium method is incomplete: the cursor.execute call is unterminated, there's no commit, no exception handling outcome, and it promises a bool but never returns one. Finish it by closing the execute call, committing (if autocommit isn’t on), and returning something like bool(cursor.rowcount); also fix spacing in 'name = ?'.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "80": "{\n  \"code_review_suggestion\": \"The delete query isn’t scoped to the logged-in user—`DELETE FROM user_credentials WHERE name = ?` will wipe the premium key for all users. Add the user identifier to the WHERE clause (e.g. also match on user_id / username) and ensure you commit and return False on exceptions.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

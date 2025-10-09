@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "311": "apache/spark:17978"
+        },
+        "selected_nodeLs": {
+            "311": "['PR-17978']"
+        },
+        "codediff": {
+            "311": "@@ -2111,26 +2112,45 @@ class StringIndexer(JavaEstimator, HasInputCol, HasOutputCol, HasHandleInvalid,\n     >>> loadedInverter = IndexToString.load(indexToStringPath)\n     >>> loadedInverter.getLabels() == inverter.getLabels()\n     True\n+    >>> stringIndexer.getStringOrderType()\n+    'frequencyDesc'\n+    >>> stringIndexer = StringIndexer(inputCol=\"label\", outputCol=\"indexed\", handleInvalid='error',\n+    ...     stringOrderType=\"alphabetDesc\")\n+    >>> model = stringIndexer.fit(stringIndDf)\n+    >>> td = model.transform(stringIndDf)\n+    >>> sorted(set([(i[0], i[1]) for i in td.select(td.id, td.indexed).collect()]),\n+    ...     key=lambda x: x[0])\n+    [(0, 2.0), (1, 1.0), (2, 0.0), (3, 2.0), (4, 2.0), (5, 0.0)]\n \n     .. versionadded:: 1.4.0\n     \"\"\"\n \n+    stringOrderType = Param(Params._dummy(), \"stringOrderType\",\n+                            \"How to order labels of string column. The first label after \" +\n+                            \"ordering is assigned an index of 0. Supported options: \" +\n+                            \"frequencyDesc, frequencyAsc, alphabetDesc, alphabetAsc.\","
+        },
+        "groundTruth": {
+            "311": "I think this should be generated instead of hardcoded - you can find a example on python.."
+        },
+        "ds_dnContext": {
+            "311": "{\n  \"code_review_suggestion\": \"The test case for `alphabetDesc` ordering lacks clarity—consider adding a brief comment explaining how the expected indices map to the original labels (e.g., 'c'→0, 'b'→1, 'a'→2) to make the behavior more intuitive.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "311": "{\n  \"code_review_suggestion\": \"The `stringOrderType` param definition appears incomplete—it's missing the type converter and default value. Consider adding `TypeConverters.toString` and setting the default (e.g., `default='frequencyDesc'`) to match Scala's behavior and ensure proper validation.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "311": "{\n  \"code_review_suggestion\": \"The test case shows that 'alphabetDesc' ordering produces unexpected results - 'a' (0) should get index 0, but gets 2.0 instead. You should verify the label ordering logic works correctly for all stringOrderType options, especially the descending sorts.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "311": "{\n  \"code_review_suggestion\": \"The test case shows alphabetDesc ordering working correctly, but the documentation string for stringOrderType parameter should be updated to include 'alphabetDesc' as a supported option to match the implementation.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "311": "{\n  \"code_review_suggestion\": \"This looks like a great new feature! For improved readability and to align with Python's style guide (PEP 8), consider using implicit string concatenation for the long `stringOrderType` parameter description. Simply wrapping the adjacent string literals in parentheses is a more idiomatic way to handle this.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "311": "{\n  \"code_review_suggestion\": \"This is a great addition! For better readability in the parameter's documentation, consider using a multi-line string for the `stringOrderType` description instead of concatenating strings with `+`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "311": "{\n  \"code_review_suggestion\": \"The new stringOrderType parameter adds useful flexibility, but it would be clearer and more maintainable to define an explicit Enum for the supported options instead of relying on string literals, which helps prevent invalid values and improves code readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "311": "{\n  \"code_review_suggestion\": \"Nice addition of stringOrderType support! To improve clarity, please ensure the new parameter's docstring fully matches the Scala/Java implementation and consider adding validation for unsupported options to prevent silent failures.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "311": "{\"code_review_suggestion\": \"The new stringOrderType Param lists allowed values in the docstring but doesn’t enforce them; a typo like 'freqDesc' would slip through until later failure. Add a validator (e.g., ParamValidators.inArray([...])) or explicit check in the setter to fail fast with a clear message.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "311": "{\n  \"code_review_suggestion\": \"Consider adding Python-side validation for stringOrderType (e.g., restrict to {frequencyDesc, frequencyAsc, alphabetDesc, alphabetAsc}) and documenting its default. Right now any string can be set, leading to a late/opaque JVM error instead of an immediate, clear ValueError in Python.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

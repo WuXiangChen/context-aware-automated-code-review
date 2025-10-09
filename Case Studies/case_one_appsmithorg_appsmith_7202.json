@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "159": "appsmithorg/appsmith:7202"
+        },
+        "selected_nodeLs": {
+            "159": "['PR-7202']"
+        },
+        "codediff": {
+            "159": "@@ -40,4 +42,10 @@ public GitController(GitService gitService) {\n         return service.getGitConfigForUser()\n                 .map(gitConfigResponse -> new ResponseDTO<>(HttpStatus.OK.value(), gitConfigResponse, null));\n     }\n+\n+    @PostMapping(\"/connect\")\n+    public Mono<ResponseDTO<Application>> connectApplicationToRemoteRepo(@RequestBody GitConnectDTO GitConnectDTO) {\n+        return service.connectApplicationToGit(GitConnectDTO)"
+        },
+        "groundTruth": {
+            "159": "Please prefer using snake-casing for variable names. Keeps the intent clear and consistent.   ```suggestion public Mono<ResponseDTO<Application>> connectApplicationToRemoteRepo(@RequestBody GitConnectDTO gitConnectDTO) { return service.connectApplicationToGit(gitConnectDTO) ```"
+        },
+        "ds_dnContext": {
+            "159": "{\n  \"code_review_suggestion\": \"The parameter name 'GitConnectDTO' should start with lowercase to follow Java naming conventions (e.g., 'gitConnectDTO') for better readability and consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "159": "{\n  \"code_review_suggestion\": \"The connectApplicationToRemoteRepo method should map the service response to ResponseDTO, similar to the existing getGitConfigForUser method, to ensure the return type matches and the API works correctly. For example, add .map(app -> new ResponseDTO<>(HttpStatus.OK.value(), app, null)) after the service call.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "159": "{\n  \"code_review_suggestion\": \"The method parameter name 'GitConnectDTO' should follow Java naming conventions - use camelCase starting with lowercase (gitConnectDTO) instead of PascalCase to maintain consistency with the rest of the codebase.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "159": "{\n  \"code_review_suggestion\": \"The method is missing a semicolon at the end of the return statement. Also, consider adding proper error handling and validation for the GitConnectDTO input to ensure data integrity and provide meaningful error responses to clients.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "159": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "159": "{\n  \"code_review_suggestion\": \"Great addition! Just a small style point: let's rename the `GitConnectDTO` parameter to `gitConnectDTO` to align with Java's camelCase naming conventions for variables.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "159": "{\n  \"code_review_suggestion\": \"The parameter name 'GitConnectDTO' starts with an uppercase letter, which can confuse it with a class name; rename it to start with a lowercase letter for clarity and Java naming conventions.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "159": "{\n  \"code_review_suggestion\": \"The new POST endpoint is missing the final reactive chain completion and proper HTTP response handling; ensure you return a fully constructed Mono<ResponseDTO<Application>> response and handle errors to keep the API robust and consistent.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "159": "{\"code_review_suggestion\":\"The request body parameter is named 'GitConnectDTO' (uppercase), which shadows the type name and breaks Java camelCase conventions—easy source of confusion. Rename it to 'gitConnectDTO' (and adjust the service call) for clarity and to avoid accidental misuse.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "159": "{\"code_review_suggestion\":\"The new /connect endpoint looks unfinished: the method returns service.connectApplicationToGit(...) without wrapping it in a ResponseDTO, is missing the semicolon/closing braces, and the parameter name should be camelCase (gitConnectDTO). Map the service result like the earlier method (e.g., .map(app -> new ResponseDTO<>(HttpStatus.OK.value(), app, null))) and optionally add @Valid to the @RequestBody for consistency.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

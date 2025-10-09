@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "146": "graphite-project/graphite-web:1780"
+        },
+        "selected_nodeLs": {
+            "146": "['PR-1780']"
+        },
+        "codediff": {
+            "146": "@@ -3665,6 +3665,28 @@ def removeEmptySeries(requestContext, seriesList):\n     \"\"\"\n     return [ series for series in seriesList if safeIsNotEmpty(series) ]\n \n+def uniqueNames(requestContext, *seriesLists):\n+  \"\"\"\n+  Takes an arbitrary number of seriesLists and returns unique series, filtered by name.\n+\n+  Example:\n+\n+  .. code-block:: none\n+\n+    &target=uniqueNames(mostDeviant(server.*.disk_free,5),lowestCurrent(server.*.disk_free,5))\n+\n+  Draws servers with low disk space, and servers with highly deviant disk space, but never the same series twice.\n+\n+  \"\"\"\n+  newList = []\n+  seenNames = {}"
+        },
+        "groundTruth": {
+            "146": "Can be a set (`seenNames = set()`) and then `seenNames.add(series.name)` :) EDIT: I'm just looking around in this project, and happened to see this PR."
+        },
+        "ds_dnContext": {
+            "146": "{\n  \"code_review_suggestion\": \"Consider using a set instead of a dictionary for `seenNames` since you're only tracking membership (not key-value pairs), which is more efficient and semantically clearer for this use case.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "146": "{\n  \"code_review_suggestion\": \"The function appears incomplete as it doesn't process the input seriesLists or return a result. Consider adding logic to iterate through seriesLists, track seen names using the dictionary, and return the filtered newList.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "146": "{\n  \"code_review_suggestion\": \"The `seenNames` dictionary should be a set instead of a dict since you're only tracking names, not key-value pairs. This would be more memory efficient and semantically correct for membership checking.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "146": "{\n    \"code_review_suggestion\": \"The `seenNames` dictionary should be a set instead of a dictionary since you're only tracking names, not key-value pairs. Use `seenNames = set()` and `seenNames.add(series.name)` for better performance and clarity.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "146": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "146": "{\n  \"code_review_suggestion\": \"Great start on the `uniqueNames` function! For tracking the names you've already seen, using a `set` is generally more idiomatic and efficient for membership testing. Consider initializing `seenNames = set()` instead of an empty dictionary.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "146": "{\n  \"code_review_suggestion\": \"Using a dict for seenNames works but a set would be clearer and more idiomatic for tracking unique names; also, adding a brief comment explaining the approach could improve readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "146": "{\n  \"code_review_suggestion\": \"The uniqueNames function currently initializes seenNames as a dictionary but does not complete the implementation to filter duplicates; consider using a set for seen names and fully implement the filtering logic to ensure unique series by name.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "146": "{\"code_review_suggestion\":\"uniqueNames is unfinished: it creates containers but never processes inputs or returns a value, so callers will get None. Implement the filtering and return the list, e.g. use a set for seen names and append only the first occurrence before returning the result.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "146": "{\"code_review_suggestion\":\"uniqueNames currently ends after initializing lists and implicitly returns None, so it never filters anything. Implement the loop and return value, e.g. track seen names in a set and append only first occurrences, then return the result list.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

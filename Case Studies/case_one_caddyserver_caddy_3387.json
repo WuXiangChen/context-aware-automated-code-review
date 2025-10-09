@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "296": "caddyserver/caddy:3387"
+        },
+        "selected_nodeLs": {
+            "296": "['PR-3387', 'Issue-3191']"
+        },
+        "codediff": {
+            "296": "@@ -30,6 +30,9 @@ func extractFrontMatter(input string) (map[string]interface{}, string, error) {\n \t}\n \tfirstLine := input[firstLineStart:firstLineEnd]\n \n+\t// ensure residue windows newline is removed\n+\tfirstLine = strings.Trim(firstLine, \"\\r\")"
+        },
+        "groundTruth": {
+            "296": "Should we just be generous and elide all extra whitespace? `strings.TrimSpace`"
+        },
+        "ds_dnContext": {
+            "296": "{\n  \"code_review_suggestion\": \"The code only trims carriage returns, which might not handle all newline cases. Consider using strings.Trim(firstLine, \\\"\\\\r\\\\n\\\") for better cross-platform compatibility.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "296": "{\n  \"code_review_suggestion\": \"The change effectively handles Windows newlines by trimming carriage returns, but for better clarity, consider updating the comment to 'residual' instead of 'residue'.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "296": "{\n  \"code_review_suggestion\": \"The change removes Windows carriage returns, but consider using `strings.TrimRight(firstLine, \\\"\\\\r\\\")` instead to preserve leading whitespace if present, or better yet, handle all newline formats consistently throughout the parsing logic.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "296": "{\n    \"code_review_suggestion\": \"Good fix for Windows newline handling! Since you're already using strings.Trim, consider using strings.TrimSpace instead to handle all whitespace characters including spaces, tabs, and both \\\\r and \\\\n, which would make the solution more robust across different environments.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "296": "{\n  \"code_review_suggestion\": \"Nice catch on the Windows line endings! For this situation, `strings.TrimSuffix(firstLine, \\\"\\\\r\\\")` would be a more precise choice. It better communicates the intent of removing only a trailing carriage return, rather than from both ends of the string.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "296": "{\n  \"code_review_suggestion\": \"Great catch on the Windows newline issue! To be slightly more precise, you could use `strings.TrimSuffix(firstLine, \\\"\\\\r\\\")` here, since the carriage return will only ever appear at the end of the line.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "296": "{\n  \"code_review_suggestion\": \"Instead of trimming only '\\\\r', use strings.TrimSpace to remove all types of trailing and leading whitespace and newline characters for better robustness and clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "296": "{\n  \"code_review_suggestion\": \"Great fix for handling Windows newlines! For completeness, consider trimming both '\\\\r' and '\\\\n' with strings.TrimSpace or strings.Trim instead of only '\\\\r', to robustly handle all possible trailing newline characters.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "296": "{\"code_review_suggestion\":\"If you only intend to strip a trailing Windows carriage return, use strings.TrimSuffix(firstLine, \\\"\\\\r\\\") instead of strings.Trim, which removes all leading/trailing \\\\r and is less explicit. Also tweak the comment (e.g., \\\"Remove trailing Windows carriage return\\\").\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "296": "{\"code_review_suggestion\":\"Nice targeted fix. To be a bit more precise (and self-documenting), consider using strings.TrimRight(firstLine, \\\"\\\\r\\\") instead of Trim so you only drop a trailing Windows carriage return and avoid touching any leading char (however unlikely). Update the comment accordingly.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

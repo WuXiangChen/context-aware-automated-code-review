@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "250": "wordpress-mobile/WordPress-Android:932"
+        },
+        "selected_nodeLs": {
+            "250": "['PR-932']"
+        },
+        "codediff": {
+            "250": "@@ -4,139 +4,139 @@\n import android.app.Dialog;\n import android.content.DialogInterface;\n import android.content.Intent;\n-import android.content.SharedPreferences;\n import android.net.Uri;\n import android.os.Bundle;\n-import android.preference.PreferenceManager;\n import android.support.v4.app.DialogFragment;\n+import android.text.TextUtils;\n \n import com.actionbarsherlock.app.SherlockDialogFragment;\n \n import org.wordpress.android.R;\n import org.wordpress.android.WordPress;\n-import org.wordpress.android.ui.prefs.BlogPreferencesActivity;\n-import org.wordpress.android.ui.stats.WPComLoginActivity;\n \n-public class WPAlertDialogFragment extends SherlockDialogFragment implements\n-    DialogInterface.OnClickListener {\n-    private static boolean isXMLRPC = false;\n-    private static boolean isLoadMore = false;\n-    private static boolean isLearnMore = false;\n+public class WPAlertDialogFragment extends SherlockDialogFragment implements DialogInterface.OnClickListener {\n+    private static enum WPAlertDialogType {ALERT,    // simple ok dialog with error message\n+                                           CONFIRM,  // dialog with yes/no and callback when positive button clicked\n+                                           URL_INFO} // info dialog that shows url when positive button clicked\n \n-    public static WPAlertDialogFragment newInstance(String message) {\n-        return newInstance(message, null, false, null, null);\n+    private static final String ARG_TITLE      = \"title\";\n+    private static final String ARG_MESSAGE    = \"message\";\n+    private static final String ARG_TYPE       = \"type\";\n+    private static final String ARG_INFO_TITLE = \"info-title\";\n+    private static final String ARG_INFO_URL   = \"info-url\";\n+\n+    public interface OnDialogConfirmListener {\n+        public void onDialogConfirm();\n+    }\n+\n+    public static WPAlertDialogFragment newAlertDialog(String message) {\n+        String title = WordPress.getContext().getString(R.string.error_generic);\n+        return newAlertDialog(title, message);\n+    }\n+    public static WPAlertDialogFragment newAlertDialog(String title, String message) {\n+        return newInstance(title, message, WPAlertDialogType.ALERT, null, null);\n     }\n \n-    // XMLRPC Error\n-    public static WPAlertDialogFragment newInstance(String message, String error) {\n-        return newInstance(message, error, true, null, null);\n+    public static WPAlertDialogFragment newConfirmDialog(String title,\n+                                                         String message) {\n+        return newInstance(title, message, WPAlertDialogType.CONFIRM, null, null);\n     }\n \n-    // Load More Posts Override Warning\n-    public static WPAlertDialogFragment newInstance(String message, String error,\n-                                                    boolean loadMore) {\n-        return newInstance(message, error, loadMore, null, null);\n+    public static WPAlertDialogFragment newUrlInfoDialog(String title,\n+                                                         String message,\n+                                                         String infoTitle,\n+                                                         String infoUrl) {\n+        return newInstance(title, message, WPAlertDialogType.URL_INFO, infoTitle, infoUrl);\n     }\n \n-    public static WPAlertDialogFragment newInstance(String message, String error, boolean loadMore,\n-                                                    String infoTitle, String infoUrl) {\n-        WPAlertDialogFragment adf = new WPAlertDialogFragment();\n+    private static WPAlertDialogFragment newInstance(String title,\n+                                                     String message,\n+                                                     WPAlertDialogType alertType,\n+                                                     String infoTitle,\n+                                                     String infoUrl) {\n+        WPAlertDialogFragment dialog = new WPAlertDialogFragment();\n+\n         Bundle bundle = new Bundle();\n-        bundle.putString(\"alert-message\", message);\n-        if (error != null) {\n-            bundle.putString(\"alert-error\", error);\n-        }\n-        if (infoTitle != null && infoUrl != null) {\n-            bundle.putString(\"info-title\", infoTitle);\n-            bundle.putString(\"info-url\", infoUrl);\n+\n+        bundle.putString(ARG_TITLE, title);\n+        bundle.putString(ARG_MESSAGE, message);\n+        bundle.putSerializable(ARG_TYPE, (alertType != null ? alertType : WPAlertDialogType.ALERT));\n+\n+        if (alertType == WPAlertDialogType.URL_INFO) {\n+            bundle.putString(ARG_INFO_TITLE, infoTitle);"
+        },
+        "groundTruth": {
+            "250": "There is no check for null values here. Later in onCreateDialog, these values are used without check for null values, resulting in NPE."
+        },
+        "ds_dnContext": {
+            "250": "{\n  \"code_review_suggestion\": \"The refactor improves structure but removes XML-RPC error handling and 'Load More' functionality. If these features are still needed, consider adding dedicated dialog types or callbacks to maintain compatibility with existing use cases.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"The new enum-based design improves reusability, but consider adding negative button callback support for CONFIRM dialogs to handle cancel actions, making the component more flexible for future use cases.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"The refactored code introduces a major breaking change by removing the XMLRPC and loadMore functionality without providing backward compatibility or migration path for existing callers, which could cause runtime crashes throughout the app.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"The refactor looks great for making the dialog more reusable, but consider making the OnDialogConfirmListener a static nested interface to prevent potential memory leaks from non-static inner classes holding references to the fragment.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"This is a great refactor! Since your public factory methods always provide a non-null `alertType`, you can simplify the private `newInstance` method by removing the redundant null check on the `alertType` parameter. This will make the code a little cleaner.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"This refactor is a great improvement for reusability! However, it looks like you're passing `infoUrl` to the `newInstance` method but not storing it in the bundle. You'll want to add `bundle.putString(ARG_INFO_URL, infoUrl);` to ensure the URL info dialog works as intended.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"To improve maintainability and clarity, consider consolidating dialog creation into a single well-typed factory method using the WPAlertDialogType enum, which you started but did not fully complete—ensure all parameters are consistently stored and used, and avoid legacy unused fields to reduce confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"Great refactor for reusability! To improve clarity and reduce potential errors, consider adding null checks or default values when retrieving optional infoTitle and infoUrl in dialogs of type URL_INFO.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"For URL_INFO dialogs you set ARG_INFO_TITLE but never store ARG_INFO_URL (old code saved both). This will break showing/opening the URL. Add bundle.putString(ARG_INFO_URL, infoUrl); (with a non-empty check using the new TextUtils import) inside that block.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "250": "{\n  \"code_review_suggestion\": \"Using WordPress.getContext() inside newAlertDialog couples this reusable fragment to a global app singleton and risks NPE/leaks; let the caller supply the title (or a string res id) or defer resolving getString() until onCreateDialog() via getActivity() to keep the fragment context‑agnostic and more reusable.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

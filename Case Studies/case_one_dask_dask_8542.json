@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "280": "dask/dask:8542"
+        },
+        "selected_nodeLs": {
+            "280": "['PR-8542']"
+        },
+        "codediff": {
+            "280": "@@ -1343,6 +1344,7 @@ def rewrite_blockwise(inputs):\n     new_axes = inputs[root].new_axes\n     concatenate = inputs[root].concatenate\n     dsk = dict(inputs[root].dsk)\n+    seen = defaultdict(int)"
+        },
+        "groundTruth": {
+            "280": "Do we need to track this globally? Or could we start fresh at each layer we process (is this the `for i, (dep, ind) in enumerate(indices)` loop?)? I had thought the problem was specifically when one layer used the same input name multiple times, but with different iteration orders (indices), not just that the same name occurred in the whole graph multiple times. So maybe this is too wide of a net? Or maybe it doesn't matter?"
+        },
+        "ds_dnContext": {
+            "280": "{\n  \"code_review_suggestion\": \"The new variable 'seen' is initialized but never used in the provided code snippet. If this is part of an incomplete change, consider adding a TODO comment; otherwise, remove unused code to avoid confusion.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n  \"code_review_suggestion\": \"The `seen` defaultdict effectively tracks duplicate dependency names, but consider initializing it with `lambda: -1` to allow the first occurrence to use index 0, making the counting logic more intuitive when appending labels like '_0' for the first duplicate.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n  \"code_review_suggestion\": \"I noticed you added a `seen` defaultdict but it's not being used anywhere in the function yet. This could lead to confusion for other developers. Either implement the tracking logic you intended, or remove it to keep the code clean and avoid dead code.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n    \"code_review_suggestion\": \"The `seen` defaultdict is a good approach to track duplicate dependency names, but consider using a more descriptive variable name like `dependency_count` to clearly communicate its purpose in handling duplicate layer names during the blockwise optimization.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n  \"code_review_suggestion\": \"The use of `defaultdict(int)` for a variable named `seen` is a bit ambiguous. If you're just tracking which items have been visited, a `set()` would be a more idiomatic and clearer choice to communicate that intent.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n  \"code_review_suggestion\": \"Using `defaultdict(int)` is a solid choice for tracking dependency counts. For slightly more semantic clarity, you might also consider `collections.Counter`, as its name explicitly communicates the intent to count occurrences.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n  \"code_review_suggestion\": \"You introduced 'seen = defaultdict(int)' without importing 'defaultdict' from 'collections', so make sure to add 'from collections import defaultdict' at the top to avoid a NameError.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n  \"code_review_suggestion\": \"You introduced `seen = defaultdict(int)` but haven't imported `defaultdict`; ensure you add the import from `collections` to avoid runtime errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n  \"code_review_suggestion\": \"You’ve added seen = defaultdict(int) but never use it—this introduces dead code (and defaultdict must also be imported if not already). Drop it or implement the intended logic that consumes seen to avoid confusion and lint warnings.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "280": "{\n  \"code_review_suggestion\": \"You introduced `seen = defaultdict(int)` but it isn’t used yet—so the bug fix for distinguishing duplicate dependency names won’t take effect. Either apply it when adding/fusing deps (e.g., append a suffix like f\\\"-{seen[name]}\\\" before incrementing) or remove it to avoid dead code; adding a brief comment explaining the counting logic would also help.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

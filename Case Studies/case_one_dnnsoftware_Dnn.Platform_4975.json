@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "141": "dnnsoftware/Dnn.Platform:4975"
+        },
+        "selected_nodeLs": {
+            "141": "['PR-4975', 'Issue-4944', 'Issue-4887']"
+        },
+        "codediff": {
+            "141": "@@ -25,6 +25,7 @@ public sealed class CreateUpgrade : FrostingTask<Context>\n         public override void Run(Context context)\r\n         {\r\n             this.RenameResourcesFor98xUpgrades(context);\r\n+            this.RenameResourcesFor910xUpgrades(context);\r"
+        },
+        "groundTruth": {
+            "141": "Considering that this code is only running for the current version releases, and is internal to the build process. Could we combine the existing method and this method to something such as `RenameResourcesForUpgrades` which is more descriptive of the action necessary and leave the `[obsolete]` tag?"
+        },
+        "ds_dnContext": {
+            "141": "{\n  \"code_review_suggestion\": \"Adding a new method for 9.10x upgrades suggests we're duplicating logic for each version range. Consider creating a single unified method that handles version-based renames dynamically to avoid code bloat as we support more versions in the future.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "141": "{\n  \"code_review_suggestion\": \"The new method `RenameResourcesFor910xUpgrades` is called but not shown in this diff. Since the context involves critical upgrade changes for Telerik removal, ensure this method is properly implemented to handle 9.10.x resource renaming without errors.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "141": "{\n  \"code_review_suggestion\": \"The new method call is a good addition, but consider extracting the version-specific renaming logic into a single method that accepts version parameters to avoid creating separate methods for each version and keep the code DRY.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "141": "{\n    \"code_review_suggestion\": \"The new method RenameResourcesFor910xUpgrades() should include a comment explaining its purpose - specifically that it changes file extensions from .resources to .zip to ensure Resource Manager installs by default, as mentioned in issues #4944 and #4975.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "141": "{\n  \"code_review_suggestion\": \"It looks like we're adding a new method call for each version-specific upgrade. To make this more maintainable, we could discover and run these upgrade steps dynamically, perhaps by having them implement a common `IUpgradeStep` interface. This would avoid having to modify this task for every new release.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "141": "{\n  \"code_review_suggestion\": \"I see we're adding another version-specific method here. To improve long-term maintainability, could we perhaps consolidate the logic from `RenameResourcesFor98xUpgrades` and the new `RenameResourcesFor910xUpgrades` into a single, more generic function? This would make our upgrade scripts easier to manage in the future.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "141": "{\n  \"code_review_suggestion\": \"Calling RenameResourcesFor910xUpgrades directly after RenameResourcesFor98xUpgrades might cause issues if they depend on overlapping state; ensure that the sequence and their interactions are well-tested or consider combining them for clearer flow.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "141": "{\n  \"code_review_suggestion\": \"Calling RenameResourcesFor910xUpgrades is good for the new upgrade path, but ensure this method is well-tested and idempotent to avoid side effects during repeated upgrade runs.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "141": "{\"code_review_suggestion\":\"Consider wrapping the new RenameResourcesFor910xUpgrades call in a version check (and making its operations idempotent) so it only runs when actually moving to 9.10.x, avoiding duplicate or conflicting renames after the 9.8.x step.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "141": "{\n  \"code_review_suggestion\": \"The new RenameResourcesFor910xUpgrades() now runs unconditionally right after the 98x rename, which could cause unnecessary or incorrect renames on versions where it's not needed. Consider gating each rename method with an explicit version check (or have them no-op internally when not applicable) to keep the upgrade task idempotent and avoid unintended side effects.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "60": "home-assistant/core:14174"
+        },
+        "selected_nodeLs": {
+            "60": "['PR-14174', 'Issue-13116']"
+        },
+        "codediff": {
+            "60": "@@ -110,7 +110,8 @@ def state_attributes(self):\n             ATTR_WEATHER_TEMPERATURE: show_temp(\n                 self.hass, self.temperature, self.temperature_unit,\n                 self.precision),\n-            ATTR_WEATHER_HUMIDITY: round(self.humidity)\n+            ATTR_WEATHER_HUMIDITY: (round(self.humidity) if self.humidity"
+        },
+        "groundTruth": {
+            "60": "The `if self.humidity` check will not work with falsy values like `0.0`. Write something like `if self.humidity is not None` or, even better, make it an additional check like the other attributes: ```python data = { ATTR_WEATHER_TEMPERATURE: show_temp( self.hass, self.temperature, self.temperature_unit, self.precision), } humidity = self.humidity if humidity is not None: data[ATTR_WEATHER_HUMIDITY] = humidity ```"
+        },
+        "ds_dnContext": {
+            "60": "{\n  \"code_review_suggestion\": \"The humidity rounding condition uses truthiness check, which incorrectly treats 0% as false. Use `is not None` instead to handle null values without affecting valid zero readings.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "60": "{\n  \"code_review_suggestion\": \"The condition `if self.humidity` incorrectly handles 0% humidity (which is falsy) by returning None instead of 0. Use `if self.humidity is not None` to properly distinguish between unset values and actual zero values.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "60": "{\n  \"code_review_suggestion\": \"The humidity rounding logic is incomplete - it's missing the 'else' clause for when self.humidity is None. This could cause a TypeError. Consider adding a default value like: round(self.humidity) if self.humidity is not None else None\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "60": "{\n    \"code_review_suggestion\": \"Good fix for handling uninitialized humidity values! The conditional check prevents the TypeError when humidity is None. Consider adding a comment explaining this handles the case where weather data hasn't been fully initialized yet.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "60": "{\n  \"code_review_suggestion\": \"This change introduces a syntax error because the conditional expression is missing its `else` part. To fix this and correctly handle cases where humidity might be unavailable, you could complete the expression, for instance: `round(self.humidity) if self.humidity is not None else None`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "60": "{\n  \"code_review_suggestion\": \"Thanks for fixing this `TypeError`! To align with how temperature is handled and improve readability, consider creating a small helper function (e.g., `show_humidity`) to encapsulate the rounding and the `None` check. This would keep the `state_attributes` dictionary cleaner.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "60": "{\n  \"code_review_suggestion\": \"The humidity rounding logic is incomplete and likely causes a syntax error; ensure the conditional expression is fully written and properly closed to avoid runtime failures.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "60": "{\n  \"code_review_suggestion\": \"Complete the conditional expression to safely round humidity only when it's not None, e.g., use `round(self.humidity) if self.humidity is not None else None` to avoid TypeError and improve clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "60": "{\"code_review_suggestion\":\"The new ternary for humidity is incomplete and will cause a SyntaxError. Finish it, e.g. ATTR_WEATHER_HUMIDITY: (round(self.humidity) if self.humidity is not None else None), and close the dict entry properly.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "60": "{\n  \"code_review_suggestion\": \"When guarding against None, don't rely on truthiness: a real humidity of 0 would be skipped. Use something like ATTR_WEATHER_HUMIDITY: (round(self.humidity) if self.humidity is not None else None) to avoid the original TypeError without hiding valid 0% readings.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "148": "tensorflow/tensorflow:5813"
+        },
+        "selected_nodeLs": {
+            "148": "['PR-5813']"
+        },
+        "codediff": {
+            "148": "@@ -42,12 +42,13 @@\n from tensorflow.python.framework import ops\n from tensorflow.python.ops import array_ops\n from tensorflow.python.ops import variables\n+from tensorflow.python.ops import variable_scope\n \n \n def _create_slot_var(primary, val, scope):\n   \"\"\"Helper function for creating a slot variable.\"\"\"\n \n-  slot = variables.Variable(val, name=scope, trainable=False)\n+  slot = variable_scope.get_variable(scope, initializer=val, trainable=False)"
+        },
+        "groundTruth": {
+            "148": "After reading the explanation above, I have some worries that some people will be hit by this change, e.g., they will not be able to create 2 optimizers of the same kind because they'll get reuse errors. That's an edge case, but I think it could be avoided by putting a variable scope with default name around this get_variable call. Is this called only from the method below? If so, then let's replace the current \"ops.name_scope(socpe_name + \"/\")\" with \"variable_scope.variable_scope(None, primary.op.name)\" and then use name instead of the joint scope_name. Does this sound reasonable?"
+        },
+        "ds_dnContext": {
+            "148": "{\n  \"code_review_suggestion\": \"Switching to `variable_scope.get_variable` is good for consistency, but we should explicitly set `reuse=False` to avoid accidentally reusing existing variables in certain contexts, since slot variables should always be unique per primary variable.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "148": "{\n  \"code_review_suggestion\": \"The change to use `variable_scope.get_variable` is correct for enabling variable sharing across buckets. However, ensure the calling context uses `reuse=tf.AUTO_REUSE` in the variable scope to handle repeated creations gracefully, as `get_variable` requires explicit reuse settings for sharing.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "148": "{\n  \"code_review_suggestion\": \"Good change! Using variable_scope.get_variable() instead of variables.Variable() ensures proper variable reuse and avoids duplicate variable errors when the same slot is created multiple times.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "148": "{\n    \"code_review_suggestion\": \"Good fix for the bucketing variable sharing issue! Using `variable_scope.get_variable()` instead of `Variable()` ensures proper variable reuse across different buckets. Just make sure the scope name passed to `get_variable()` is unique and properly formatted to avoid naming collisions.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "148": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "148": "{\n  \"code_review_suggestion\": \"Great catch! Using `variable_scope.get_variable` is the idiomatic way to create or share variables in TensorFlow. This change correctly fixes the bug where optimizer slot variables were not being shared across different buckets.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "148": "{\n  \"code_review_suggestion\": \"Using variable_scope.get_variable improves variable reuse and integration with TensorFlow's variable management, but consider explicitly handling variable reuse scopes to avoid accidental variable creation or conflicts.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "148": "{\n  \"code_review_suggestion\": \"Great fix using get_variable for proper variable sharing! Just ensure variable_scope reuse is correctly set to avoid accidental variable creation conflicts.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "148": "{\"code_review_suggestion\": \"Switching to get_variable introduces implicit reuse semantics: a second call with the same scope will now raise an error (or unexpectedly reuse) instead of always creating a fresh slot var. Either revert to tf.Variable, or call get_variable with an explicit shape/dtype and a well-defined reuse policy (e.g., with variable_scope(..., reuse=tf.AUTO_REUSE)) to avoid accidental name collisions.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "148": "{\"code_review_suggestion\":\"Switching from variables.Variable to get_variable needs a reuse-aware variable_scope and a cleaned name; passing the raw name_scope string (often ending with '/') without a reuse=True/AUTO_REUSE scope may raise a ValueError on the second creation. Consider scope_name = scope.rstrip('/') and wrapping in with variable_scope.variable_scope('', reuse=tf.AUTO_REUSE): slot = variable_scope.get_variable(scope_name, initializer=val, trainable=False).\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

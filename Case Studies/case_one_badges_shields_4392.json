@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "182": "badges/shields:4392"
+        },
+        "selected_nodeLs": {
+            "182": "['PR-1673']"
+        },
+        "codediff": {
+            "182": "@@ -23,6 +23,14 @@ describe('The server', function() {\n     server = undefined\n   })\n \n+  it('should allow strings for port', async function() {\n+    //fixes #4391 - This allows the app to be run using iisnode, which uses a named pipe for the port.\n+    const pipeServer = createTestServer({\n+      port: '\\\\\\\\.\\\\pipe\\\\9c137306-7c4d-461e-b7cf-5213a3939ad6',\n+    })\n+    expect(pipeServer).to.not.undefined"
+        },
+        "groundTruth": {
+            "182": "Not sure if this is a Chai shortcut that I'm just not familiar with or if it should have a `.be` in the chain? ```suggestion expect(pipeServer).to.not.be.undefined ```"
+        },
+        "ds_dnContext": {
+            "182": "{\n  \"code_review_suggestion\": \"The assertion 'expect(pipeServer).to.not.undefined' is incomplete and might not work as intended; it should be 'expect(pipeServer).to.not.be.undefined' to properly verify the server is defined, ensuring the test is reliable.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "182": "{\n  \"code_review_suggestion\": \"The test assertion `expect(pipeServer).to.not.undefined` appears incorrect. Consider using `expect(pipeServer).not.to.be.undefined` (Chai syntax) to properly validate the server instance exists.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "182": "{\n    \"code_review_suggestion\": \"The test should verify that the server actually starts and listens on the named pipe, not just that the server object is created. Consider adding a test that makes a request to the server to ensure it's properly functioning with string ports.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "182": "{\"code_review_suggestion\": \"The test should include an assertion to verify the server actually starts with a string port, not just that it's defined. Consider adding `await pipeServer.start()` and checking it's listening on the expected pipe address.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "182": "{\n  \"code_review_suggestion\": \"This is a great test case for named pipes! To make it more robust, could you also verify that the server actually starts listening? Right now, it only checks that an object is returned, not that it's successfully bound to the pipe.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "182": "{\n  \"code_review_suggestion\": \"Thanks for adding a test for named pipe support! The current assertion only checks that the server object was created. To make the test more robust, could we also verify that the server is actually listening on the pipe after it's created?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "182": "{\n  \"code_review_suggestion\": \"The test should await any async server startup to ensure it's ready before asserting, and the expect statement needs to use proper Chai syntax, like expect(pipeServer).to.not.be.undefined.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "182": "{\n  \"code_review_suggestion\": \"The test uses 'expect(pipeServer).to.not.undefined', but it should be 'to.not.be.undefined' to properly assert the server creation; fixing this will ensure the test asserts as intended.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "182": "{\n  \"code_review_suggestion\": \"The new test only checks that pipeServer isn’t undefined, which can pass even if the server never bound to the named pipe. Strengthen it by waiting for the server to start and asserting server.address() (or a successful request) matches the pipe path, then closing the server to avoid a handle leak.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "182": "{\"code_review_suggestion\":\"The test assertion looks malformed: use something like expect(pipeServer).to.exist (or .to.not.be.undefined) instead of expect(pipeServer).to.not.undefined, and consider closing the server afterward to avoid a dangling listener.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

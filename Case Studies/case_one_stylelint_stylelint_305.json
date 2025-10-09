@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "105": "stylelint/stylelint:305"
+        },
+        "selected_nodeLs": {
+            "105": "['PR-305', 'Issue-278']"
+        },
+        "codediff": {
+            "105": "@@ -0,0 +1,198 @@\n+/* eslint-disable indent, no-multiple-empty-lines */\n+\n+import {\n+  ruleTester,\n+  warningFreeBasics\n+} from \"../../../testUtils\"\n+import rule, { ruleName, messages } from \"..\"\n+\n+const testRule = ruleTester(rule, ruleName)\n+\n+testRule(2, { hierarchicalSelectors: true }, tr => {\n+warningFreeBasics(tr)\n+\n+tr.ok(\n+`@media print {\n+  a {\n+    color: pink;\n+  }\n+}`\n+)\n+\n+tr.ok(\n+`.foo {}\n+.bar {}\n+.baz {}`\n+)\n+\n+tr.notOk(\n+`.foo {}\n+  .bar {}\n+.baz {}`,\n+messages.expected(\"0 spaces at line 2\"))\n+\n+tr.ok(\n+`.foo {}\n+  .foo-one {}\n+.bar {}\n+  .bar-one {}`\n+)\n+\n+tr.ok(\n+`.foo {\n+  top: 0;\n+}\n+  .foo-one {\n+    top: 1px;\n+  }`\n+)\n+\n+tr.notOk(\n+`.foo {}\n+    .foo-one {}\n+.bar {}\n+  .bar-one {}`,\n+messages.expected(\"2 spaces at line 2\"))\n+\n+tr.notOk(\n+`.foo {}\n+  .foo-one {}\n+.bar {}\n+   .bar-one {}`,\n+messages.expected(\"2 spaces at line 4\"))\n+\n+tr.notOk(\n+`.foo {}\n+  .foo-one {}\n+.bar {}\n+  .bar-one {\n+  top: 0;\n+  }`,\n+messages.expected(\"4 spaces at line 5\"))\n+\n+tr.notOk(\n+`.foo {}\n+  .foo-one {}\n+  .bar {}\n+  .bar-one {}`,\n+messages.expected(\"0 spaces at line 3\"))\n+\n+tr.notOk(\n+`.foo {}\n+  .foo-one {\n+    color: pink;\n+     top: 0;\n+  }`,\n+messages.expected(\"4 spaces at line 4\"))\n+\n+tr.ok(\n+`.foo {}\n+  .foo-one {}\n+    .foo-one-sub {}`\n+)\n+\n+tr.notOk(\n+`.foo {}\n+  .foo-one {}\n+  .foo-one-sub {}`,\n+messages.expected(\"4 spaces at line 3\"))\n+\n+tr.ok(\n+`.foo {}\n+  .foo-one {}\n+  .foo-two {}\n+    .foo-two-sub {}\n+  .foo-three {}\n+.bar {}`\n+)\n+\n+tr.notOk(\n+`.foo {}\n+  .foo-one {}\n+  .foo-two {}\n+  .foo-two-sub {}\n+  .foo-three {}\n+.bar {}`,\n+messages.expected(\"4 spaces at line 4\"))\n+\n+tr.notOk(\n+`.foo {}\n+  .foo-one {\n+    top: 0;\n+  }\n+  .foo-two {}\n+    .foo-two-sub {\n+      top: 10px;\n+    }\n+  .foo-three {}\n+  .bar {}`,\n+messages.expected(\"0 spaces at line 10\"))\n+\n+tr.ok(\n+`#foo {\n+  top: 3px;\n+}\n+  #foo ul {}\n+    #foo ul > li {}\n+      #foo ul > li span {\n+        top: 4px;\n+      }\n+    #foo ul a {}\n+  #foo div {\n+    top: 6px;\n+  }\n+    #foo div span {}\n+#bar {}`\n+)\n+\n+tr.notOk(\n+`#foo {}\n+  #foo ul {}\n+    #foo ul > li {}\n+      #foo ul li span {}\n+    #foo ul a {}\n+  #foo div {}\n+    #foo div span {}\n+#bar {}`,\n+messages.expected(\"4 spaces at line 4\"))\n+\n+tr.notOk(\n+`#foo {}\n+  #foo ul {}\n+    #foo ul > li {}\n+      #foo ul > li span {}\n+  #foo ul a {}\n+  #foo div {}\n+    #foo div span {}\n+#bar {}`,\n+messages.expected(\"4 spaces at line 5\"))\n+\n+tr.ok(\n+`#bar {}\n+#baz {}\n+#bar a {}\n+#baz b {}`\n+)\n+\n+tr.notOk(\n+`#bar {}\n+#baz {}\n+  #bar a {}\n+#baz b {}`,\n+messages.expected(\"0 spaces at line 3\"))\n+\n+tr.ok(\n+`@media print {\n+  .foo {\n+    top: 0;\n+  }\n+    .foo-bar {\n+      top: 10px;\n+    }\n+  .bar {\n+    top: 1px;\n+  }\n+}`\n+)\n+"
+        },
+        "groundTruth": {
+            "105": "How is this things behaving? - twice the same ``` css foo {} foo {} ``` - nested mq ``` css foo {} @media print { foo {} } } ``` ``` css foo {} @media print { foo {} foo bar {} } } ``` ``` css foo {} @media print { foo bar {} } } ``` I believe that all should be valid."
+        },
+        "ds_dnContext": {
+            "105": "{\n  \"code_review_suggestion\": \"The test case on line 30 expects 0 spaces for a nested selector when hierarchicalSelectors is enabled, but this contradicts the rule's purpose. Consider updating the expected indentation to 2 spaces to match hierarchical nesting expectations.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "105": "{\n  \"code_review_suggestion\": \"The tests look comprehensive, but to ensure robust BEM support, consider adding a test case for combined class selectors (e.g., .block.modifier) to verify that the hierarchical indentation handles modifiers correctly.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "105": "{\n  \"code_review_suggestion\": \"The test cases are missing coverage for nested media queries and complex selector hierarchies. Consider adding a test where nested selectors appear inside multiple levels of @media rules to ensure the indentation logic handles these edge cases correctly.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "105": "{\n    \"code_review_suggestion\": \"The hierarchical indentation implementation looks solid for BEM use cases, but I noticed the test cases don't cover the scenario where a selector starts with the previous selector but isn't a direct descendant (e.g., '.test' followed by '.test .child'). Consider adding a test case like `.foo {} .foo .child {}` to ensure this common BEM pattern is properly validated with the expected indentation level.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "105": "{\n  \"code_review_suggestion\": \"Great set of tests! To improve maintainability, I suggest extracting the larger, multi-line CSS strings into variables. This would reduce duplication, especially for the complex `#foo` selector example, making the tests cleaner and easier to read.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "105": "{\n  \"code_review_suggestion\": \"This is a great set of tests covering the new `hierarchicalSelectors` option. To make it even more robust, could you add a test case for selectors that share a common prefix but aren't truly hierarchical? For example, how should `.foo {}` and `.foobar {}` be handled? Clarifying thi"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "105": "{\n  \"code_review_suggestion\": \"The test suite uses hardcoded expected indentation spaces in error messages, which could become fragile and hard to maintain; consider deriving expected indentation dynamically or centralizing these constants to improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "105": "{\n  \"code_review_suggestion\": \"The test cases comprehensively cover hierarchical selector indentation scenarios, but consider adding clearer comments or grouping the tests by indentation rules or context to improve readability and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "105": "{\n  \"code_review_suggestion\": \"The notOk tests only check the message text, so a regression that reports the wrong line/column (or multiple warnings) could still pass. Strengthen them by asserting line and column (and count) for each expected warning instead of just messages.expected(...).\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "105": "{\"code_review_suggestion\":\"Consider adding tests for edge cases around the hierarchical selector detection: e.g. multi-selector lists (.foo, .foo--mod {} then indented .foo__elem {}), and prefix collisions (.foo {}  .foobar {} should not count as hierarchical). This will guard against a naive startsWith implementation producing false positives.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

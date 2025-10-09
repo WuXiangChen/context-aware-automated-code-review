@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "28": "stratisproject/StratisBitcoinFullNode:1273"
+        },
+        "selected_nodeLs": {
+            "28": "['PR-1273', 'PR-54']"
+        },
+        "codediff": {
+            "28": "@@ -122,22 +122,24 @@ public interface IWalletManager\n         /// Gets a collection of addresses containing transactions for this coin.\n         /// </summary>\n         /// <param name=\"walletName\">The wallet name.</param>\n+        /// <param name=\"accountName\">The account name.</param>\n         /// <returns>Collection of address history and transaction pairs.</returns>\n-        IEnumerable<FlatHistory> GetHistory(string walletName);\n+        IEnumerable<AccountHistory> GetHistory(string walletName, string accountName = null);"
+        },
+        "groundTruth": {
+            "28": "Maybe a remark when the accountName is null then show history across all accounts ?"
+        },
+        "ds_dnContext": {
+            "28": "{\n  \"code_review_suggestion\": \"This change introduces a breaking modification to the interface by altering the method signature. Consider maintaining backward compatibility by overloading the method instead of replacing it, or ensure all implementers are updated to avoid runtime errors.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "28": "{\n  \"code_review_suggestion\": \"The XML documentation should be updated to clarify the behavior when accountName is null, as the current description doesn't reflect the new conditional logic. Consider adding: 'When accountName is null, returns history for all accounts in the wallet; otherwise returns history only for the specified account.'\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "28": "{\n  \"code_review_suggestion\": \"The method signature change introduces a breaking change by replacing FlatHistory with AccountHistory return type. Consider adding a new method instead or providing backward compatibility to avoid breaking existing consumers of this interface.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "28": "{\n  \"code_review_suggestion\": \"The method signature change looks good, but consider adding a null check for the accountName parameter in the implementation to ensure proper handling when no account is specified, as this aligns with the expected behavior described in the PR context.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "28": "{\n  \"code_review_suggestion\": \"Modifying a public interface method is a significant breaking change for existing implementations. To ensure backward compatibility, would you consider adding this as a new, separate method instead of altering the existing `GetHistory` signature?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "28": "{\n  \"code_review_suggestion\": \"This looks good and aligns with the goal of filtering history by account. For better long-term API design, have you considered using method overloads instead of an optional parameter? You could have one `GetHistory(string walletName)` and a separate `GetHistory(string walletName, string accountName)`. This often leads to a cleaner and more maintainable interface.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "28": "{\n  \"code_review_suggestion\": \"Great addition of the accountName parameter for more granular history retrieval! To improve clarity and maintainability, consider making accountName a required parameter or documenting the behavior clearly when it's null rather than using a default null value.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "28": "{\n  \"code_review_suggestion\": \"Consider updating the return type's XML comment to reflect the new AccountHistory type and clarify the behavior when accountName is null, ensuring documentation stays consistent with the method signature.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "28": "{\"code_review_suggestion\":\"This change is a hard breaking API (signature + return type) for anyone implementing IWalletManager; all implementers and callers will fail to compile and optional params on interfaces can cause binary versioning surprises. Keep the original GetHistory(string walletName) returning IEnumerable<FlatHistory> (mark it [Obsolete] and internally adapt) and add a new overload or differently named method (e.g., GetAccountHistory(string walletName, string accountName)) instead of replacing it.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "28": "{\"code_review_suggestion\":\"Changing GetHistory’s signature and return type in the interface is a hard breaking API change. To avoid downstream breakages, keep the original method (mark it [Obsolete]) and add a new overload (or differently named method) for the account-scoped version, plus clearly document null accountName behavior; this gives consumers a migration path.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

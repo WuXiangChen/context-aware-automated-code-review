@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "135": "libgdx/libgdx:6235"
+        },
+        "selected_nodeLs": {
+            "135": "['PR-6235']"
+        },
+        "codediff": {
+            "135": "@@ -603,11 +604,19 @@ public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {\n \n \t@Override\n \tpublic void setOnscreenKeyboardVisible (final boolean visible) {\n+\t\tsetOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);\n+\t}\n+\n+\t@Override\n+\tpublic void setOnscreenKeyboardVisible (final boolean visible, final OnscreenKeyboardType type) {\n \t\thandle.post(new Runnable() {\n \t\t\tpublic void run () {\n \t\t\t\tInputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);\n \t\t\t\tif (visible) {\n \t\t\t\t\tView view = ((AndroidGraphics)app.getGraphics()).getView();\n+\t\t\t\t\t((GLSurfaceView20)view).onscreenKeyboardType = type == null ? OnscreenKeyboardType.Default : type;\n+\t\t\t\t\tmanager.restartInput(view);"
+        },
+        "groundTruth": {
+            "135": "Just as an improvement suggestion: restartInput is only necessary if the keyboard type was changed. This might perhaps help with the issue you mention."
+        },
+        "ds_dnContext": {
+            "135": "{\n  \"code_review_suggestion\": \"The direct cast to GLSurfaceView20 might cause a ClassCastException if the view isn't always that type. Consider using an instanceof check to handle it safely and avoid potential crashes.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "135": "{\n  \"code_review_suggestion\": \"Since the context mentions rare cases where the keyboard gets stuck on the wrong type, consider adding a null check or default fallback when setting `onscreenKeyboardType` to prevent potential state inconsistencies, especially if the type parameter might be unexpectedly null in some edge cases.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "135": "{\n  \"code_review_suggestion\": \"The new method sets the keyboard type on the view but doesn't clear it when the keyboard is hidden. This could cause the wrong keyboard type to persist for future uses. Consider resetting onscreenKeyboardType to Default when visible is false.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "135": "{\n    \"code_review_suggestion\": \"The restartInput() call should be conditional on the keyboard type actually changing to avoid unnecessary input method restarts, which could contribute to the rare keyboard type sticking issue mentioned in the context.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "135": "{\n  \"code_review_suggestion\": \"This is a great feature for controlling the keyboard type. However, the direct cast to `GLSurfaceView20` could cause a `ClassCastException` if a different view is ever used. To make the code more robust, I'd recommend adding an `instanceof` check before casting and setting the `onscreenKeyboardType`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "135": "{\n  \"code_review_suggestion\": \"Great addition! I noticed the context mentions a rare bug where the keyboard type can get stuck. To make this more robust, consider explicitly resetting the `onscreenKeyboardType` back to `Default` when the keyboard is hidden. This would ensure no lingering state if the keyboard is shown again by other means.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "135": "{\n  \"code_review_suggestion\": \"Great addition of the overloaded method, but you should add a null check before casting the view to GLSurfaceView20 to avoid potential ClassCastException if the view type differs.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "135": "{\n  \"code_review_suggestion\": \"Consider adding a null check for 'view' before casting to GLSurfaceView20 to avoid potential ClassCastException if the view type changes; also, document why restartInput is called here to clarify its role in updating the keyboard type.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "135": "{\"code_review_suggestion\":\"The new method blindly casts the view to GLSurfaceView20; if a different view implementation is ever used, this will crash with a ClassCastException. Add an instanceof check (or a safer accessor on AndroidGraphics) before setting onscreenKeyboardType, and skip or log if it’s not that type.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "135": "{\n  \"code_review_suggestion\": \"The direct cast ((GLSurfaceView20) view) risks a ClassCastException if the graphics view ever changes; guard with an instanceof (or expose a lightweight interface for setting the keyboard type) before assigning, and skip or log if unsupported to avoid crashing when opening the keyboard.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

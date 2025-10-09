@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "355": "mantidproject/mantid:25257"
+        },
+        "selected_nodeLs": {
+            "355": "['PR-25257', 'Issue-22912']"
+        },
+        "codediff": {
+            "355": "@@ -47,10 +49,11 @@ std::string CompositeImplicitFunction::toXMLString() const {\n   AutoPtr<Element> parameterListElement = pDoc->createElement(\"ParameterList\");\n   functionElement->appendChild(parameterListElement);\n \n-  std::string functionXML;\n-  for (const auto &Function : m_Functions) {\n-    functionXML += Function->toXMLString();\n-  }\n+  const std::string functionXML =\n+      std::accumulate(m_Functions.cbegin(), m_Functions.cend(), std::string(),"
+        },
+        "groundTruth": {
+            "355": "I think `std::accumulate` for string building was on the unclear side of the fence with respect to when STL algorithms should and should not be used."
+        },
+        "ds_dnContext": {
+            "355": "{\n  \"code_review_suggestion\": \"Hey, just a heads-up—using std::accumulate here might cause performance issues due to repeated string copying. Consider using a loop with reserve() for the string upfront to pre-allocate memory, or switch to std::stringstream for more efficient concatenation.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "355": "{\n  \"code_review_suggestion\": \"Using std::accumulate here is a good change for conciseness, but ensure the lambda captures by reference to avoid unnecessary copies of the function objects. Also, consider reserving memory in the accumulator string if the number of functions is large to prevent reallocations.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "355": "{\n  \"code_review_suggestion\": \"The std::accumulate approach is more efficient and readable, but consider adding a delimiter between function XML strings to ensure proper formatting in the final output, as the original loop concatenated them directly without separation.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "355": "{\n    \"code_review_suggestion\": \"Good use of std::accumulate to eliminate the loop and potential string reallocations. However, consider adding a check for empty m_Functions to avoid unnecessary construction when there are no functions to process.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "355": "{\n  \"code_review_suggestion\": \"While `std::accumulate` is a nice functional approach, it can be inefficient for string concatenation as it creates a new temporary string on each iteration. For better performance, consider using a `std::stringstream` to build the final XML string, as it's optimized for append-heavy operations.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "355": "{\n  \"code_review_suggestion\": \"While `std::accumulate` is a nice functional approach, using it for string concatenation this way can be just as inefficient as the original loop due to repeated allocations. For better performance, could we use a `std::stringstream` to build the `functionXML` string instead?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "355": "{\n  \"code_review_suggestion\": \"Using std::accumulate with string concatenation can be inefficient due to repeated reallocations; switching to a std::ostringstream or collecting results in a vector and then joining would improve performance and clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "355": "{\n  \"code_review_suggestion\": \"The use of std::accumulate to concatenate strings is good, but ensure the lambda explicitly captures by reference or value and efficiently appends each Function's XML to avoid unnecessary copies for better performance and clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "355": "{\"code_review_suggestion\":\"The new std::accumulate call is incomplete/misapplied (missing a binary op) and likely won’t compile with a container of function pointers; even fixed, it adds copies and hurts readability. Revert to the simple for-loop or use an ostringstream (or accumulate with a proper lambda) for clarity and efficiency.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "355": "{\n  \"code_review_suggestion\": \"Using std::accumulate for string concatenation here adds extra temporary strings and hurts readability; a plain loop (possibly with functionXML.reserve(...) or an std::ostringstream) would be clearer and at least as efficient.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

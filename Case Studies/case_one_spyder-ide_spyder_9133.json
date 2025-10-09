@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "432": "spyder-ide/spyder:9133"
+        },
+        "selected_nodeLs": {
+            "432": "['PR-7720']"
+        },
+        "codediff": {
+            "432": "@@ -18,6 +18,7 @@\n from qtpy.QtWidgets import (QDialog, QDialogButtonBox, QHBoxLayout, QLabel,\n                             QMessageBox, QPushButton, QTableWidget,\n                             QVBoxLayout, QWidget)\n+from spyder.py3compat import to_text_string"
+        },
+        "groundTruth": {
+            "432": "This import is not used now. Please remove it."
+        },
+        "ds_dnContext": {
+            "432": "{\n  \"code_review_suggestion\": \"The addition of `to_text_string` from `spyder.py3compat` suggests potential string handling issues, but since Python 2 is deprecated, consider using native Python 3 string methods instead to avoid unnecessary dependencies and improve future maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n  \"code_review_suggestion\": \"The added import seems unrelated to the Windows fullscreen workaround described in the PR. Consider verifying if `to_text_string` is actually used in the implementation to avoid unnecessary imports.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n  \"code_review_suggestion\": \"The import of `to_text_string` from `spyder.py3compat` suggests you're handling string conversion for Python 2/3 compatibility. Since Spyder 5 dropped Python 2 support, consider using Python 3's built-in `str()` function instead for cleaner code and better maintainability.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n    \"code_review_suggestion\": \"The import addition looks good for the Windows fullscreen workaround, but make sure to actually use `to_text_string` in the implementation to handle potential encoding issues with window titles or system calls on different Windows versions.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n  \"code_review_suggestion\": \"Since the `py3compat` module is being deprecated in Spyder 6, could we use the standard `str()` built-in instead of `to_text_string`? This will help avoid adding new dependencies on modules that are being phased out.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n  \"code_review_suggestion\": \"Given the PR's goal is to fix a fullscreen issue, adding an import to the variable explorer's import wizard seems a bit out of place. Could you please double-check that this change is being made in the correct file?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n  \"code_review_suggestion\": \"The added import 'to_text_string' from 'spyder.py3compat' is not used anywhere in the shown diff; consider removing it to keep the imports clean and maintainable.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n  \"code_review_suggestion\": \"The import statement for to_text_string uses a trailing space; please remove it for consistency and avoid potential import errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n  \"code_review_suggestion\": \"You added to_text_string but it’s not used in this diff—unused imports add noise and can mask real issues. Drop it (or actually use it if needed; in pure Py3 code, plain str() usually suffices).\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "432": "{\n  \"code_review_suggestion\": \"The newly added import to_text_string isn’t used in this snippet—if it’s not needed for the fullscreen workaround, drop it to avoid an unused import warning; otherwise, add the code that actually uses it so the intent is clear.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

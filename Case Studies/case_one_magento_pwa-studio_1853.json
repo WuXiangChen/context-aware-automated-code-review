@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "5": "magento/pwa-studio:1853"
+        },
+        "selected_nodeLs": {
+            "5": "['PR-1853']"
+        },
+        "codediff": {
+            "5": "@@ -24,6 +34,24 @@ export const Button = props => {\n     );\n };\n \n+/**\n+ * Props for {@link Button}\n+ *\n+ * @typedef props\n+ *\n+ * @property {Object} classes An object containing the class names for the\n+ * Button component.\n+ * @property {string} classes.content classes content inside the button"
+        },
+        "groundTruth": {
+            "5": "```suggestion * @property {string} classes.content classes for the button content ```"
+        },
+        "ds_dnContext": {
+            "5": "{\n  \"code_review_suggestion\": \"The JSDoc for the Button component's props appears incomplete and lacks clarity. Consider adding proper descriptions for all props (like `onClick`, `disabled`, etc.) and ensure the `classes.content` property description is complete to avoid confusion for other developers.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n  \"code_review_suggestion\": \"The JSDoc for `classes.content` appears incomplete and lacks proper punctuation. Consider completing the description to clearly explain its purpose, e.g., 'Classes for styling the content inside the button'.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n  \"code_review_suggestion\": \"The JSDoc typedef for Button props is missing the actual button properties like onClick, disabled, type, etc. that developers need to know about. Consider adding the complete prop interface including all supported props to make this documentation actually useful for consumers.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n    \"code_review_suggestion\": \"The JSDoc for the Button component's `classes` property should be more specific about what CSS classes it contains (e.g., 'root', 'content', 'disabled') rather than just describing it as 'classes content inside the button', which is unclear and incomplete.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n  \"code_review_suggestion\": \"Great job adding documentation! To make it a bit clearer and follow standard JSDoc convention, I'd suggest replacing `@typedef props` with `@param {object} props`. This directly documents the function's parameter, making the component's API easier to understand.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n  \"code_review_suggestion\": \"Thanks for adding these docs! To align with JSDoc best practices, could you please rename the `@typedef` from `props` to a more specific name like `ButtonProps`? The standard syntax would be `@typedef {Object} ButtonProps`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n  \"code_review_suggestion\": \"The JSDoc typedef has a naming issue and missing structure: rename 'props' to 'Props' (PascalCase) to follow conventions, and clearly define 'classes' as an object with its 'content' property inside it, instead of listing 'classes.content' as a standalone string property.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n  \"code_review_suggestion\": \"The JSDoc typedef for props lacks consistency in naming and clear type definitions; consider renaming 'props' to 'ButtonProps' for clarity and expand property descriptions with proper types and usage details.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n  \"code_review_suggestion\": \"The new JSDoc block is missing its closing */ after classes.content, so everything that follows will be commented out and the component will break. Add the closing */ (and optionally rename '@typedef props' to something like '@typedef {Object} ButtonProps' for clarity).\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "5": "{\n  \"code_review_suggestion\": \"The new JSDoc typedef is unlikely to be picked up correctly: use a proper object typedef like `@typedef {Object} ButtonProps` (PascalCase) and clarify nested properties (`@property {string} classes.content - Content class inside the button`). This improves tooling (IntelliSense / TS inference) and fixes the current awkward `@typedef props` plus the duplicated words in the last line.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

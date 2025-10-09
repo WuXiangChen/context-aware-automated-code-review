@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "152": "LiskHQ/lisk-sdk:1734"
+        },
+        "selected_nodeLs": {
+            "152": "['PR-1734', 'Issue-1727']"
+        },
+        "codediff": {
+            "152": "@@ -675,33 +675,28 @@ TransactionPool.prototype.undoUnconfirmedList = function(cb, tx) {\n  * @returns {SetImmediate} error, ids[]\n  */\n TransactionPool.prototype.expireTransactions = function(cb) {\n-\tconst ids = [];\n-\n \tasync.waterfall(\n \t\t[\n \t\t\tfunction(seriesCb) {\n \t\t\t\t__private.expireTransactions(\n \t\t\t\t\tself.getUnconfirmedTransactionList(true),\n-\t\t\t\t\tids,\n \t\t\t\t\tseriesCb\n \t\t\t\t);\n \t\t\t},\n-\t\t\tfunction(res, seriesCb) {\n+\t\t\tfunction(seriesCb) {\n \t\t\t\t__private.expireTransactions(\n \t\t\t\t\tself.getQueuedTransactionList(true),\n-\t\t\t\t\tids,\n \t\t\t\t\tseriesCb\n \t\t\t\t);\n \t\t\t},\n-\t\t\tfunction(res, seriesCb) {\n+\t\t\tfunction(seriesCb) {\n \t\t\t\t__private.expireTransactions(\n \t\t\t\t\tself.getMultisignatureTransactionList(true),\n-\t\t\t\t\tids,\n \t\t\t\t\tseriesCb\n \t\t\t\t);\n \t\t\t},\n \t\t],\n-\t\t(err, ids) => setImmediate(cb, err, ids)\n+\t\terr => setImmediate(cb, err)"
+        },
+        "groundTruth": {
+            "152": "`() => setImmediate(cb)` for clarity, as `err` is always `null`"
+        },
+        "ds_dnContext": {
+            "152": "{\n  \"code_review_suggestion\": \"The function no longer returns expired transaction IDs, which contradicts the JSDoc comment and might break callers expecting this data. Either update the comment to reflect the new behavior or modify the implementation to collect and return the IDs as documented.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "152": "{\n  \"code_review_suggestion\": \"The change removes the collection of expired transaction IDs, which aligns with the goal of no longer using them. However, ensure `__private.expireTransactions` is also updated to stop expecting the `ids` parameter to avoid potential runtime errors.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "152": "{\n  \"code_review_suggestion\": \"The ids array parameter was removed from expireTransactions calls but the waterfall callback still expects (err, ids) - this will cause undefined behavior. Either remove the ids parameter from the final callback or restore the ids collection logic.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "152": "{\n    \"code_review_suggestion\": \"The change correctly removes the unused 'ids' parameter from expireTransactions calls, but the async.waterfall callback should still handle the results from __private.expireTransactions to ensure proper error handling and data flow consistency.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "152": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "152": "{\n  \"code_review_suggestion\": \"Thanks for simplifying this and removing the unused `ids`. Since you're no longer passing results between these function calls, consider using `async.series` instead of `async.waterfall`. It would more accurately reflect that these are sequential but independent operations.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "152": "{\n  \"code_review_suggestion\": \"The removed `ids` array likely tracked expired transaction IDs but is no longer passed or returned, so consider restoring or handling it to maintain relevant state or caller expectations.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "152": "{\n  \"code_review_suggestion\": \"Since the change intentionally drops returning all expired transaction IDs to avoid misleading results, consider adding a clear comment explaining this rationale in the code for future maintainers.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "152": "{\"code_review_suggestion\":\"You dropped the shared ids accumulator and changed the waterfall callback signature, but still call __private.expireTransactions as if its API changed—likely breaking collection (and return) of expired transaction IDs or even argument ordering. Either restore passing the ids array and final (err, ids) callback, or update __private.expireTransactions (and callers) to the new arity so expired IDs aren’t silently lost.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "152": "{\n  \"code_review_suggestion\": \"The JSDoc still says '@returns {SetImmediate} error, ids[]' but the function no longer returns ids—please update the comment (and confirm no callers still expect a second arg) to prevent confusion.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

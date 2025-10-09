@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "38": "apache/skywalking:7448"
+        },
+        "selected_nodeLs": {
+            "38": "['PR-7448', 'Issue-7412']"
+        },
+        "codediff": {
+            "38": "@@ -0,0 +1,125 @@\n+/*\n+ * Licensed to the Apache Software Foundation (ASF) under one or more\n+ * contributor license agreements.  See the NOTICE file distributed with\n+ * this work for additional information regarding copyright ownership.\n+ * The ASF licenses this file to You under the Apache License, Version 2.0\n+ * (the \"License\"); you may not use this file except in compliance with\n+ * the License.  You may obtain a copy of the License at\n+ *\n+ *     http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ *\n+ */\n+\n+package org.apache.skywalking.oap.server.storage.plugin.banyandb;\n+\n+import com.google.common.annotations.VisibleForTesting;\n+import io.grpc.ManagedChannel;\n+import io.grpc.ManagedChannelBuilder;\n+import io.grpc.netty.NettyChannelBuilder;\n+import io.netty.handler.ssl.SslContext;\n+import org.apache.skywalking.banyandb.client.BanyanDBService;\n+import org.apache.skywalking.banyandb.client.impl.BanyanDBGrpcClient;\n+import org.apache.skywalking.banyandb.client.request.TraceFetchRequest;\n+import org.apache.skywalking.banyandb.client.request.TraceSearchRequest;\n+import org.apache.skywalking.banyandb.client.request.TraceWriteRequest;\n+import org.apache.skywalking.banyandb.client.response.BanyanDBQueryResponse;\n+import org.apache.skywalking.oap.server.library.client.Client;\n+import org.apache.skywalking.oap.server.library.client.healthcheck.DelegatedHealthChecker;\n+import org.apache.skywalking.oap.server.library.client.healthcheck.HealthCheckable;\n+import org.apache.skywalking.oap.server.library.util.HealthChecker;\n+\n+import java.io.IOException;\n+import java.util.List;\n+import java.util.concurrent.TimeUnit;\n+\n+public class BanyanDBClient implements Client, BanyanDBService, HealthCheckable {"
+        },
+        "groundTruth": {
+            "38": "Please separate this as 2 parts, one is BanyanDB API, the other is OAP DB client. You still expose the gRPC here."
+        },
+        "ds_dnContext": {
+            "38": "{\n  \"code_review_suggestion\": \"The client lacks proper resource cleanup for the gRPC channel, which could lead to resource leaks. Consider implementing a `shutdown()` method that gracefully terminates the channel using `channel.shutdown().awaitTermination(...)` to ensure clean shutdowns during application termination.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "38": "{\n  \"code_review_suggestion\": \"I noticed the disconnect method might not handle channel shutdown robustly, risking resource leaks if interruptions occur. Let's improve it by adding proper error logging and ensuring graceful termination with a timeout to maintain reliability.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "38": "{\"code_review_suggestion\": \"The client class implements HealthCheckable but doesn't provide any health check implementation, which could lead to unreliable connections going undetected. Consider adding a simple health check method that verifies the gRPC channel's connectivity state.\"}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "38": "{\n  \"code_review_suggestion\": \"The client implements HealthCheckable but doesn't provide any health check implementation. Since this is a critical storage client for trace data, consider adding proper health check logic to ensure connection reliability and failover handling.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "38": "{\n  \"code_review_suggestion\": \"Great start on the BanyanDB client! Instead of having `BanyanDBClient` implement the `BanyanDBService` interface, consider using composition. Holding a private `BanyanDBService` instance and exposing it would make the class more resilient to upstream changes and reduce boilerplate delegation code.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "38": "{\n  \"code_review_suggestion\": \"Great start on the BanyanDB client! Since this class implements `HealthCheckable`, could we also implement the `healthCheck` method? It would be beneficial for monitoring the connection status to the BanyanDB server.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "38": "{\n  \"code_review_suggestion\": \"The class imports both ManagedChannelBuilder and NettyChannelBuilder but does not clarify which transport is actually used, potentially leading to configuration or performance issues; ensure to consistently use NettyChannelBuilder for gRPC to leverage optimized network features and simplify the channel setup.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "38": "{\n  \"code_review_suggestion\": \"Consider adding resource cleanup methods such as channel shutdown to avoid potential resource leaks with the gRPC ManagedChannel used by BanyanDBClient.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "38": "{\n  \"code_review_suggestion\": \"Key gap: the class declares gRPC-related imports and implements Client/BanyanDBService/HealthCheckable but provides no channel lifecycle (connect, health check, graceful shutdown). Add a ManagedChannel field, implement connect()/isHealthy(), and a close() that shutdowns and awaits termination to prevent resource leaks and failing health checks.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "38": "{\"code_review_suggestion\":\"Since this new client implements multiple service/health interfaces, make sure you add a proper lifecycle/close method that gracefully shuts down the underlying gRPC ManagedChannel (shutdown -> awaitTermination with timeout -> shutdownNow fallback) to avoid thread/resource leaks; right now the imports suggest channel creation but no cleanup path is evident.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "104": "dotnet/aspnetcore:39275"
+        },
+        "selected_nodeLs": {
+            "104": "['PR-39275', 'Issue-37323']"
+        },
+        "codediff": {
+            "104": "@@ -232,6 +232,11 @@ public virtual InputFormatterExceptionPolicy ExceptionPolicy\n \n         void ErrorHandler(object? sender, Newtonsoft.Json.Serialization.ErrorEventArgs eventArgs)\n         {\n+            // Skipping error, if it's already marked as handled\n+            // This allows user code to implement its own error handling\n+            if (eventArgs.ErrorContext.Handled)\n+                return;"
+        },
+        "groundTruth": {
+            "104": "Nit; ```suggestion if (eventArgs.ErrorContext.Handled) { return; } ```"
+        },
+        "ds_dnContext": {
+            "104": "{\n  \"code_review_suggestion\": \"The early return for handled errors is a good practice, but consider adding a brief log statement (e.g., `Logger.LogDebug(\"Error already handled by user code\")`) to improve traceability when debugging error handling flows.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"The change correctly respects the Handled flag set by user error handlers. For better maintainability, consider using braces for the if statement to prevent future errors if more code is added.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"Good addition for error handling! However, consider adding a brief comment explaining why we're skipping handled errors - it helps future maintainers understand that this prevents overriding user-defined error handling logic.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"The change correctly checks ErrorContext.Handled to respect user-handled errors, but consider adding a brief comment explaining that this allows custom error handlers to skip specific deserialization errors while maintaining the formatter's default behavior for unhandled errors.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"This is a great addition for enabling custom error handling! To improve long-term maintainability and prevent potential bugs during future edits, it's a good practice to always wrap the body of an `if` statement in curly braces, even when it's just a single line.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"This change correctly addresses the issue. For long-term maintainability, it would be beneficial to add a comment linking to the GitHub issue (#37323) to provide future developers with the full context for why this check is necessary.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"Consider adding braces to the if statement for clarity and to avoid potential errors if more lines are added later, improving maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"Great fix respecting the Handled flag! To improve clarity, consider adding a comment explaining why skipping further processing on handled errors is important to avoid unintentionally overriding user logic.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"Early-returning when ErrorContext.Handled is true can silently swallow errors; add a trace/debug log (or doc comment) noting the skip so troubleshooting isn’t made harder.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "104": "{\n  \"code_review_suggestion\": \"Nice, simple guard. Consider adding braces plus a clearer comment (e.g. referencing issue #37323) and maybe a trace/debug log so future maintainers understand why an error is silently skipped; otherwise this silent early return could be puzzling during troubleshooting.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

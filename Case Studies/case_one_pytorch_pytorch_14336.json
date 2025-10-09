@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "147": "pytorch/pytorch:14336"
+        },
+        "selected_nodeLs": {
+            "147": "['PR-14336']"
+        },
+        "codediff": {
+            "147": "@@ -147,24 +147,32 @@ std::shared_ptr<FusedKernel> compileKernel(\n , const at::Device device) {\n   const std::vector<TensorDesc>& input_desc = arg_spec.descs();\n \n-  // Note: this assumes fused kernels only operate on floating point values\n+  auto graph = spec.graph()->copy();\n+\n   c10::optional<at::ScalarType> scalar_type;\n-  for (const auto& desc : input_desc) {\n-    if (isFloatingType(desc.scalar_type)) {\n+  for (size_t i = 0; i < input_desc.size(); i++) {\n+    const auto& desc = input_desc[i];\n+    // prefer floating, but take integers if it's the only one\n+    // (to care for where)\n+    if ((!scalar_type.has_value()) ||\n+\t (isFloatingType(desc.scalar_type) && ! isFloatingType(*scalar_type))) {\n       scalar_type = desc.scalar_type;\n-      break;\n     }\n+    graph->inputs()[i]->setType(TensorType::create(desc.scalar_type, device, desc.nDim())); // TODO: nDim is bad, as it is collapsed\n   }\n   JIT_ASSERT(scalar_type);"
+        },
+        "groundTruth": {
+            "147": "Is `scalar_type` even needed? It is never used after this assert, and unless there are no inputs, which should not happen, it should be set in the previous loop?"
+        },
+        "ds_dnContext": {
+            "147": "{\n  \"code_review_suggestion\": \"The scalar type selection logic now handles integers but might inconsistently prioritize floating types. Consider simplifying it by first checking for any floating type, then falling back to the first available type if none are floating, to ensure predictable behavior.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "147": "{\n  \"code_review_suggestion\": \"The TODO comment notes that 'nDim is bad, as it is collapsed,' which could lead to incorrect tensor type settings and undermine the type support goal. Consider using a more accurate dimension count method to ensure reliable type inference.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "147": "{\n  \"code_review_suggestion\": \"The scalar type selection logic now prefers floating point types but can accept integers, which is good for handling 'where'-like operations. However, the comment mentions 'nDim is bad, as it is collapsed' - you should clarify what this means and consider if the dimension handling needs improvement for proper tensor type creation.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "147": "{\"code_review_suggestion\": \"The type propagation logic looks good, but setting the graph input types with 'nDim()' might be problematic since dimensions could be collapsed during fusion. Consider using the original tensor's dimension information instead to ensure proper type propagation.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "147": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "147": "{\n  \"code_review_suggestion\": \"Great work on adding type support! The logic for selecting the kernel's scalar type is a bit complex within the single loop. For better readability, you could consider a two-pass approach: first, loop through the inputs to find the preferred (floating-point) type, and then in a second loop, update the graph"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "147": "{\n  \"code_review_suggestion\": \"Setting the input tensor types inside the loop using the original dimension count (`desc.nDim()`) is fragile due to potential collapsed dimensions; consider explicitly handling dimension transformations or clarifying this with a more robust approach to avoid subtle bugs.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "147": "{\n  \"code_review_suggestion\": \"Nice enhancement adding scalar type support, but consider clarifying or improving the handling of tensor dimensions when setting input types—the current use of desc.nDim() is marked as 'bad' and could lead to issues with collapsed dimensions.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "147": "{\n  \"code_review_suggestion\": \"Updating each input with TensorType::create(... nDim) wipes existing size/stride/alias info (you even note the collapse). Instead, preserve the original tensor metadata and just change the dtype, e.g. reuse the existing TensorType and call withScalarType(...) so shape specialization and downstream optimizations aren’t lost.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "147": "{\n  \"code_review_suggestion\": \"Type selection stops at the first floating type, so a later higher‑precision (e.g. double) input won’t upgrade the fused kernel’s scalar_type. Do a full pass (or update on each input) using proper dtype promotion rules (e.g. aten::result_type) before codegen, and only then set scalar_type; that avoids silent precision loss or mismatched kernel types.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

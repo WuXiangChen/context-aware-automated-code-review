@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "103": "python/mypy:8063"
+        },
+        "selected_nodeLs": {
+            "103": "['PR-8063']"
+        },
+        "codediff": {
+            "103": "@@ -2004,9 +2004,14 @@ def parse_file(self) -> None:\n                             self.path, os.strerror(ioerr.errno))],\n                         module_with_blocker=self.id)\n                 except (UnicodeDecodeError, DecodeError) as decodeerr:\n-                    raise CompileError([\n-                        \"mypy: can't decode file '{}': {}\".format(self.path, str(decodeerr))],\n-                        module_with_blocker=self.id)\n+                    if self.path.endswith('.pyd'):"
+        },
+        "groundTruth": {
+            "103": "I think it would be less repetitive to have the string selected based on the file type and raise the error at the end: ```python if self.path.endswith('.pyd'): err = \"mypy: stubgen does not support .pyd files: '{}'\".format(self.path) else: err = \"mypy: can't decode file '{}': {}\".format(self.path, str(decodeerr)) raise CompileError([err], module_with_blocker=self.id) ```"
+        },
+        "ds_dnContext": {
+            "103": "{\n  \"code_review_suggestion\": \"The change handles decode errors for .pyd files but doesn’t address non-.pyd files. Consider adding an else clause to re-raise the CompileError for other file types to maintain consistent error handling.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "103": "{\n  \"code_review_suggestion\": \"The .pyd extension check should be case-insensitive (e.g., using `.lower()`) to handle variations like '.PYD' on Windows systems where these files are common.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "103": "{\n  \"code_review_suggestion\": \"The .pyd file exception handling is incomplete - it catches decode errors but doesn't provide any alternative handling. Consider either adding proper fallback logic for binary files or removing the conditional if it's not needed, as empty conditionals can be confusing.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "103": "{\n    \"code_review_suggestion\": \"The change handles .pyd files differently by suppressing decode errors, but it would be better to provide a more specific error message explaining that .pyd files are compiled Python extensions and cannot be used as source files for stub generation, rather than just silently ignoring the error.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "103": "{\n  \"code_review_suggestion\": \"It looks like you're adding special handling for `.pyd` files, which is a great idea since they are binary. However, the `if` block is currently empty, which will cause a syntax error. Please complete the logic, perhaps by raising a more specific error explaining that `.pyd` files can't be parsed and a `.pyi` stub is needed instead.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "103": "{\n  \"code_review_suggestion\": \"Nice catch with the special handling for `.pyd` files! To make this a bit more robust, how about making the check case-insensitive? Using `self.path.lower().endswith('.pyd')` would ensure it also works for files ending in `.PYD`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "103": "{\n  \"code_review_suggestion\": \"It looks like the new conditional for '.pyd' files is incomplete, which could cause unexpected behavior or errors; make sure to finish this block or handle '.pyd' files explicitly to maintain clarity and avoid silent failures.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "103": "{\n  \"code_review_suggestion\": \"The added conditional for '.pyd' files is incomplete and lacks an error raise or handling; ensure the new branch properly raises a meaningful CompileError or handles the case to avoid silent failures.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "103": "{\"code_review_suggestion\": \"The change replaces the explicit CompileError raise with an incomplete if self.path.endswith('.pyd') check, likely swallowing decode errors and changing previous behavior. Keep the special-case, but still raise for other files, e.g.: if self.path.endswith('.pyd'): return  # skip binary; else: raise CompileError([...], module_with_blocker=self.id).\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "103": "{\"code_review_suggestion\": \"You introduced an if self.path.endswith('.pyd'): but didn’t implement its body, which (if committed as-is) breaks the exception handling and loses the original CompileError. Add a clear .pyd-specific raise inside that branch and keep the previous generic raise in an else to preserve behavior for other decode errors.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

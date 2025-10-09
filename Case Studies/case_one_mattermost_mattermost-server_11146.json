@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "288": "mattermost/mattermost-server:11146"
+        },
+        "selected_nodeLs": {
+            "288": "['PR-11146', 'Issue-11119', 'Issue-11119']"
+        },
+        "codediff": {
+            "288": "@@ -1165,7 +1165,7 @@ func (a *App) RestoreTeam(teamId string) *model.AppError {\n \n func (a *App) GetTeamStats(teamId string) (*model.TeamStats, *model.AppError) {\n \ttchan := a.Srv.Store.Team().GetTotalMemberCount(teamId)\n-\tachan := a.Srv.Store.Team().GetActiveMemberCount(teamId)\n+\taCount, aErr := a.Srv.Store.Team().GetActiveMemberCount(teamId)"
+        },
+        "groundTruth": {
+            "288": "you can probably have the variable names as count, err here?"
+        },
+        "ds_dnContext": {
+            "288": "{\n  \"code_review_suggestion\": \"The change introduces direct error handling for GetActiveMemberCount, which is good, but breaks the concurrent execution with GetTotalMemberCount. Consider handling both operations concurrently to maintain performance, or document why sequential execution is preferable here.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "288": "{\n  \"code_review_suggestion\": \"The migration to sync looks good, but you should handle the new error return from GetActiveMemberCount. Currently aErr is unused - consider adding proper error handling before proceeding with the stats calculation.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "288": "{\n  \"code_review_suggestion\": \"The change from using a channel to a direct return value for GetActiveMemberCount is good, but you should also update the tchan variable to follow the same pattern for consistency and error handling.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "288": "{\n  \"code_review_suggestion\": \"The migration from async to sync looks good, but you should handle the error immediately after the GetActiveMemberCount call instead of letting it propagate to the channel read later, which could cause unexpected behavior.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "288": "{\n  \"code_review_suggestion\": \"Hey! It looks like this change mixes a concurrent channel-based call with a synchronous one. To maintain the performance benefits of running these queries in parallel, could we stick to the original pattern of using channels for both database calls?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "288": "{\n  \"code_review_suggestion\": \"Good progress on migrating this function to be synchronous! It looks like the error `aErr` returned from `GetActiveMemberCount` is not being handled. Please add a check for this error and return it if it's not nil to ensure proper error propagation.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "288": "{\n  \"code_review_suggestion\": \"The change assigns the active member count and error to new variables but doesn't update how these are used later, which could cause confusion or errors; ensure consistent variable naming and proper error handling for clarity and reliability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "288": "{\n  \"code_review_suggestion\": \"You assigned the results of GetActiveMemberCount to variables but didn’t update the usage in this function; be sure to handle both the count and error returned to avoid ignoring potential errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "288": "{\"code_review_suggestion\":\"You changed active member retrieval from an async channel to a direct call but left total member count as a channel—likely breaking the existing pattern (and possibly compile if later code still expects achan). Refactor consistently: either keep both channel-based or convert both to direct calls and adjust the downstream logic accordingly.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "288": "{\n  \"code_review_suggestion\": \"You replaced the async channel with a direct (aCount, aErr) call but likely haven’t updated the rest of GetTeamStats, which probably still reads from achan. Finish the migration by removing the channel receive logic, handling aErr directly, and using aCount (or migrate the total count call to sync too for consistency).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

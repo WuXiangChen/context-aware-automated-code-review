@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "15": "rapid7/metasploit-framework:13868"
+        },
+        "selected_nodeLs": {
+            "15": "['PR-83', 'Issue-7927']"
+        },
+        "codediff": {
+            "15": "@@ -19,7 +19,7 @@ def initialize(info = {})\n           6.7U3f update.\n         },\n         'Author' => [\n-          # Discovered by unknown researcher(s)\n+          'Hynek Petrak', # Discovered by, added hash dumping"
+        },
+        "groundTruth": {
+            "15": "Hey, do you have a blog post or something you can link to for your discovery/analysis of CVE-2020-3952? Thanks!"
+        },
+        "ds_dnContext": {
+            "15": "{\n  \"code_review_suggestion\": \"The author attribution is clearer now, but the comment '# Discovered by, added hash dumping' could be ambiguous. Consider rephrasing it to something like 'Discovered the vulnerability and implemented hash dumping' for better clarity and maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "15": "{\n  \"code_review_suggestion\": \"The author attribution update looks good, but the comment should be clearer. Consider rephrasing to 'Discovered the vulnerability and implemented hash dumping' for better clarity and consistency with metadata standards.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "15": "{\n  \"code_review_suggestion\": \"Great job adding proper attribution! For better clarity, consider splitting the comment to separate the discovery credit from the hash dumping contribution, like: 'Hynek Petrak # Hash dumping implementation, discovered by unknown researcher(s)'.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "15": "{\n    \"code_review_suggestion\": \"The change correctly credits Hynek Petrak as the discoverer, but the comment format is inconsistent. Consider using a more standard format like: 'Hynek Petrak' # Discovery and hash dumping\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "15": "{\n  \"code_review_suggestion\": \"Thanks for adding attribution! To make the credit clearer, could you specify the author's role in the comment? For example, `'Hynek Petrak', # Module author, added hash dumping` helps distinguish their work from the original discovery.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "15": "{\n  \"code_review_suggestion\": \"Thanks for adding credit to the original researcher! To make the contribution perfectly clear, could you rephrase the comment to be more specific? For example, using 'Vulnerability discovery by' would explicitly state their role.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "15": "{\n  \"code_review_suggestion\": \"Great to credit the contributor! To keep the comment clear and maintainable, consider separating the contributor's name from the additional note by placing the explanation on its own line rather than inline with the name.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "15": "{\n  \"code_review_suggestion\": \"The change replaces an anonymous author comment with a named credit, which is fine, but it would be clearer to keep the original comment or fully clarify the role of 'Hynek Petrak' here to avoid confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "15": "{\"code_review_suggestion\":\"Keep the Author array clean: move the explanatory inline comment outside the array and list only the contributor names as strings to avoid style/attribution ambiguity.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "15": "{\n  \"code_review_suggestion\": \"In the Author array, the explanatory credit is in a comment, so it won’t show up in module info; consider making it a full string (e.g. 'Hynek Petrak (discovery and hash dumping)') and, if relevant, retain prior 'Unknown researcher(s)' credit as a separate string to preserve attribution.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "32": "python/cpython:22186"
+        },
+        "selected_nodeLs": {
+            "32": "['PR-22186']"
+        },
+        "codediff": {
+            "32": "@@ -63,6 +65,10 @@\n TCL_IDLE_EVENTS   = 1 << 5\n TCL_ALL_EVENTS    = 0\n \n+# Deprecation warning\n+warnings.warn('the tkinter.tix module is deprecated in favour of tkinter.ttk and is set \\\n+to be removed in the near-future', DeprecationWarning, stacklevel=2)"
+        },
+        "groundTruth": {
+            "32": "```suggestion warnings.warn('the tkinter.tix module is deprecated in favour of tkinter.ttk and is set ' 'to be removed in the near-future', DeprecationWarning, stacklevel=2) ``` I think this looks clearer this way"
+        },
+        "ds_dnContext": {
+            "32": "{\n  \"code_review_suggestion\": \"The deprecation warning uses a backslash for line continuation, which is prone to error if followed by whitespace. Consider using parentheses for implicit line continuation instead to align with PEP 8 style guidelines.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n  \"code_review_suggestion\": \"The deprecation warning message should specify a target removal version (e.g., 'will be removed in Python 3.12') instead of 'near-future' to make it actionable for developers.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n  \"code_review_suggestion\": \"The deprecation warning message should be more specific about the timeline for removal. Consider adding the target Python version for removal (e.g., 'will be removed in Python 3.15') to give users clearer guidance for migration planning.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n    \"code_review_suggestion\": \"The deprecation warning should use a multi-line string with parentheses for better readability and PEP 8 compliance, like: warnings.warn('the tkinter.tix module is deprecated...', DeprecationWarning, stacklevel=2)\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n  \"code_review_suggestion\": \"This deprecation warning is a great addition! To make it more actionable for developers, could we specify the exact Python version in which the module will be removed, instead of the more general 'in the near-future'?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n  \"code_review_suggestion\": \"This is the right approach! To make the warning more helpful, could we rephrase the message to align with standard deprecation notices? It's best practice to mention the version it was deprecated in, for example: 'The tkinter.tix module is deprecated since Python 3.6 and will be removed in a future version. Please use tkinter.ttk instead.'\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n  \"code_review_suggestion\": \"Move the deprecation warning inside a function or class initialization to avoid it being triggered on import, which can annoy users and clutter logs unnecessarily.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n  \"code_review_suggestion\": \"Consider importing the 'warnings' module explicitly in this file if not already done to avoid potential NameError when issuing the deprecation warning.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n  \"code_review_suggestion\": \"You call warnings.warn without importing the warnings module, which will raise a NameError on import. Add `import warnings` near the top (and consider guarding or centralizing the deprecation warning) so the module still loads cleanly.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "32": "{\n  \"code_review_suggestion\": \"Make sure warnings is imported before calling warnings.warn; otherwise importing tkinter.tix will raise a NameError instead of issuing the intended deprecation warning.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

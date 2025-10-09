@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "414": "magento/magento2:31553"
+        },
+        "selected_nodeLs": {
+            "414": "['PR-31553']"
+        },
+        "codediff": {
+            "414": "@@ -62,7 +72,9 @@ public function prepareDataSource(array $dataSource)\n     {\n         if (isset($dataSource['data']['items'])) {\n             foreach ($dataSource['data']['items'] as & $item) {\n-                $currencyCode = isset($item['order_currency_code']) ? $item['order_currency_code'] : null;\n+                $currencyCode = isset($item['order_currency_code'])\n+                    ? $item['order_currency_code']\n+                    : $this->order->get($item['order_id'])->getOrderCurrencyCode();"
+        },
+        "groundTruth": {
+            "414": "1. Looks like here we can use `??` here ```suggestion $currencyCode = $item['order_currency_code'] ?? $this->order->get($item['order_id'])->getOrderCurrencyCode(); ``` 2. Loading objects in the loop is a really heavy operation and not recommended. Can we load all needed orders at once? Or maybe we can do that when preparing dataSource?"
+        },
+        "ds_dnContext": {
+            "414": "{\n  \"code_review_suggestion\": \"The fallback call to `getOrderCurrencyCode()` inside the loop may cause performance issues (N+1 query problem) if `order_currency_code` is often missing. Consider batch-loading currency codes for all orders upfront instead of fetching them individually per item.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "414": "{\n  \"code_review_suggestion\": \"The fallback to fetch the currency code from the order object might cause errors if 'order_id' is missing or invalid. Adding a check for isset($item['order_id']) before accessing it would make the code more robust.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "414": "{\n  \"code_review_suggestion\": \"The currency code lookup now makes a database call for every item in the loop, which could significantly impact performance with large datasets. Consider bulk loading the order currency codes first, then mapping them to the items to reduce database queries.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "414": "{\n    \"code_review_suggestion\": \"The fallback logic to fetch currency code from the order object introduces a potential performance issue with N+1 queries when processing multiple items. Consider preloading all necessary order currency codes in bulk before the loop to optimize database queries.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "414": "{\n  \"code_review_suggestion\": \"Loading the full order object inside this loop could create a performance bottleneck (an N+1 query problem) with large data sets. It would be more efficient to fetch the necessary order data in a single operation before the loop begins.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "414": "{\n  \"code_review_suggestion\": \"Thanks for fixing the currency display! However, loading an order object inside a `foreach` loop can lead to performance issues (N+1 problem) on grids with many items. It would be more efficient to collect all order IDs before the loop and fetch their currency codes in a single query.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "414": "{\n  \"code_review_suggestion\": \"Consider caching the result of $this->order->get($item['order_id']) outside the loop or before accessing the currency code to avoid potential performance hits from repeated method calls.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "414": "{\n  \"code_review_suggestion\": \"Consider caching or validating the result of $this->order->get($item['order_id']) to avoid potential performance issues or null errors, since this call occurs inside a loop and depends on external data availability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "414": "{\"code_review_suggestion\":\"Fetching the order object inline when order_currency_code is missing risks exceptions (missing order_id / not found) and adds an N+1 performance hit. Guard it: verify order_id exists, wrap the repository call in a safe check (or try/catch), and consider caching orders in this loop so you only load each order once; otherwise fall back to null as before.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "414": "{\n  \"code_review_suggestion\": \"Fetching the order with $this->order->get() inside the loop risks an N+1 query hit and possible exception if order_id is missing. Consider adding order_currency_code to the collection beforehand or at least cache lookups by order_id to avoid repeated loads and add a guard when order_id is absent.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

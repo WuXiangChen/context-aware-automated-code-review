@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "484": "cakephp/cakephp:10446"
+        },
+        "selected_nodeLs": {
+            "484": "['PR-10446', 'Issue-10406']"
+        },
+        "codediff": {
+            "484": "@@ -154,4 +173,146 @@ public function getIterator()\n     {\n         return new ArrayIterator($this->cookies);\n     }\n+\n+    /**\n+     * Add cookies that match the path/domain/expiration to the request.\n+     *\n+     * This allows CookieCollections to be used a 'cookie jar' in an HTTP client"
+        },
+        "groundTruth": {
+            "484": "To be used _as_ a ?"
+        },
+        "ds_dnContext": {
+            "484": "{\n  \"code_review_suggestion\": \"The new cookie matching logic should explicitly validate domain and path attributes to prevent accidental cross-domain cookie leakage, which is a security risk. Consider adding checks for domain matching rules (e.g., substring matching with leading dot handling) and path precedence as per RFC 6265.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "484": "{\n  \"code_review_suggestion\": \"The docblock for the new method is incomplete and cuts off mid-sentence. Please complete the description to clearly explain how this method enables CookieCollection to function as an HTTP client cookie jar, including parameter and return type details.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "484": "{\n  \"code_review_suggestion\": \"The method comment should be more specific about what 'match' means - consider clarifying the matching criteria (e.g., exact path matching, subdomain handling) to prevent ambiguity for developers implementing HTTP clients.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "484": "{\n  \"code_review_suggestion\": \"The docblock comment mentions 'add cookies that match the path/domain/expiration to the request' but the method name suggests it's adding cookies from a response. Consider renaming the method to better reflect its purpose, like `addFromResponse()` to match the context's expected method signature for HTTP client cookie jar functionality.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "484": "{\n  \"code_review_suggestion\": \"Hey there! It looks like the provided code diff is incomplete, as it cuts off right after the method's docblock. Could you please provide the full diff so I can give it a proper review?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "484": "{\n  \"code_review_suggestion\": \"Great work on adding the client-side methods! I noticed a small issue in the `_domainMatches` method. The logic for subdomain matching seems to be checking the beginning of the host string, but it should be checking the end. Changing `substr($host, 0, strlen($cookieDomain))` to `substr($host, -strlen($cookieDomain))` should fix the matching behavior.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "484": "{\n  \"code_review_suggestion\": \"Please complete the method implementation and provide full doc comments; right now, the added comment is incomplete and there is no actual code, which could lead to confusion and maintenance issues.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "484": "{\n  \"code_review_suggestion\": \"The new method should ensure strict validation of cookie attributes like path, domain, and expiration before adding them to the request to avoid sending stale or invalid cookies, improving robustness and correctness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "484": "{\"code_review_suggestion\":\"You added a docblock for a new cookie-adding method but never closed it or implemented the method—right now the unclosed /** will comment out the rest of the file and break parsing. Close the comment (*/) and either add the intended method or remove the stub to avoid a fatal syntax issue.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "484": "{\n  \"code_review_suggestion\": \"The new method’s docblock is incomplete (trails off) and lacks @param/@return annotations clarifying whether the request is mutated or a new instance is returned—important given earlier discussion about immutability. Finish the description and explicitly document the expected request type and return value to avoid misuse.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

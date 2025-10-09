@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "160": "honestbleeps/Reddit-Enhancement-Suite:1782"
+        },
+        "selected_nodeLs": {
+            "160": "['PR-1782']"
+        },
+        "codediff": {
+            "160": "@@ -36,30 +62,79 @@ modules['usernameHider'] = {\n \t\t\t\tthis.tryAgain = true;\n \t\t\t\treturn false;\n \t\t\t}\n-\t\t\tthis.hideUsername();\n+\t\t\tthis.hideUsernames();\n \t\t}\n \t},\n \tgo: function() {\n \t\tif ((this.isEnabled()) && (this.isMatchURL())) {\n-\t\t\tif (this.tryAgain && RESUtils.loggedInUser()) {\n-\t\t\t\tthis.hideUsername();\n-\t\t\t\tRESUtils.addStyle(RESUtils.css);\n+\t\t\tif (this.tryAgain) {\n+\t\t\t\tthis.hideUsernames();\n \t\t\t}\n \t\t}\n \t},\n-\thideUsername: function() {\n-\t\tvar user = RESUtils.loggedInUser(),\n-\t\t\tcuratedBy = document.querySelector('.multi-details > h2 a');\n+\tgetDisplayText: function(username) {\n+\t\tvar accounts = this.options.perAccountDisplayText.value,\n+\t\t\tdisplayText;\n+\t\tif (!username) {\n+\t\t\tusername = RESUtils.loggedInUser();\n+\t\t}\n+\t\tusername = username.toLowerCase();\n \n+\t\tif (username && accounts) {\n+\t\t\tfor (var i = 0, len = accounts.length; i < len; i++) {\n+\t\t\t\tif (accounts[i][0].toLowerCase() === username) {\n+\t\t\t\t\tdisplayText = accounts[i][1];\n+\t\t\t\t\tbreak;\n+\t\t\t\t}\n+\t\t\t}\n+\t\t}\n+\n+\t\tif (!displayText) {\n+\t\t\t displayText = this.options.displayText.value || ' '; //non-breaking space, alt-0160"
+        },
+        "groundTruth": {
+            "160": "I just figured out that we should be able to use `\\00A0` here, it seems that the CSS content property supports special characters in this format rather than HTML-style."
+        },
+        "ds_dnContext": {
+            "160": "{\n  \"code_review_suggestion\": \"The fallback display text uses an HTML entity '&nbsp;' which may not render as intended in JavaScript strings. Use the Unicode escape '\\\\u00A0' for a reliable non-breaking space character.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "160": "{\n  \"code_review_suggestion\": \"The fallback display text uses an HTML entity (' ') which may not render correctly when set as text content. Consider using the Unicode character '\\\\u00A0' for non-breaking space to ensure it displays properly in all contexts.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "160": "{\n  \"code_review_suggestion\": \"The `getDisplayText` function has a potential issue where it returns a non-breaking space character (alt-0160) as a fallback, but this Unicode character might not be handled consistently across all browsers. Consider using a regular space or a more reliable placeholder like 'anonymous' instead.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "160": "{\n  \"code_review_suggestion\": \"The non-breaking space character (alt-0160) in the fallback display text should be replaced with a Unicode escape sequence (\\\\u00A0) for better code clarity and maintainability, since special characters in strings can be hard to read and might cause encoding issues.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "160": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "160": "{\n  \"code_review_suggestion\": \"This is a great enhancement! For better performance, you could convert the `accounts` array into a key-value map once during initialization. This would allow `getDisplayText` to perform a much faster lookup instead of looping through the array on every call, which will be more efficient for users with many accounts.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "160": "{\n  \"code_review_suggestion\": \"The rename from hideUsername to hideUsernames implies multiple usernames are handled, but the code lacks clear iteration over multiple elements; consider explicitly iterating through all relevant username elements for consistent hiding and ensure display text is correctly applied to each to improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "160": "{\n  \"code_review_suggestion\": \"The rename from hideUsername to hideUsernames suggests bulk processing, but the implementation is missing here; ensure hideUsernames properly handles all target usernames consistently to avoid partial hiding and improve maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "160": "{\"code_review_suggestion\":\"The new go() path calls hideUsernames() without first confirming a logged-in user, and getDisplayText then does username.toLowerCase(), which will throw if the user info isn’t ready. Add the loggedInUser() guard back (or null-check before lowercasing) to prevent a TypeError during delayed login.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "160": "{\n  \"code_review_suggestion\": \"getDisplayText builds a displayText but never returns it; add `return displayText;` at the end (and optionally guard if accounts isn’t an array) so callers can actually use the resolved text.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

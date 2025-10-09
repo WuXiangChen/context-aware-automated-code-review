@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "324": "dotnet/corefx:40432"
+        },
+        "selected_nodeLs": {
+            "324": "['PR-40432']"
+        },
+        "codediff": {
+            "324": "@@ -435,7 +435,7 @@ public static ulong GetKey(ReadOnlySpan<byte> propertyName)\n         public static Type GetElementType(Type propertyType, Type parentType, MemberInfo memberInfo, JsonSerializerOptions options)\n         {\n             // We want to handle as the implemented collection type, if applicable.\n-            Type implementedType = GetImplementedCollectionType(propertyType);\n+            Type implementedType = GetImplementedCollectionType(parentType, propertyType, null, out _, options);"
+        },
+        "groundTruth": {
+            "324": "nit: Use named argument for `null` here/below."
+        },
+        "ds_dnContext": {
+            "324": "{\n  \"code_review_suggestion\": \"The new `GetImplementedCollectionType` call passes additional context like `parentType` and `options`, which improves accuracy, but discarding the `out` parameter with `_` might ignore critical type information. Consider capturing and using this output if it provides details about the collection's element type or implementation details.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "324": "{\n  \"code_review_suggestion\": \"The change passes null for the memberInfo parameter to GetImplementedCollectionType, but the current method has access to the memberInfo parameter. Consider passing memberInfo instead of null to ensure property-level converters are properly considered for collection types.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "324": "{\n    \"code_review_suggestion\": \"The method signature change introduces new parameters that aren't being used in this call (parentType, null, out _, options). This could indicate either the method signature needs to be updated to match the new requirements, or this call should use a simpler overload if available to maintain clarity and avoid passing unnecessary parameters.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "324": "{\n  \"code_review_suggestion\": \"The change looks good - it properly passes the parentType and options parameters to GetImplementedCollectionType, which should enable custom converters to work with implementing types as intended. However, consider adding a brief comment explaining why we're now passing these additional parameters to make the intent clearer for future maintainers.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "324": "{\n  \"code_review_suggestion\": \"It looks like the `GetImplementedCollectionType` method signature was updated. Since `memberInfo` is available in this context, consider passing it along instead of `null` to ensure the called method has all the information it might need.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "324": "{\n  \"code_review_suggestion\": \"Looks like `memberInfo` is available here. Should we pass it to `GetImplementedCollectionType` instead of `null`? This would ensure we also honor any custom converters applied directly to the property, making the fix more complete.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "324": "{\n  \"code_review_suggestion\": \"The updated call to GetImplementedCollectionType changes the method signature but passes null and out parameters without clear context, which might cause confusion or errors; clarifying or documenting these arguments would improve maintainability and prevent misuse.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "324": "{\n  \"code_review_suggestion\": \"The updated method call correctly aligns with the new signature, but consider adding a brief comment explaining the purpose of the extra parameters for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "324": "{\"code_review_suggestion\": \"You’re dropping the passed memberInfo by hardcoding null in GetImplementedCollectionType(...); that likely skips attribute/metadata-driven logic and could cause incorrect collection handling. Pass memberInfo instead of null to preserve intended behavior.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "324": "{\n  \"code_review_suggestion\": \"The new overload can use memberInfo to discover custom converters, but you’re passing null—potentially skipping member-level converters and undermining the goal of honoring implementing types. Pass the actual memberInfo (and optionally name the discarded out value) so attribute-based converters are considered.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "13": "apache/shardingsphere:11445"
+        },
+        "selected_nodeLs": {
+            "13": "['PR-11445', 'Issue-11386']"
+        },
+        "codediff": {
+            "13": "@@ -0,0 +1,40 @@\n+/*\n+ * Licensed to the Apache Software Foundation (ASF) under one or more\n+ * contributor license agreements.  See the NOTICE file distributed with\n+ * this work for additional information regarding copyright ownership.\n+ * The ASF licenses this file to You under the Apache License, Version 2.0\n+ * (the \"License\"); you may not use this file except in compliance with\n+ * the License.  You may obtain a copy of the License at\n+ *\n+ *     http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+\n+package org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.impl.union;\n+\n+import lombok.Getter;\n+import lombok.Setter;\n+import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.segment.AbstractExpectedSQLSegment;\n+import org.apache.shardingsphere.test.sql.parser.parameterized.jaxb.cases.domain.statement.dml.SelectStatementTestCase;\n+\n+import javax.xml.bind.annotation.XmlAttribute;\n+import javax.xml.bind.annotation.XmlElement;\n+\n+/**\n+ * Expected withs clause."
+        },
+        "groundTruth": {
+            "13": "@tuichenchuxin Expected union clause"
+        },
+        "ds_dnContext": {
+            "13": "{\n  \"code_review_suggestion\": \"The class name `ExpectedWithsClause` seems to imply a plural form ('withs'), but SQL uses the singular keyword 'WITH' for Common Table Expressions. Consider renaming it to `ExpectedWithClause` for accuracy and consistency with SQL terminology.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"The Javadoc for ExpectedWithsClause is incomplete; please add a description to clarify its purpose in testing the WITH clause for union parser support, ensuring better maintainability and clarity for other developers.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"The class name 'Expected withs clause' in the JavaDoc doesn't match the actual class purpose - it appears to be for union operations. Consider renaming it to 'Expected union clause' or similar to accurately reflect its function and improve code clarity.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"The class name 'Expected withs clause' in the comment appears to contain a typo - it should probably be 'Expected union clause' to match the purpose of adding MySQL UNION parser support.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"Hey, I noticed the class is named `ExpectedWithsClause`. To keep our naming consistent with standard SQL terminology, could we please rename it to `ExpectedWithClause`? The SQL clause is singular ('WITH'), and this change would improve clarity.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"Great job adding this test class for `UNION` support! Just a small suggestion: the Javadoc comment `Expected withs clause.` seems to have a typo and doesn't quite match the class's purpose. Could you update it to something like `Expected union segment.` to better reflect that it represents a `UNION` segment"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"The class appears to be incomplete, missing the closing Javadoc comment, class declaration, and implementation; completing these will improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"The class documentation seems incomplete and has a typo ('withs clause'); please fix the comment to clearly describe the class purpose as 'Expected WITH clause' to improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"The file stops after the Javadoc and never declares the class, so it won’t compile. Add the actual class definition (e.g., public final class ExpectedWithsClause extends AbstractExpectedSQLSegment { ... }) or remove the stub if unintended; also fix the typo 'withs' to 'with'.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "13": "{\n  \"code_review_suggestion\": \"The file stops after the Javadoc (only a comment, no class body), so it will not compile. Add the class declaration (e.g., public final class ExpectedUnionSegment extends AbstractExpectedSQLSegment { ... }) with JAXB-annotated fields and close it properly; also fix the typo in the Javadoc ('withs').\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

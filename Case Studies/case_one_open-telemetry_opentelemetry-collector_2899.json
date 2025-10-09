@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "206": "open-telemetry/opentelemetry-collector:2899"
+        },
+        "selected_nodeLs": {
+            "206": "['PR-2899']"
+        },
+        "codediff": {
+            "206": "@@ -40,4 +40,8 @@ type Config struct {\n \n \t// MetricExpiration defines how long metrics are kept without updates\n \tMetricExpiration time.Duration `mapstructure:\"metric_expiration\"`\n+\n+\t// ResourceAttributesAsTags, if sMet to true, will use the exporterhelper feature to\n+\t// transform all resource attributes into metric labels.\n+\tResourceAttributesAsTags bool `mapstructure:\"resource_attributes_as_tags\"`"
+        },
+        "groundTruth": {
+            "206": "In contrib where we use this, we have config like: ``` exporterhelper.ResourceToTelemetrySettings `mapstructure:\"resource_to_telemetry_conversion\"` ``` so the config will be: ``` resource_to_telemetry_conversion: enabled: true ``` If you don't like that name maybe embed that settings but use the name `resource_attributes_as_tags`? What do you think?"
+        },
+        "ds_dnContext": {
+            "206": "{\n  \"code_review_suggestion\": \"There's a small typo in the comment: 'sMet' should be 'set'. Also, consider using 'tags' instead of 'labels' in the comment to match the field name and Datadog's terminology for consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "206": "{\n  \"code_review_suggestion\": \"Fix the typo in the comment from 'sMet' to 'set' to ensure clarity and avoid confusion for users configuring the resource attributes feature.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "206": "{\n  \"code_review_suggestion\": \"There's a typo in the comment - 'sMet' should be 'set'. Also, consider clarifying that this enables resource attributes to be exported as metric tags/labels for better observability.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "206": "{\n    \"code_review_suggestion\": \"There's a typo in the comment - 'sMet' should be 'set'. Also, the configuration option name 'resource_attributes_as_tags' doesn't match the PR description's 'resource_to_telemetry_conversion', which could cause confusion for users.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "206": "{\n  \"code_review_suggestion\": \"I noticed a small typo ('sMet') in the comment for `ResourceAttributesAsTags`. To improve clarity, could we update it to something like `// If set to true, resource attributes will be converted to metric labels.`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "206": "{\n  \"code_review_suggestion\": \"Thanks for adding this! The PR description and example config use `resource_to_telemetry_conversion`, but the code adds `resource_attributes_as_tags`. To align with the standard exporter helper configuration, could we use the `resource_to_telemetry_conversion` struct instead?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "206": "{\n  \"code_review_suggestion\": \"There's a small typo in the comment: 'sMet' should be 'set'. Fixing this will improve clarity and maintain professionalism in the codebase.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "206": "{\n  \"code_review_suggestion\": \"There's a small typo in the comment: 'sMet' should be 'set'. Fixing this will improve clarity for future readers.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "206": "{\"code_review_suggestion\":\"Turning every resource attribute into a metric label can trigger massive cardinality and memory/CPU overhead; add an allow/deny list (or at least a clear warning in the comment) instead of a blanket bool. (Also fix the typo: 'sMet' -> 'set'.)\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "206": "{\"code_review_suggestion\":\"Config key mismatch: docs mention resource_to_telemetry_conversion but the new field expects resource_attributes_as_tags, and the comment has a typo (sMet). To avoid user misconfigurations, either align the mapstructure tag/name with the documented option (or add backward compatibility mapping) and fix the comment to clearly explain the behavior.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

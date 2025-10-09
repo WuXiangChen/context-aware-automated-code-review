@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "123": "Codeception/Codeception:5210"
+        },
+        "selected_nodeLs": {
+            "123": "['PR-5210']"
+        },
+        "codediff": {
+            "123": "@@ -555,6 +560,8 @@ public function afterStep(StepEvent $e)\n     }\n \n     /**\n+     * @param Step $step\n+     *\n      * @return bool\n      */\n     protected function isStepIgnored(StepEvent $e)"
+        },
+        "groundTruth": {
+            "123": "Param doc has been merged, but the name of this had changed. Also, docs are now referencing Step type while at 567 it's StepEvent. I vaguely remember not type hinting this, as this would not always be the same type during an exec. Have you encountered this at all? (I can't remember, but I might've tried Step instead of StepEvent which might've caused that issue) *Update;* I just gave this a whirl, and it seems to be OK, so the issue is just the mismatching phpDocs"
+        },
+        "ds_dnContext": {
+            "123": "{\n  \"code_review_suggestion\": \"The @param tag incorrectly documents 'Step $step', but the method parameter is actually 'StepEvent $e'. Correct this to 'StepEvent $e' for accurate documentation and to prevent developer confusion.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "123": "{\n  \"code_review_suggestion\": \"The @param annotation incorrectly documents a 'Step $step' parameter, but the method actually takes a 'StepEvent $e' parameter. This mismatch could confuse developers. Please update the annotation to '@param StepEvent $e' for accuracy.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "123": "{\n  \"code_review_suggestion\": \"The docblock update adds a @param tag for 'Step $step', but the method parameter is actually named '$e' (StepEvent type). This creates misleading documentation - either update the parameter name to match the docblock or correct the docblock to reflect the actual parameter.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "123": "{\n    \"code_review_suggestion\": \"The docblock should use the actual parameter name `$e` (StepEvent) instead of `$step` to match the method signature and avoid confusion for developers reading the documentation.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "123": "{\n  \"code_review_suggestion\": \"Looks like there's a documentation mismatch in the `isStepIgnored` method. The `@param` annotation refers to `Step $step`, but the method signature actually accepts a `StepEvent $e`. Let's update the docblock to match the signature for clarity.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "123": "{\n  \"code_review_suggestion\": \"Looks like there's a small mismatch in the docblock for `isStepIgnored`. The method accepts a `StepEvent` named `$e`, but the `@param` annotation refers to a non-existent `$step`. Could you please align the docblock with the method's signature?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "123": "{\n  \"code_review_suggestion\": \"The PHPDoc for the isStepIgnored method is inconsistent with the actual parameter; it declares a Step parameter but the method receives a StepEvent. Updating the PHPDoc to match the method signature will improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "123": "{\n  \"code_review_suggestion\": \"The added PHPDoc mistakenly annotates a parameter ($step) that does not exist in the method signature, which could cause confusion; update the doc block to match the actual parameter ($e) or fix the method signature accordingly.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "123": "{\"code_review_suggestion\":\"The new @param docblock is wrong: it declares Step $step, but the method takes StepEvent $e. This mismatch can mislead IDEs and static analysis—update it to @param StepEvent $e (or adjust the signature) to keep docs and code in sync.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "123": "{\"code_review_suggestion\":\"The new docblock is misleading: it declares @param Step $step, but the method actually receives a StepEvent $e. Update the annotation to @param StepEvent $e (or adjust the signature) to avoid confusion and ensure IDE/static analysis accuracy.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

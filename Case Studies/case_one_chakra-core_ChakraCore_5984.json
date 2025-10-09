@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "278": "chakra-core/ChakraCore:5984"
+        },
+        "selected_nodeLs": {
+            "278": "['PR-5984', 'Issue-5975']"
+        },
+        "codediff": {
+            "278": "@@ -0,0 +1,11 @@\n+//-------------------------------------------------------------------------------------------------------\r\n+// Copyright (C) Microsoft. All rights reserved.\r\n+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.\r\n+//-------------------------------------------------------------------------------------------------------\r\n+\r\n+let desiredLength = 10 * 1000 * 1000;\r\n+//desiredLength -= 1;\r\n+const json = `\"${'a'.repeat(desiredLength - 3)}\",`; // \"aaa...aaa\",\r\n+print(json.length);\r\n+JSON.parse(json);\r"
+        },
+        "groundTruth": {
+            "278": "Instead of printing the whole error - could we just try/catch and print('pass') on that? you could avoid baseline... also I am not sure as the baseline contains the hard path."
+        },
+        "ds_dnContext": {
+            "278": "{\n  \"code_review_suggestion\": \"The JSON string is invalid due to a trailing comma, which will cause JSON.parse to throw a syntax error. Remove the comma to make it valid: `const json = \\\"${'a'.repeat(desiredLength - 2)}\\\";`\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "278": "{\n  \"code_review_suggestion\": \"The test case should validate that a SyntaxError is thrown for the 10M character input to ensure the crash fix works. Consider adding a try-catch block to explicitly check for the expected exception and print a confirmation message.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "278": "{\n  \"code_review_suggestion\": \"This code creates a massive JSON string that will likely crash due to memory constraints. Consider adding proper error handling for large inputs and implementing chunked processing or streaming for better memory efficiency.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "278": "{\n    \"code_review_suggestion\": \"This test case should include error handling to verify that JSON.parse() throws a SyntaxError for invalid JSON input, rather than just calling it and potentially crashing. Consider wrapping the parse call in a try-catch block to validate the expected error behavior.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "278": "{\n  \"code_review_suggestion\": \"The JSON string you're generating is invalid due to the trailing comma. To properly test parsing a large string value, you should remove the comma from the template literal to ensure `JSON.parse` receives a valid JSON text.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "278": "{\n  \"code_review_suggestion\": \"This is a great regression test for the reported crash. To make the test's intent more explicit, consider wrapping the `JSON.parse(json)` call in a `try...catch` block and asserting that a `SyntaxError` is thrown. This would ensure we're verifying the correct error-handling behavior, not just the absence of a crash.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "278": "{\n  \"code_review_suggestion\": \"Using a very large string in JSON parsing could cause performance issues or crashes; consider adding error handling around JSON.parse to gracefully manage parsing failures or memory constraints.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "278": "{\n  \"code_review_suggestion\": \"The test code effectively exposes a crash issue when parsing very large JSON strings exceeding 10 million characters; consider adding a smaller test case or comments explaining the edge case and why the decrement is commented out for clarity and future maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "278": "{\n  \"code_review_suggestion\": \"json currently ends with a trailing comma (\\\"aaa...\\\",) so JSON.parse will always throw; drop the comma and just use JSON.stringify('a'.repeat(desiredLength)) (or adjust to -2 for the quotes) so you measure parsing a large valid string instead of a syntax error.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "278": "{\"code_review_suggestion\":\"Right now the test will falsely pass if JSON.parse stops throwing (a regression), since there’s no assertion—just a call that either throws or silently succeeds. Wrap JSON.parse in a try/catch and explicitly fail if no SyntaxError is thrown (and optionally assert the error position) so the test can’t yield a false positive.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

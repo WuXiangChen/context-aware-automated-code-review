@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "426": "KhronosGroup/SPIRV-Tools:3561"
+        },
+        "selected_nodeLs": {
+            "426": "['PR-3561']"
+        },
+        "codediff": {
+            "426": "@@ -1500,18 +1518,30 @@ void FactManager::AddFactFunctionIsLivesafe(uint32_t function_id) {\n }\n \n bool FactManager::PointeeValueIsIrrelevant(uint32_t pointer_id) const {\n-  return irrelevant_pointee_value_facts_->PointeeValueIsIrrelevant(pointer_id);\n+  return irrelevant_value_facts_->PointeeValueIsIrrelevant(pointer_id);\n+}\n+\n+bool FactManager::IdIsIrrelevant(uint32_t result_id) const {\n+  return irrelevant_value_facts_->IdIsIrrelevant(result_id);\n }\n \n void FactManager::AddFactValueOfPointeeIsIrrelevant(uint32_t pointer_id) {\n   protobufs::FactPointeeValueIsIrrelevant fact;\n   fact.set_pointer_id(pointer_id);\n-  irrelevant_pointee_value_facts_->AddFact(fact);\n+  irrelevant_value_facts_->AddFact(fact);\n+}\n+\n+void FactManager::AddFactIdIsIrrelevant(uint32_t result_id) {\n+  protobufs::FactIdIsIrrelevant fact;\n+  fact.set_result_id(result_id);\n+  irrelevant_value_facts_->AddFact(fact);\n }\n \n void FactManager::AddFactIdEquation(uint32_t lhs_id, SpvOp opcode,\n                                     const std::vector<uint32_t>& rhs_id,\n                                     opt::IRContext* context) {\n+  // TODO(https://github.com/KhronosGroup/SPIRV-Tools/issues/3550):\n+  //  assert that elements of |rhs_id| are not irrelevant."
+        },
+        "groundTruth": {
+            "426": "And |lhs_id| too I guess."
+        },
+        "ds_dnContext": {
+            "426": "{\n  \"code_review_suggestion\": \"The TODO in AddFactIdEquation highlights a critical gap: we should assert that rhs_id elements aren't irrelevant to prevent invalid equation facts. Let's implement this check now using IdIsIrrelevant() to avoid potential incorrect optimizations.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "426": "{\n  \"code_review_suggestion\": \"The TODO comment highlights a needed assertion to prevent equations with irrelevant RHS IDs. Since this directly relates to the new IdIsIrrelevant fact, consider adding this check now to ensure data consistency and prevent potential bugs in equation handling.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "426": "{\n  \"code_review_suggestion\": \"The TODO comment suggests adding an assertion to validate that rhs_id elements aren't irrelevant, but this creates a potential inconsistency. If the function should handle irrelevant values, the assertion might be too restrictive. Consider either implementing proper handling for irrelevant values in the equation logic or documenting why the assertion is appropriate.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "426": "{\"code_review_suggestion\": \"The TODO comment mentions asserting that elements of |rhs_id| are not irrelevant, but the new IdIsIrrelevant fact isn't being checked here. You should add this validation to ensure data consistency with the new fact type.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "426": "{\n  \"code_review_suggestion\": \"Great catch with the new TODO in `AddFactIdEquation`. To prevent potential silent bugs from incorrect assumptions, it would be safer to implement this assertion now rather than deferring it. This ensures we don't build new facts upon IDs that have already been marked as irrelevant.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "426": "{\n  \"code_review_suggestion\": \"Great job consolidating the irrelevant value facts. To improve API consistency with the new `AddFactIdIsIrrelevant` function, consider renaming `AddFactValueOfPointeeIsIrrelevant` to `AddFactPointeeValueIsIrrelevant`. This would make the naming more uniform and align better with the protobuf message.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "426": "{\n  \"code_review_suggestion\": \"Consider adding explicit null checks or validation for 'irrelevant_value_facts_' before use to prevent potential null dereferences and improve robustness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "426": "{\n  \"code_review_suggestion\": \"Great addition of IdIsIrrelevant and corresponding fact handling! Consider adding the TODO assertion soon to ensure that rhs_id elements are not irrelevant, improving robustness and preventing subtle errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "426": "{\n  \"code_review_suggestion\": \"The new TODO in AddFactIdEquation leaves a correctness gap: equations with irrelevant rhs ids could be recorded, corrupting later reasoning. Add an immediate assertion (or runtime check with early return) that each rhs_id is not irrelevant before storing the fact to keep the fact base sound.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "426": "{\"code_review_suggestion\":\"Consider implementing the TODO now: before recording an IdEquation, iterate rhs_id and assert they are not marked irrelevant (IdIsIrrelevant / PointeeValueIsIrrelevant). This guards against creating unusable or misleading equations early, failing fast in debug builds and preventing silent inconsistencies.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

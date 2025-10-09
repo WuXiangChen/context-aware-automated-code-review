@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "407": "DataDog/dd-agent:1266"
+        },
+        "selected_nodeLs": {
+            "407": "['PR-1266', 'PR-1235']"
+        },
+        "codediff": {
+            "407": "@@ -1,15 +1,16 @@\n-# stdlib\n-import time\n-from hashlib import md5\n-\n # project\n from checks import AgentCheck\n \n # 3rd party\n-import simplejson as json\n import requests\n \n class Marathon(AgentCheck):\n+\n+    DEFAULT_TIMEOUT = 5\n+    SERVICE_CHECK_NAME = 'marathon.can_connect'\n+\n+    APP_METRICS = ['taskRateLimit', 'instances', 'cpus', 'dist', 'mem', 'tasksStaged', 'tasksRunning', 'backoffSeconds', 'backoffFactor']"
+        },
+        "groundTruth": {
+            "407": "Can you wrap this up like ``` APP_METRICS = [ 'taskRateLimit', ... ] ``` And `:sort` that so that it's easy to read!"
+        },
+        "ds_dnContext": {
+            "407": "{\n  \"code_review_suggestion\": \"The removal of the `json` import (previously `simplejson`) might cause issues if the code uses JSON parsing elsewhere. Consider adding `import json` from the standard library to maintain JSON functionality without third-party dependencies.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n  \"code_review_suggestion\": \"It looks like 'dist' in APP_METRICS might be a typo and should be 'disk' to correctly add the disk metric as mentioned in the context.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n  \"code_review_suggestion\": \"The removal of the 'simplejson' import without a replacement breaks JSON parsing functionality. Since you're already using the requests library, you can use `response.json()` method instead which handles JSON parsing automatically and is more robust.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n    \"code_review_suggestion\": \"Great job adding the service check and refactoring magic numbers! I noticed the APP_METRICS array includes 'dist' but the PR description mentions adding 'disk' - was this a typo? Consider updating to 'disk' to match your intended disk metric collection.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n  \"code_review_suggestion\": \"Nice refactoring! It looks like there might be a small typo in the `APP_METRICS` list. I believe 'dist' should be 'disk' to match the Marathon API, ensuring we collect that metric correctly.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n  \"code_review_suggestion\": \"This is a great refactoring! You mentioned adding the 'disk' attribute in the description, but it looks like it's missing from the new `APP_METRICS` list. Could you please add it to ensure it gets collected?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n  \"code_review_suggestion\": \"Consider moving constants like DEFAULT_TIMEOUT, SERVICE_CHECK_NAME, and APP_METRICS outside the class or making them class variables with explicit type annotations for clarity and better maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n  \"code_review_suggestion\": \"Great cleanup and refactoring! To improve maintainability, consider aligning the metric names in APP_METRICS with the added 'disk' attribute mentioned in the context, as currently 'disk' is missing from the list.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n  \"code_review_suggestion\": \"You dropped the `json` import (previously `import simplejson as json`); any remaining uses of `json` will now raise a NameError. Reintroduce an import (e.g., `import json`) or update the code to avoid it.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "407": "{\n  \"code_review_suggestion\": \"Looks like a typo: APP_METRICS has 'dist' but the PR description says you added the 'disk' metric—rename 'dist' to 'disk' so the new metric is actually collected.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

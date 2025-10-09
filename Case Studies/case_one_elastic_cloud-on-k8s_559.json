@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "24": "elastic/cloud-on-k8s:559"
+        },
+        "selected_nodeLs": {
+            "24": "['PR-559']"
+        },
+        "codediff": {
+            "24": "@@ -0,0 +1,92 @@\n+// Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n+// or more contributor license agreements. Licensed under the Elastic License;\n+// you may not use this file except in compliance with the Elastic License.\n+\n+package cleanup\n+\n+import (\n+\t\"time\"\n+\n+\t\"k8s.io/apimachinery/pkg/runtime\"\n+\n+\t\"github.com/elastic/k8s-operators/operators/pkg/apis/elasticsearch/v1alpha1\"\n+\t\"github.com/elastic/k8s-operators/operators/pkg/controller/elasticsearch/label\"\n+\t\"github.com/elastic/k8s-operators/operators/pkg/utils/k8s\"\n+\tcorev1 \"k8s.io/api/core/v1\"\n+\tapierrors \"k8s.io/apimachinery/pkg/api/errors\"\n+\t\"k8s.io/apimachinery/pkg/api/meta\"\n+\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n+\t\"k8s.io/apimachinery/pkg/types\"\n+\t\"sigs.k8s.io/controller-runtime/pkg/client\"\n+\tlogf \"sigs.k8s.io/controller-runtime/pkg/runtime/log\"\n+)\n+\n+var log = logf.Log.WithName(\"cleanup\")\n+\n+// DeleteAfter represents how long after creation an object can be safely garbage collected.\n+const DeleteAfter = 10 * time.Minute\n+\n+// IsTooYoungForGC checks the object creation time, and returns true\n+// if we consider it should not be garbage collected yet.\n+// This is to avoid situations where we would delete an object that was just created,\n+// or delete an object due to a (temporary) out-of-sync cache.\n+func IsTooYoungForGC(object metav1.Object) bool {\n+\tcreationTime := object.GetCreationTimestamp()\n+\tif time.Now().Sub(creationTime.Time) > DeleteAfter {\n+\t\treturn false\n+\t}\n+\treturn true\n+}\n+\n+// DeleteOrphanedResources cleans up resources that are not needed anymore for the given es cluster.\n+func DeleteOrphanedResources(c k8s.Client, es v1alpha1.Elasticsearch) error {\n+\tvar resources []runtime.Object\n+\tvar secrets corev1.SecretList"
+        },
+        "groundTruth": {
+            "24": "The names in this package indicate a more generic GC that it actually is. It seems specialised to config secrets which is maybe non-obvious."
+        },
+        "ds_dnContext": {
+            "24": "{\n  \"code_review_suggestion\": \"The IsTooYoungForGC function incorrectly returns true when an object is too young, but the logic should be reversed. Currently, it returns false when the object is older than DeleteAfter, which is the opposite of what the function name and comment suggest. Consider simplifying to: return time.Since(object.GetCreationTimestamp().Time) < DeleteAfter.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "24": "{\n  \"code_review_suggestion\": \"The DeleteOrphanedResources function should include a namespace filter when listing secrets to avoid cross-namespace contamination, since secrets are namespace-scoped and the Elasticsearch cluster operates in a specific namespace.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "24": "{\n  \"code_review_suggestion\": \"The IsTooYoungForGC function returns true when the object is too young, but the logic is inverted - it should return true when time.Now().Sub(creationTime.Time) <= DeleteAfter. This could cause premature deletion of resources that should be protected.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "24": "{\n    \"code_review_suggestion\": \"The IsTooYoungForGC function has a logic bug - it returns true when the object is too young (should NOT be deleted), but the function name suggests it returns true when it IS too young. Consider renaming to ShouldNotDeleteYet or inverting the logic to match the current name.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "24": "{\n  \"code_review_suggestion\": \"The logic in `IsTooYoungForGC` can be made more concise. You could simplify the `if/else` structure into a single return statement using `time.Since()` for better readability, like `return time.Since(object.GetCreationTimestamp().Time) < DeleteAfter`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "24": "{\n  \"code_review_suggestion\": \"Great job on adding this cleanup logic for orphaned resources! The `DeleteAfter` constant is currently hardcoded to 10 minutes. It might be beneficial to make this duration configurable, for example, via a manager flag. This would provide more flexibility for operators to tune the garbage collection behavior based on their cluster's characteristics.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "24": "{\n  \"code_review_suggestion\": \"The IsTooYoungForGC function can be simplified by returning the boolean expression directly instead of using an if-statement, improving clarity and conciseness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "24": "{\n  \"code_review_suggestion\": \"The IsTooYoungForGC function can be simplified by directly returning the boolean expression instead of using an if statement; this will improve clarity and conciseness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "24": "{\"code_review_suggestion\":\"IsTooYoungForGC is more verbose and less testable than needed: it calls time.Now() directly and uses an if/else. Inject a clock or pass now as a param and simplify to `return time.Since(obj.GetCreationTimestamp().Time) <= DeleteAfter` for clearer intent and easier unit testing.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "24": "{\"code_review_suggestion\":\"IsTooYoungForGC hardcodes time.Now(), making it harder to test and the >/false/else pattern adds cognitive overhead. Consider injecting now (or a clock) and simplifying: func IsTooYoungForGC(o metav1.Object, now time.Time) bool { return now.Sub(o.GetCreationTimestamp().Time) <= DeleteAfter }. This improves testability and readability.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

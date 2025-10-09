@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "451": "forseti-security/forseti-security:3569"
+        },
+        "selected_nodeLs": {
+            "451": "['PR-3569']"
+        },
+        "codediff": {
+            "451": "@@ -69,16 +70,19 @@ def _compose(self, violation):\n         return ('*type*:\\t`{}`\\n*details*:\\n'.format(self.resource) +\n                 self._dump_slack_output(violation.get('violation_data'), 1))\n \n+    # Wait 30 seconds before retrying: https://api.slack.com/docs/rate-limits\n+    @retry(wait_exponential_multiplier=30000, wait_exponential_max=60000,"
+        },
+        "groundTruth": {
+            "451": "We should specify the exception to retry instead of retrying on all general exceptions."
+        },
+        "ds_dnContext": {
+            "451": "{\n  \"code_review_suggestion\": \"The exponential retry parameters use milliseconds (30000ms = 30s), but the `retry` library expects seconds. Use `wait_exponential_multiplier=30` and `wait_exponential_max=60` to align with Slack's 30-second rate limit guidance.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n  \"code_review_suggestion\": \"The retry configuration uses a fixed 30-60 second wait, but Slack's rate limits may specify dynamic Retry-After headers. Consider checking for Retry-After in 429 responses to align wait times with Slack's specific requirements.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n  \"code_review_suggestion\": \"The retry decorator parameters appear to be incorrectly configured. The wait_exponential_multiplier should be in milliseconds (30000ms = 30s), but the exponential backoff formula uses this as a base multiplier. Consider using `wait=30` (seconds) instead for clearer intent, or verify the retry logic matches Slack's rate limiting requirements.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n    \"code_review_suggestion\": \"The exponential backoff configuration appears to use milliseconds, but the retry library typically expects seconds. Consider changing the multiplier to 30 and max to 60 seconds to align with Slack's rate limiting recommendations and the library's expected time units.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n  \"code_review_suggestion\": \"Great idea to add a retry for Slack's rate limits! The comment mentions waiting 30 seconds, but the implementation uses an exponential backoff. For clarity and to better match the intent described, how about using a fixed wait instead, like `wait_fixed=30000`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n  \"code_review_suggestion\": \"Nice work handling the Slack rate limiting! To improve maintainability, could we define the retry delay values (30000 and 60000) as named constants at the top of the module instead of using magic numbers directly in the decorator?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n  \"code_review_suggestion\": \"Great job adding retry logic for Slack rate limits! To improve clarity and maintainability, consider defining the retry parameters as named constants rather than hardcoding values directly in the decorator.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n  \"code_review_suggestion\": \"The retry decorator's parameters should be carefully verified to ensure they align with the Slack API's rate limit guidance, especially the wait timings; also, confirm that the retry logic properly handles the 429 error specifically to avoid unintended retries on other failures.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n  \"code_review_suggestion\": \"The newly added @retry decorator line ends with a trailing comma and no closing parenthesis or following function, which will cause a syntax error. Close the call and attach it to the intended function, e.g. add a ) and the def line (and consider adding an explicit stop condition like stop_max_attempt_number) so the code executes.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "451": "{\n  \"code_review_suggestion\": \"Instead of a blanket exponential backoff, scope the @retry to only 429 responses and honor Slack's Retry-After header (plus a max attempt cap); otherwise you may sleep 30–60s on unrelated errors or retry indefinitely without respecting the server’s advised delay.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

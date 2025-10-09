@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "41": "AvaloniaUI/Avalonia:4498"
+        },
+        "selected_nodeLs": {
+            "41": "['PR-4126', 'PR-456']"
+        },
+        "codediff": {
+            "41": "@@ -17,6 +17,46 @@ namespace Avalonia.Controls.UnitTests\n {\n     public class TextBoxTests\n     {\n+        [Fact]\n+        public void Opening_Context_Menu_Does_not_Loose_Selection()"
+        },
+        "groundTruth": {
+            "41": "```suggestion public void Opening_Context_Menu_Does_not_Lose_Selection() ```"
+        },
+        "ds_dnContext": {
+            "41": "{\n  \"code_review_suggestion\": \"The test name has a typo: 'Loose' should be 'Lose'. This affects clarity and maintainability. Consider renaming it to `Opening_Context_Menu_Does_not_Lose_Selection`.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "41": "{\n    \"code_review_suggestion\": \"The test method name has a typo: 'Loose' should be 'Lose'. While this doesn't affect functionality, correcting it improves code clarity and maintainability for future developers.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "41": "{\n    \"code_review_suggestion\": \"The test method name 'Opening_Context_Menu_Does_not_Loose_Selection' contains a spelling error - 'Loose' should be 'Lose'. This typo could cause confusion and make the test harder to find for other developers.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "41": "{\"code_review_suggestion\": \"The test method name has a typo ('Loose' should be 'Lose') and inconsistent capitalization. Consider renaming it to 'Opening_Context_Menu_Does_Not_Lose_Selection' for clarity and correctness.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "41": "{\n  \"code_review_suggestion\": \"Looks like there's a small typo in the new test method name. Could you please correct 'Loose' to 'Lose' for better clarity?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "41": "{\n  \"code_review_suggestion\": \"Looks like there's a small typo in the new test name. Could you please rename `Opening_Context_Menu_Does_not_Loose_Selection` to `Opening_Context_Menu_Does_Not_Lose_Selection` for clarity?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "41": "{\n  \"code_review_suggestion\": \"The new test method 'Opening_Context_Menu_Does_not_Loose_Selection' lacks an implementation, making it ineffective. Adding meaningful test logic will ensure it actually verifies the intended behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "41": "{\n  \"code_review_suggestion\": \"The new test method lacks implementation; please add assertions to verify that opening the context menu does not lose the TextBox selection, ensuring the test fulfills its purpose.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "41": "{\n  \"code_review_suggestion\": \"The test name misspells 'Lose' as 'Loose', which hurts clarity and discoverability. Rename it to Opening_Context_Menu_Does_Not_Lose_Selection (and fix any references) to keep intent clear.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "41": "{\n  \"code_review_suggestion\": \"The new test name has a typo: 'Loose' should be 'Lose' (Opening_Context_Menu_Does_Not_Lose_Selection). Fixing it improves clarity and avoids future search confusion.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

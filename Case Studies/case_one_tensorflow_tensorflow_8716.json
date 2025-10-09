@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "403": "tensorflow/tensorflow:8716"
+        },
+        "selected_nodeLs": {
+            "403": "['PR-8716']"
+        },
+        "codediff": {
+            "403": "@@ -1523,7 +1523,7 @@ def _swap_axis(logits, dim_index, last_index):\n   # shape.\n   output.set_shape(shape)\n \n-  return output\n+  return tf.identity(output, name=name)"
+        },
+        "groundTruth": {
+            "403": "Instead of adding an identity op, how about plumbing name through _swap_axis() to array_ops.tranpose() above?"
+        },
+        "ds_dnContext": {
+            "403": "{\n  \"code_review_suggestion\": \"Good call adding the explicit name to the tensor output! This will make debugging much easier when visualizing the computation graph, as previously this operation would have been harder to identify in TensorBoard traces.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n  \"code_review_suggestion\": \"The change adds a name to the output tensor using tf.identity, which should resolve the naming issue in tf.nn.softmax. To improve clarity, consider adding a brief comment explaining why tf.identity is used (e.g., for graph debugging or consistent naming).\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n  \"code_review_suggestion\": \"Good addition using tf.identity with a name for better debugging, but consider adding a brief comment explaining why the identity operation is needed (e.g., for control dependencies or naming the output tensor).\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n    \"code_review_suggestion\": \"Good catch adding the tf.identity with a name parameter! This ensures proper tensor naming and prevents potential issues with tensor identity in the computation graph, which was the core issue reported in #8667.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n  \"code_review_suggestion\": \"Great call adding a name to the output for better debugging! As a small refinement, consider applying the `name` directly to the final operation within this function (e.g., the `tf.transpose` call) instead of adding a new `tf.identity` op. This achieves the same goal while keeping the graph slightly leaner"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n  \"code_review_suggestion\": \"Thanks for fixing this! Adding `tf.identity` to name the output tensor is the right approach. For better separation of concerns, consider moving this naming operation to the return point of the public `softmax` function, rather than inside the `_swap_axis` helper. This would keep the helper's responsibility focused purely"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n  \"code_review_suggestion\": \"Using tf.identity to name the output can be helpful for debugging, but if 'name' is not guaranteed to be unique or well-defined, it might cause confusion or errors; consider ensuring 'name' is always a unique and meaningful string or omit it if not necessary.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n  \"code_review_suggestion\": \"Using tf.identity to return the output with a name is a good practice for clarity in the graph, but ensure the provided 'name' variable is always defined to avoid potential runtime errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n  \"code_review_suggestion\": \"The change risks a runtime NameError because 'name' isn’t defined in this function. Either add a name=None parameter and use tf.identity only when provided, or just return output as before.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "403": "{\n  \"code_review_suggestion\": \"The added tf.identity(output, name=name) references name, but _swap_axis doesn’t define or receive a name parameter—this will raise a NameError. Either add a name argument to the function (with a sensible default) or drop the name= to just return tf.identity(output).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

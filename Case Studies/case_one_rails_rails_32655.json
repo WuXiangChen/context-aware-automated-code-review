@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "183": "rails/rails:32655"
+        },
+        "selected_nodeLs": {
+            "183": "['PR-32655', 'Issue-8005']"
+        },
+        "codediff": {
+            "183": "@@ -98,26 +98,33 @@ def preload(records, associations, preload_scope = nil)\n       private\n \n         # Loads all the given data into +records+ for the +association+.\n-        def preloaders_on(association, records, scope)\n+        def preloaders_on(association, records, scope, polymorphic_parent = false)\n           case association\n           when Hash\n-            preloaders_for_hash(association, records, scope)\n+            preloaders_for_hash(association, records, scope, polymorphic_parent)\n           when Symbol\n-            preloaders_for_one(association, records, scope)\n+            preloaders_for_one(association, records, scope, polymorphic_parent)\n           when String\n-            preloaders_for_one(association.to_sym, records, scope)\n+            preloaders_for_one(association.to_sym, records, scope, polymorphic_parent)\n           else\n             raise ArgumentError, \"#{association.inspect} was not recognized for preload\"\n           end\n         end\n \n-        def preloaders_for_hash(association, records, scope)\n+        def preloaders_for_hash(association, records, scope, polymorphic_parent)\n           association.flat_map { |parent, child|\n-            loaders = preloaders_for_one parent, records, scope\n+            loaders = preloaders_for_one parent, records, scope, polymorphic_parent\n \n             recs = loaders.flat_map(&:preloaded_records).uniq\n+            polymorphic_parent = begin\n+              records.first.association(parent).options[:polymorphic]"
+        },
+        "groundTruth": {
+            "183": "What do you think about instead of relying on the exception we check if the association exists? ``` reflection = records.first.class._reflect_on_association(parent) polymorphic_parent = if reflection records.first.association(parent).options[:polymorphic] else raise AssociationNotFoundError.new(record.first, parent) unless polymorphic_parent false end ```"
+        },
+        "ds_dnContext": {
+            "183": "{\n  \"code_review_suggestion\": \"The new polymorphic check uses `records.first`, which could cause a NoMethodError if `records` is empty. Consider adding a guard clause like `return if records.empty?` at the start of `preloaders_for_hash` to handle this edge case safely.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "183": "{\n  \"code_review_suggestion\": \"Instead of checking polymorphic status on the first record's association (which could be nil or unloaded), use the model's reflection directly: `records.first.class.reflections[parent]&.options[:polymorphic]` to safely determine if the parent association is polymorphic.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "183": "{\n  \"code_review_suggestion\": \"The polymorphic_parent assignment inside the loop could cause issues since it's only checking the first record's association. If records have different association types, this might not work correctly. Consider moving this logic inside preloaders_for_one where it can handle each record individually.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "183": "{\n    \"code_review_suggestion\": \"The change looks good for handling polymorphic associations, but consider adding a comment explaining that AssociationNotFoundError won't be raised for child associations of polymorphic parents, which is intentional behavior for this feature.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "183": "{\n  \"code_review_suggestion\": \"This looks like it could raise a `NoMethodError` if the `records` array is empty. It would be safer to add a guard clause to handle that edge case before trying to access `records.first`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "183": "{\n  \"code_review_suggestion\": \"This is a great step towards supporting nested preloading on polymorphic associations! One thing to consider: the `records.first` call could raise a `NoMethodError` if the `records` array is empty. How about adding a guard for that case, perhaps with the safe navigation operator (`&.`)?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "183": "{\n  \"code_review_suggestion\": \"In preloaders_for_hash, reassigning polymorphic_parent inside the loop may cause inconsistent behavior when processing multiple associations; consider computing it once per association or passing it explicitly to maintain clarity and avoid subtle bugs.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "183": "{\n  \"code_review_suggestion\": \"Great approach adding polymorphic_parent to handle polymorphic associations in preloading. However, reassigning polymorphic_parent inside the block can cause confusion and unexpected behavior; consider using a separate variable for clarity and to avoid side effects during nested iterations.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "183": "{\"code_review_suggestion\":\"New line `records.first.association(parent)...` can blow up when records is empty (NilClass#association). Guard it: e.g. `first = records.first; polymorphic_parent = first && first.association(parent).reflection.polymorphic?` (or safe-nav) so preload with zero records doesn’t raise.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "183": "{\n  \"code_review_suggestion\": \"Deriving polymorphic_parent via records.first.association(parent) risks a NoMethodError on empty record sets and does extra object work; instead, guard for empty records and use reflection (e.g. first_class = records.first&.class; poly = first_class && first_class.reflect_on_association(parent)&.options[:polymorphic]) before recursing. This makes the check safe and avoids instantiating an association just to read options.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "25": "python/cpython:23060"
+        },
+        "selected_nodeLs": {
+            "25": "['PR-23060', 'Issue-86361', 'PR-24059', 'PR-23765']"
+        },
+        "codediff": {
+            "25": "@@ -302,6 +301,40 @@ def test_weakref(self):\n                 alias = t[int]\n                 self.assertEqual(ref(alias)(), alias)\n \n+    def test_abc_callable(self):\n+        alias = Callable[[int, str], float]\n+        with self.subTest(\"Testing subscription\"):\n+            self.assertIs(alias.__origin__, Callable)\n+            self.assertEqual(alias.__args__, (_PosArgs[int, str], float))\n+            self.assertEqual(alias.__parameters__, ())\n+\n+        with self.subTest(\"Testing nstance checks\"):"
+        },
+        "groundTruth": {
+            "25": "```suggestion with self.subTest(\"Testing instance checks\"): ```"
+        },
+        "ds_dnContext": {
+            "25": "{\n  \"code_review_suggestion\": \"There's a typo in the subTest string: 'nstance' should be 'instance'. This will make test output clearer when reading results.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "25": "{\n  \"code_review_suggestion\": \"There's a typo in the test string: 'nstance checks' should be 'instance checks'. Also, ensure the test body for instance checks is added to validate the expected behavior.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "25": "{\n  \"code_review_suggestion\": \"There's a typo in the subTest description - 'nstance checks' should be 'instance checks'. This small error could confuse developers reading the test output.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "25": "{\"code_review_suggestion\": \"There's a typo in the test method name 'nstance checks' - it should be 'instance checks'. This is a simple but important fix for code clarity.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "25": "{\n  \"code_review_suggestion\": \"This test relies on `_PosArgs`, which appears to be an internal implementation detail. To make the test more robust against future refactoring, could we verify the `Callable`'s structure through a public API instead of its internal representation?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "25": "{\n  \"code_review_suggestion\": \"Looks like there's a small typo in the `subTest` description. Could you please correct 'nstance' to 'instance' for clarity?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "25": "{\n  \"code_review_suggestion\": \"The test method is incomplete and contains a typo in 'nstance checks'; complete the test logic and fix the typo to ensure clarity and functionality.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "25": "{\n  \"code_review_suggestion\": \"The test method `test_abc_callable` is incomplete and cuts off abruptly after starting the subtest for instance checks; please complete the subtest block to ensure all intended assertions run and the test fully validates Callable behavior.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "25": "{\n  \"code_review_suggestion\": \"The new with self.subTest(\\\"Testing nstance checks\\\") block is empty (and has a typo); this will cause a syntax/indentation error. Either add the intended assertions (e.g., isinstance checks) or remove the block, and fix the label to 'Testing instance checks'.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "25": "{\n  \"code_review_suggestion\": \"The new test ends with an unfinished `with self.subTest(\\\"Testing nstance checks\\\"):` block (and a typo in 'nstance'); as written it will raise an IndentationError. Either add the intended assertions inside it (and fix the label to 'instance') or remove the empty subTest block.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

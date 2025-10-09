@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "35": "microsoft/LightGBM:42"
+        },
+        "selected_nodeLs": {
+            "35": "['PR-42', 'Issue-40']"
+        },
+        "codediff": {
+            "35": "@@ -222,6 +224,8 @@ void GBDT::Train() {\n       }\n       fflush(output_model_file);\n   }\n+  fprintf(output_model_file, \"feature importances=%s\\n\", FeatureImportance(models_.size()).c_str());\n+  fflush(output_model_file);"
+        },
+        "groundTruth": {
+            "35": "I think it is better to put \"feature importances=%s\\n\" into FeatureImportance function."
+        },
+        "ds_dnContext": {
+            "35": "{\n  \"code_review_suggestion\": \"The added lines appear to be outside the function body, which could cause a compilation error. Move them inside the function before the closing brace to ensure proper placement.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n  \"code_review_suggestion\": \"Consider adding error checking for the fprintf call to ensure feature importances are written successfully, preventing silent failures that could undermine feature selection efforts.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n  \"code_review_suggestion\": \"The feature importance output is being written to the model file after it's already been closed with fflush. You should move this code before the existing fflush call to ensure it gets written properly.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n    \"code_review_suggestion\": \"The feature importance output is a great addition for feature selection, but consider moving it before the file flush on line 223 to ensure it's included in the model file even if there's an interruption before the second flush.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n  \"code_review_suggestion\": \"Calculating feature importance can be an expensive operation. It might be clearer to store the result in a named variable before printing, which also makes the cost of the call more explicit.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n  \"code_review_suggestion\": \"This is a great feature to add! However, calculating feature importance can be computationally expensive. To avoid slowing down the training process, it might be better to move this calculation and write it to the model file just once after the main training loop is complete.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n  \"code_review_suggestion\": \"Calling FeatureImportance(models_.size()) inside fprintf can be inefficient and unclear—store the string result in a variable first for better readability and performance before printing it.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n  \"code_review_suggestion\": \"Consider checking that FeatureImportance(models_.size()) returns a valid, properly formatted string before printing to avoid potential runtime issues, and think about storing this output in a structured format rather than plain text for easier parsing later.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n  \"code_review_suggestion\": \"This silently changes the serialized model format by adding a new line, which can break older loaders expecting the previous layout. Add a versioned header or make the line clearly skippable (e.g., prefixed with a comment marker) and ensure the deserializer tolerates unknown lines.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "35": "{\n  \"code_review_suggestion\": \"Adding a raw 'feature importances=' line to the model file may break existing model parsers expecting the old format. Consider writing it as a commented/metadata line (e.g. starting with '#'), gating it by a version tag, or emitting to a separate file to preserve backward compatibility.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

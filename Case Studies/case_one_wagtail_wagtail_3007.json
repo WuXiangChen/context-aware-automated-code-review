@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "219": "wagtail/wagtail:3007"
+        },
+        "selected_nodeLs": {
+            "219": "['PR-3007', 'Issue-3005']"
+        },
+        "codediff": {
+            "219": "@@ -54,68 +63,93 @@ def separate_username_field(self):\n         return User.USERNAME_FIELD not in standard_fields\n \n \n-class UserCreationForm(UsernameForm):\n+class UserForm(UsernameForm):\n     required_css_class = \"required\"\n \n+    password_required = True\n+\n     error_messages = {\n-        'duplicate_username': _(\"A user with that username already exists.\"),\n+        'duplicate_username': _('A user with that username already exists.'),"
+        },
+        "groundTruth": {
+            "219": "What's the reason for changing all the quotes?"
+        },
+        "ds_dnContext": {
+            "219": "{\n  \"code_review_suggestion\": \"Changing the class name from UserCreationForm to UserForm deviates from Django's standard naming conventions, which might cause integration issues with built-in auth views or other components. Consider reverting to UserCreationForm for better maintainability and consistency.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "219": "{\n  \"code_review_suggestion\": \"The factorization of user forms looks good, but ensure password validation is properly integrated in both creation and edit scenarios. Consider adding explicit tests for password validation to cover both required and optional password cases.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "219": "{\n    \"code_review_suggestion\": \"The renamed UserForm class now has a password_required flag but no password field validation logic. Consider adding conditional password validation to ensure the form properly handles both password-required and password-optional scenarios.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "219": "{\n  \"code_review_suggestion\": \"The password_required flag is a good approach for form reuse, but we should ensure the password validation from Django 1.9+ is properly integrated. Let's add a call to django.contrib.auth.password_validation.validate_password() in the form's clean method to enforce password policies when password_required is True.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "219": "{\n  \"code_review_suggestion\": \"Renaming `UserCreationForm` to the more generic `UserForm` makes its purpose ambiguous. To improve clarity and align with Django conventions, it would be better to have a specific `UserCreationForm` for creating users and a separate `UserChangeForm` for editing them.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "219": "{\n  \"code_review_suggestion\": \"Great idea to refactor the user forms and reduce duplication! To make the purpose of this new shared class clearer, how about renaming `UserForm` to `BaseUserForm`? This is a common convention for base classes and would make the new structure more intuitive.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "219": "{\n  \"code_review_suggestion\": \"Renaming the class from UserCreationForm to UserForm risks confusion since it still enforces password requirements; consider clarifying the class purpose or separating user creation versus update logic for better maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "219": "{\n  \"code_review_suggestion\": \"Consider clarifying the renaming from UserCreationForm to UserForm and ensure the password_required flag is consistently used to differentiate creation vs. editing scenarios, as this impacts form validation and user experience.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "219": "{\"code_review_suggestion\":\"Renaming UserCreationForm to UserForm is a breaking API change—anything importing the old name will now fail. Consider keeping a backward-compatible alias (e.g., class UserCreationForm(UserForm): pass with a deprecation warning) to avoid unexpected ImportErrors.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "219": "{\n  \"code_review_suggestion\": \"Renaming UserCreationForm to UserForm is a silent breaking change for any code importing the old class; consider keeping a backwards-compatible alias (e.g., UserCreationForm = UserForm with a DeprecationWarning) until a major release to avoid downstream breakage.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "409": "rubyforgood/human-essentials:942"
+        },
+        "selected_nodeLs": {
+            "409": "['PR-942', 'Issue-888']"
+        },
+        "codediff": {
+            "409": "@@ -69,13 +69,13 @@\n       create(:purchase, :with_items, created_at: 1.week.ago, item_quantity: 15, amount_spent: 1, vendor: @vendor)\n     end\n \n-    scenario \"Existing vendors show in the #index with some summary stats\" do\n+    it \"can have existing vendors show in the #index with some summary stats\" do\n       visit url_prefix + \"/vendors\"\n       expect(page).to have_xpath(\"//table/tbody/tr/td\", text: @vendor.business_name)\n       expect(page).to have_xpath(\"//table/tbody/tr/td\", text: \"25\")\n     end\n \n-    scenario \"Single vendor show semi-detailed stats about purchases\" do\n+    it \"can have a single vendor show semi-detailed stats about purchases\" do\n       visit url_prefix + \"/vendors/#{@vendor.to_param}\"\n       expect(page).to have_xpath(\"//table/tr\", count: 3)"
+        },
+        "groundTruth": {
+            "409": "This example fails (and probably the one after it) My gut-check says that the layout for these was changed today by someone on the Theme Team, and that the table now uses a `tbody` tag. Go look at `/app/views/vendors/show.html.erb` and see what the `<table>` tag wraps the rows in now -- You might need to change this line and next line: ```suggestion expect(page).to have_xpath(\"//table/tbody/tr\", count: 3) ```"
+        },
+        "ds_dnContext": {
+            "409": "{\n  \"code_review_suggestion\": \"The test descriptions have added 'can have', making them wordy and less clear. For better readability, use direct phrasing like 'shows existing vendors in index with summary stats'.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "409": "{\n  \"code_review_suggestion\": \"The test descriptions were unnecessarily modified during the conversion from `scenario` to `it`. Revert them to their original concise form ('Existing vendors show...' and 'Single vendor show...') to maintain clarity and consistency with the spec's purpose.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "409": "{\n  \"code_review_suggestion\": \"The test descriptions should be more specific about what behavior they're verifying. Instead of 'can have...', use descriptive language like 'displays vendor business names and purchase counts' or 'shows purchase details for a specific vendor' to make test failures more informative.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "409": "{\n  \"code_review_suggestion\": \"Great job converting the feature spec to a system spec! I noticed you're using the 'it' syntax with descriptive test names, but the wording 'can have' feels a bit verbose. Consider simplifying to something like 'displays existing vendors with summary stats' and 'displays semi-detailed purchase stats for a single vendor' for better clarity and conciseness.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "409": "{\n  \"code_review_suggestion\": \"The test for summary stats hardcodes the expected total of '25'. It would be better to derive this value from the test setup data, making the test more resilient to future changes and easier to understand.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "409": "{\n  \"code_review_suggestion\": \"Nice work migrating this to a system spec! To make the test descriptions more idiomatic for RSpec, could you rephrase them to complete the sentence started by `it`? For example, changing `it 'can have existing vendors show...'` to `it 'shows existing vendors...'` would read a bit more naturally.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "409": "{\n  \"code_review_suggestion\": \"Switching from `scenario` to `it` is fine, but for clarity and consistency in feature specs, it’s usually better to keep using `scenario` which clearly indicates feature tests; also consider adding more descriptive test names that focus on expected behavior rather than starting with 'can have'.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "409": "{\n  \"code_review_suggestion\": \"Great job converting from scenario to it syntax for system specs! To keep the descriptions more natural and readable, consider removing the leading 'can have' from the it blocks—just describe the expected behavior directly, such as 'shows existing vendors in the index with summary stats.' This improves clarity and aligns with common RSpec conventions.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "409": "{\"code_review_suggestion\": \"Test descriptions became awkward after switching from 'scenario' to 'it'. Rewrite them as clear behavior statements (e.g., 'displays existing vendors with summary stats' and 'shows semi-detailed purchase stats for a vendor') to keep specs readable and intention-revealing.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "409": "{\n  \"code_review_suggestion\": \"The examples were converted to `it`, but the assertions still rely on brittle XPath like //table/tbody/tr/td which will break with minor markup changes. Consider scoping to the table (e.g., within('table') { expect(page).to have_content vendor.business_name }) or using data-test attributes / CSS classes with have_selector or have_text for more resilient, intention-revealing checks.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

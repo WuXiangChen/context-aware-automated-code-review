@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "268": "duckduckgo/zeroclickinfo-goodies:4079"
+        },
+        "selected_nodeLs": {
+            "268": "['PR-3798', 'Issue-1234']"
+        },
+        "codediff": {
+            "268": "@@ -0,0 +1,474 @@\n+DDH.cssgradientgenerator = DDH.cssgradientgenerator || {};\n+\n+(function(DDH) {\n+    \"use strict\";\n+\n+    var localDom = {\n+        initialized: false\n+    };\n+    \n+    // Initial gradient parameters\n+    var params = {\n+        prefix: getCssPrefix(),        \n+        type: \"linear\",\n+        direction: 50,\n+        radial_size: \"farthest-corner\",\n+        radial_x: 75,\n+        radial_y: 25,\n+        colors: [\n+            {\n+                id: \"color-box-0\",\n+                index: 0,\n+                point: 10,\n+                r: 210,\n+                g: 100,\n+                b: 110\n+            },\n+            {\n+                id: \"color-box-1\",\n+                index: 1,\n+                point: 60,\n+                r: 215,\n+                g: 170,\n+                b: 135\n+            },\n+            {\n+                id: \"color-box-2\",\n+                index: 2,\n+                point: 100,\n+                r: 100,\n+                g: 100,\n+                b: 115\n+            }\n+        ]\n+    };\n+     \n+    \n+    DDH.cssgradientgenerator.build = function(ops) {\n+        return {\n+            onShow: function() {\n+                if (!localDom.initialized) {\n+                    initializeLocalDom();\n+                }\n+            }\n+        };\n+    };\n+    \n+    \n+    // Initializes local domain and handles user events\n+    function initializeLocalDom() {\n+        localDom = {           \n+            $linear_type_button: document.getElementById('linear-type-btn'),"
+        },
+        "groundTruth": {
+            "268": "We have jQuery available and typically use it for grabbing and caching selectors. Might make this code a little cleaner?"
+        },
+        "ds_dnContext": {
+            "268": "{\n  \"code_review_suggestion\": \"The initialization logic could cause multiple event listeners to be attached if onShow is called repeatedly. Consider moving the initialization check inside initializeLocalDom and setting a flag there to prevent re-initialization.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "268": "{\n  \"code_review_suggestion\": \"The function `getCssPrefix` is called but not defined in the provided code snippet. This will cause a runtime error. Please ensure this function is implemented or imported correctly.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "268": "{\n  \"code_review_suggestion\": \"The `localDom` object is being used inconsistently - it starts as {initialized: false} but gets completely replaced in initializeLocalDom(). This could cause issues if other code references the original object. Consider using a consistent pattern like merging properties or using a separate initialization function.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "268": "{\n  \"code_review_suggestion\": \"The CSS gradient generator code appears to be unrelated to the PR's stated purpose of creating a Zoho Deluge Script cheat sheet. This looks like a case of incorrect code being committed - you should replace this with the actual Deluge script cheat sheet implementation instead.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "268": "{\n  \"code_review_suggestion\": \"The `params` object is defined in the module's global scope, meaning all instances of the gradient generator will share and overwrite the same state. To make the component reusable, I'd suggest moving the `params` object inside the `build` function so that each instance manages its own state independently.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "268": "{\n  \"code_review_suggestion\": \"Nice work on the gradient generator! I spotted a potential issue in `initializeLocalDom`. It looks like you're replacing the `localDom` object, which means the `initialized` flag is lost. This will cause the DOM to be re-queried on every call. How about adding properties to the existing `localDom` object and then setting `localDom.initialized = true` to prevent this?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "268": "{\n  \"code_review_suggestion\": \"Avoid overwriting the entire localDom object inside initializeLocalDom; instead, update its properties to preserve the initialized flag and prevent potential bugs from lost state.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "268": "{\n  \"code_review_suggestion\": \"Focus on minimizing repeated DOM queries by caching elements upfront and ensure consistent use of 'localDom' to avoid overwriting the entire object, which could lead to lost state or bugs.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "268": "{\"code_review_suggestion\":\"initializeLocalDom overwrites localDom without setting initialized=true, so onShow keeps re-initializing (risking duplicate handlers/memory leaks). Instead, extend the existing object or set localDom.initialized = true after setup (e.g., Object.assign(localDom, {...}); localDom.initialized = true;).\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "268": "{\n  \"code_review_suggestion\": \"initializeLocalDom overwrites localDom and never sets an initialized flag, so onShow will re-run initialization every time. Instead, update the existing object (e.g. Object.assign) and set localDom.initialized = true to prevent redundant DOM queries.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

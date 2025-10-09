@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "184": "modin-project/modin:771"
+        },
+        "selected_nodeLs": {
+            "184": "['PR-771']"
+        },
+        "codediff": {
+            "184": "@@ -1075,7 +1076,11 @@ def read_sql(cls, sql, con, index_col=None, **kwargs):\n         # are not pickleable. We have to convert it to the URL string and connect from\n         # each of the workers.\n         if isinstance(con, (sa.engine.Engine, sa.engine.Connection)):\n-            con = repr(con.engine.url)\n+            warnings.warn(\n+                \"To use parallel implementation of `read_sql`, pass the \"\n+                \"connection string as `con` instead of {}.\".format(type(con))"
+        },
+        "groundTruth": {
+            "184": "```suggestion \"connection string instead of {}.\".format(type(con)) ```"
+        },
+        "ds_dnContext": {
+            "184": "{\n  \"code_review_suggestion\": \"The warning message is incomplete and doesn't specify the required connection string format. Consider updating it to clearly state that users should pass the connection URL string (e.g., 'postgresql://user:pass@host/db') instead of the engine object for parallel execution.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "184": "{\n  \"code_review_suggestion\": \"The warning is helpful, but the assignment `con = repr(con.engine.url)` is missing after the warning. This conversion is critical for the parallel implementation to work correctly, so please ensure it's retained to maintain functionality.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "184": "{\n    \"code_review_suggestion\": \"The warning message should include the actual connection object type in the warning message instead of the placeholder {}. Use `type(con).__name__` to make the warning more specific and helpful to users.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "184": "{\n  \"code_review_suggestion\": \"The warning message should include the actual connection object type in the warning message instead of the placeholder {} to make it more informative for users. Use `type(con).__name__` to show the specific connection class name.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "184": "{\n  \"code_review_suggestion\": \"This is a helpful warning, but by removing the line that converts the connection object to a URL string, the parallel implementation will now raise an error. To avoid breaking this functionality, let's restore the `con = repr(con.engine.url)` line after the warning is issued.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "184": "{\n  \"code_review_suggestion\": \"This is a great addition for user clarity! To make the warning message a little cleaner, consider using `type(con).__name__` instead of `type(con)`. This will display a simple 'Engine' or 'Connection' rather than the full class path, making it more readable for the end-user.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "184": "{\n  \"code_review_suggestion\": \"The warning omits converting 'con' to a connection string after notifying the user; to improve clarity and maintain functionality, explicitly convert 'con' to its URL string (e.g., con = repr(con.engine.url)) after the warning.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "184": "{\n  \"code_review_suggestion\": \"The warning message is missing a closing parenthesis and the connection type is not fully informative; consider including the actual type name with `type(con).__name__` and ensure the warning message is properly closed for clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "184": "{\"code_review_suggestion\": \"You removed the line converting the Engine/Connection to its URL string, so after the warning `con` stays non-pickleable and the parallel path will likely break. Keep the original behavior while warning: issue the warning, then set `con = repr(con.engine.url)`, and ensure the warnings.warn call is properly closed; otherwise this is a silent functional regression.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "184": "{\n  \"code_review_suggestion\": \"By adding the warning you dropped the conversion (con = repr(con.engine.url)), which the comment says is required for pickling in parallel; reintroduce the assignment (e.g., after warnings.warn(...)) and consider using stacklevel=2 and type(con).__name__ for a cleaner message.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

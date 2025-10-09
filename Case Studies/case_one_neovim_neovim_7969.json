@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "156": "neovim/neovim:7969"
+        },
+        "selected_nodeLs": {
+            "156": "['PR-7969']"
+        },
+        "codediff": {
+            "156": "@@ -54,6 +54,8 @@ struct msgchunk_S {\n   char_u sb_text[1];            /* text to be displayed, actually longer */\n };\n \n+typedef int (*fct_msg_attr)(const char *s, const int attr);"
+        },
+        "groundTruth": {
+            "156": "New types should be CamelCase."
+        },
+        "ds_dnContext": {
+            "156": "{\n  \"code_review_suggestion\": \"The function pointer name `fct_msg_attr` uses outdated Hungarian notation. Consider renaming it to something more descriptive like `msg_attr_cb` to clearly indicate it's a callback function while following modern naming conventions.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "156": "{\n  \"code_review_suggestion\": \"For consistency with the Vim codebase, consider using 'char_u' instead of 'char' for the string parameter in the function pointer typedef, as 'char_u' is the standard type used throughout the project for text handling.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "156": "{\n  \"code_review_suggestion\": \"The function pointer typedef 'fct_msg_attr' should include parameter names for better readability and documentation. Consider changing it to 'typedef int (*fct_msg_attr)(const char *text, const int attribute);' to make the purpose of each parameter clearer.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "156": "{\"code_review_suggestion\": \"The function pointer typedef 'fct_msg_attr' should use consistent naming with the existing codebase - consider using 'msg_attr_f' to match Vim's style where function pointers often end with '_f'.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "156": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "156": "{\n  \"code_review_suggestion\": \"Thanks for adding this! To improve clarity and align with common C naming conventions, could we consider renaming the function pointer `fct_msg_attr`? A name like `MsgAttrFunc` would make it more immediately recognizable as a function type definition.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "156": "{\n  \"code_review_suggestion\": \"Using 'typedef int (*fct_msg_attr)(const char *s, const int attr);' is fine, but consider using 'const int' consistently and possibly providing a more descriptive type name for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "156": "{\n  \"code_review_suggestion\": \"Consider using a more descriptive typedef name to clarify the purpose of the function pointer and maintain consistent spacing around the '*' for readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "156": "{\n  \"code_review_suggestion\": \"The new typedef breaks existing text type conventions (char_u vs char) and could introduce subtle signedness/encoding bugs; redefine it as 'typedef int (*msg_attr_F)(const char_u *s, int attr);' (dropping the useless const on the int) to stay consistent and clearer.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "156": "{\n  \"code_review_suggestion\": \"New typedef uses const char* instead of the existing char_u convention; consider matching existing message APIs (e.g. use char_u * and drop redundant const on attr) and add a brief comment about expected return value (success/failure) to avoid confusion and future mismatches.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

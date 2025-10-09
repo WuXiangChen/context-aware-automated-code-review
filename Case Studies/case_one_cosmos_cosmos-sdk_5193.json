@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "131": "cosmos/cosmos-sdk:5193"
+        },
+        "selected_nodeLs": {
+            "131": "['PR-5193', 'Issue-5191']"
+        },
+        "codediff": {
+            "131": "@@ -277,6 +277,10 @@ type StoreKey interface {\n \tString() string\n }\n \n+// CapabilityKey represent the Cosmos SDK keys for object-capability\n+// generation in the IBC protocol as defined in https://github.com/cosmos/ics/tree/master/spec/ics-005-port-allocation#data-structures\n+type CapabilityKey StoreKey"
+        },
+        "groundTruth": {
+            "131": "Isn't this just a renaming of the `StoreKey`? Is it completely necessary?"
+        },
+        "ds_dnContext": {
+            "131": "{\n  \"code_review_suggestion\": \"The new CapabilityKey type is identical to StoreKey, which might lead to unnecessary type conversions without clear benefit. Consider using a type alias (type CapabilityKey = StoreKey) for better interoperability if they are meant to be used interchangeably, or add a comment explaining the need for a distinct type.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "131": "{\n  \"code_review_suggestion\": \"The new `CapabilityKey` type is defined as an alias to `StoreKey`, which might cause confusion since they're now interchangeable. Consider making it a distinct type (e.g., `type CapabilityKey struct{...}`) to ensure type safety and clarify its specific role in capability generation for IBC.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "131": "{\n  \"code_review_suggestion\": \"The CapabilityKey type alias might be confusing since it's just an alias for StoreKey without adding any new behavior. Consider using a type definition instead (type CapabilityKey = StoreKey) if you want just an alias, or define it as a proper interface/struct if it needs different behavior than StoreKey.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "131": "{\n    \"code_review_suggestion\": \"The CapabilityKey type alias should include a comment explaining why it's defined as an alias to StoreKey rather than a distinct type, as this design choice affects how capabilities are managed throughout the IBC protocol implementation.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "131": "{\n  \"code_review_suggestion\": \"Great job adding a specific type for capability keys for better type safety! To make the comment a bit clearer, could you correct the minor typo from 'represent' to 'represents'?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "131": "{\n  \"code_review_suggestion\": \"Great to see a dedicated type for capability keys! However, the current definition `type CapabilityKey StoreKey` won't compile because `StoreKey` is an interface. To create a new name for this interface for clarity, you could use a type alias instead: `type CapabilityKey = StoreKey`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "131": "{\n  \"code_review_suggestion\": \"Consider adding a comment or doc string explaining why CapabilityKey is defined as a type alias for StoreKey to improve clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "131": "{\n  \"code_review_suggestion\": \"Consider adding a comment or example illustrating how CapabilityKey is intended to be used, to improve clarity and maintainability of this new type alias.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "131": "{\"code_review_suggestion\":\"You likely meant a simple alias, but `type CapabilityKey StoreKey` creates a distinct interface type; use `type CapabilityKey = StoreKey` to avoid subtle assignability confusion and keep intent clear (also tweak the comment: 'represents').\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "131": "{\"code_review_suggestion\":\"Consider making this an alias instead of a new interface type: `type CapabilityKey = StoreKey` so there’s no separate type identity (avoids subtle assertion/reflect surprises) and fix the comment to start with the type name and proper grammar: `// CapabilityKey represents Cosmos SDK keys for object-capability generation (ICS-005: <link>).`\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

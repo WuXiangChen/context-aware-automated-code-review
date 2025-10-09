@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "294": "ihhub/fheroes2:3724"
+        },
+        "selected_nodeLs": {
+            "294": "['PR-3724']"
+        },
+        "codediff": {
+            "294": "@@ -192,6 +193,17 @@ std::string System::GetBasename( const std::string & str )\n     return str;\n }\n \n+std::string System::GetUniversalBasename( const std::string & str )\n+{\n+    std::string path = str;\n+\n+    for ( const char sep : { '/', '\\\\' } ) {\n+        std::replace( path.begin(), path.end(), sep, SEPARATOR );\n+    }"
+        },
+        "groundTruth": {
+            "294": "Here we're doing double loop while we could run only once: ``` const char sep = ( SEPARATOR == '/' ) ? '\\\\' : '/'; std::replace( path.begin(), path.end(), sep, SEPARATOR ); ``` because we have to replace only separators which are different from the curent system."
+        },
+        "ds_dnContext": {
+            "294": "{\n  \"code_review_suggestion\": \"The GetUniversalBasename function is missing a return statement, which will cause a compilation error. Add 'return path;' at the end to ensure it returns the modified string.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n  \"code_review_suggestion\": \"The new function `GetUniversalBasename` doesn't actually return the basename—it only normalizes path separators. To match the PR's goal of extracting basenames, add logic to trim everything before the last separator after the normalization loop.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n    \"code_review_suggestion\": \"The SEPARATOR constant should be explicitly defined or passed as a parameter to avoid potential compilation errors or unexpected behavior across different platforms.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n    \"code_review_suggestion\": \"The GetUniversalBasename function replaces both forward and backward slashes with SEPARATOR, but it doesn't actually extract the basename from the path - it just normalizes separators. To properly implement a universal basename function, you should find the last separator and return everything after it, similar to how GetBasename works but handling both separator types.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n  \"code_review_suggestion\": \"This is a useful helper! For a more efficient and slightly clearer implementation, you could iterate through the string's characters just once, replacing any path separators you find. This avoids making two full passes over the string with `std::replace`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n  \"code_review_suggestion\": \"The current implementation iterates over the entire string for each separator. For better performance, consider a single pass over the string, replacing any separator characters ('/' or '\\\\') with the native `SEPARATOR` as you encounter them. This avoids multiple full-string scans.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n  \"code_review_suggestion\": \"Consider returning the modified string 'path' at the end of GetUniversalBasename; currently, the function does not return any value, which will cause a compilation error.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n  \"code_review_suggestion\": \"The new GetUniversalBasename function currently replaces all separators but does not extract the basename after; consider adding logic to return only the substring after the last unified separator to fulfill the intended purpose of obtaining a basename.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n  \"code_review_suggestion\": \"GetUniversalBasename never extracts the basename—it only normalizes separators, so callers will get the full path and likely misbehave. Either implement basename logic (normalize, find last separator, return substring after it) or rename it (e.g., NormalizePathSeparators) to match its behavior.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "294": "{\n  \"code_review_suggestion\": \"GetUniversalBasename currently just normalizes separators and never returns anything (no basename extraction), which will either fail to compile or not meet the goal of storing only the filename. After replacing separators, find the last separator and return the tail (e.g., pos = path.find_last_of(SEPARATOR); return pos == npos ? path : path.substr(pos + 1);), also handling a trailing separator.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

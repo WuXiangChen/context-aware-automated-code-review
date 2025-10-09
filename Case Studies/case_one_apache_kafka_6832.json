@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "85": "apache/kafka:6832"
+        },
+        "selected_nodeLs": {
+            "85": "['PR-6775', 'PR-6731']"
+        },
+        "codediff": {
+            "85": "@@ -0,0 +1,85 @@\n+/*\n+ * Licensed to the Apache Software Foundation (ASF) under one or more\n+ * contributor license agreements. See the NOTICE file distributed with\n+ * this work for additional information regarding copyright ownership.\n+ * The ASF licenses this file to You under the Apache License, Version 2.0\n+ * (the \"License\"); you may not use this file except in compliance with\n+ * the License. You may obtain a copy of the License at\n+ *\n+ *    http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+package org.apache.kafka.common.replica;\n+\n+import org.apache.kafka.common.Configurable;\n+import org.apache.kafka.common.Node;\n+import org.apache.kafka.common.TopicPartition;\n+import org.apache.kafka.common.security.auth.KafkaPrincipal;\n+\n+import java.io.Closeable;\n+import java.io.IOException;\n+import java.net.InetAddress;\n+import java.util.Map;\n+import java.util.Optional;\n+import java.util.Set;\n+\n+public interface ReplicaSelector extends Configurable, Closeable {\n+\n+    /**\n+     * Select the preferred replica a client should use for fetching. If no replica is available, this will return an\n+     * empty optional.\n+     */\n+    Optional<ReplicaInfo> select(TopicPartition topicPartition,\n+                                 ClientMetadata clientMetadata,\n+                                 Set<ReplicaInfo> replicaInfos);"
+        },
+        "groundTruth": {
+            "85": "Would it make sense to wrap this in a `PartitionInfo` object? That will be easier to evolve if we find the need for new information which is at the partition level instead of the replica level. For example, we could have a separate accessor for the leader and take `isLeader` out of `ReplicaInfo`."
+        },
+        "ds_dnContext": {
+            "85": "{\n  \"code_review_suggestion\": \"The documentation for the `select` method doesn't explain the role of the `clientMetadata` parameter. Adding a brief note about how client metadata (like network location or principal) influences replica selection would make the interface clearer for implementors.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "85": "{\n  \"code_review_suggestion\": \"To ensure robustness, consider documenting that parameters like topicPartition, clientMetadata, and replicaInfos must not be null to prevent NullPointerExceptions in implementations, aligning with best practices for interface design.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "85": "{\"code_review_suggestion\": \"The select method should declare that it throws IOException to match the Closeable interface's close() method, ensuring proper exception handling when implementing classes need to perform I/O operations during replica selection.\"}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "85": "{\n  \"code_review_suggestion\": \"The select method should include a @throws or @exception javadoc tag to document potential IOException since it implements Closeable, which helps developers understand that this operation might fail due to I/O issues.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "85": "{\n  \"code_review_suggestion\": \"Great work on the new `ReplicaSelector` interface! For the `select` method, have you considered using a `List<ReplicaInfo>` instead of a `Set`? Using a list provides a stable iteration order, which is helpful for deterministic tie-breaking in selection logic and can prevent implementations from needing to re-sort the collection on each call.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "85": "{\n  \"code_review_suggestion\": \"This new `ReplicaSelector` interface looks like a great addition for follower fetching. For the `select` method, have you considered using a `List<ReplicaInfo>` instead of a `Set`? A list would preserve the order of replicas from the metadata, which often has the leader as the first element. This could provide useful context to selector implementations and simplify fallback logic.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "85": "{\n  \"code_review_suggestion\": \"The select method signature is missing a closing parenthesis and method body or semicolon, which will cause a compilation error; please complete the method declaration properly for clarity and correctness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "85": "{\n  \"code_review_suggestion\": \"Consider adding JavaDoc descriptions for the method parameters and the interface itself to improve clarity and maintainability, especially given the interface's key role in follower fetch support.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "85": "{\"code_review_suggestion\":\"The select() contract is underspecified—there’s no guarantee the returned ReplicaInfo must come from the provided Set, what ‘available’ means, or any thread-safety / immutability expectations. Tighten the Javadoc to spell out input non-nullability, that the Set won’t be mutated (or must not be), that the result (if present) must be one of the given replicas, and any determinism/tie‑breaking rules. This will prevent inconsistent implementations.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "85": "{\n  \"code_review_suggestion\": \"The new ReplicaSelector API doesn’t spell out the contract of select(): what guarantees exist about the contents of replicaInfos (e.g., does it always include the leader), whether the returned ReplicaInfo must be one from the provided Set, threading/performance expectations, or that the method must be non-blocking and not mutate inputs. Tighten the Javadoc with these behavioral guarantees (and parameter descriptions) so implementers produce consistent, safe selector logic.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "62": "line/armeria:1555"
+        },
+        "selected_nodeLs": {
+            "62": "['PR-1555', 'Issue-1550']"
+        },
+        "codediff": {
+            "62": "@@ -16,12 +16,17 @@\n package com.linecorp.armeria.server.annotation;\n \n import java.lang.annotation.ElementType;\n+import java.lang.annotation.Repeatable;\n+import java.lang.annotation.Retention;\n+import java.lang.annotation.RetentionPolicy;\n import java.lang.annotation.Target;\n \n /**\n  * Annotation for an additional HTTP header.\n  */\n-@Target(ElementType.ANNOTATION_TYPE)\n+@Retention(RetentionPolicy.RUNTIME)\n+@Repeatable(AdditionalHeaders.class)\n+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE})\n public @interface AdditionalHeader {"
+        },
+        "groundTruth": {
+            "62": "How about changing the type of `value()` `String[]` instead of `String` so that a user can specify a header with multiple values? ```java @AdditionalHeader(name = \"foo\", value = \"bar\") @AdditionalHeader(name = \"foo\", value = \"baz\") // Does not work... // vs. @AdditionalHeader(name = \"foo\", value = { \"bar\", \"baz\" }) ```"
+        },
+        "ds_dnContext": {
+            "62": "{\n  \"code_review_suggestion\": \"Now that @AdditionalHeader is repeatable, make sure to update the annotation processing code to use getAnnotationsByType() for handling multiple headers correctly and avoid missing any.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "62": "{\n  \"code_review_suggestion\": \"The update to make @AdditionalHeader repeatable and applicable to more elements is solid for supporting default response headers. However, ensure that the AdditionalHeaders container annotation is properly defined elsewhere with a value method that returns an array of AdditionalHeader[] to avoid compilation issues and enable correct repeatable handling.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "62": "{\n  \"code_review_suggestion\": \"The @Repeatable annotation requires a container annotation type. You should add an @interface AdditionalHeaders { AdditionalHeader[] value(); } to properly support repeated annotations.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "62": "{\n    \"code_review_suggestion\": \"Great addition of @Repeatable and @Retention annotations to support multiple headers! However, consider adding a @Documented annotation as well to ensure the annotation appears in generated JavaDoc, making it clearer for developers that this annotation can be repeated.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "62": "{\n  \"code_review_suggestion\": \"Great job expanding the functionality of `@AdditionalHeader`! To make these new capabilities clearer for developers, consider updating the Javadoc to mention that it's now repeatable and can be applied directly to classes and methods.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "62": "{\n  \"code_review_suggestion\": \"This is a great enhancement! To help users discover the new capabilities, could you update the Javadoc for `@AdditionalHeader`? It would be helpful to mention that it can now be applied to classes and methods, and that it's repeatable.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "62": "{\n  \"code_review_suggestion\": \"Great addition of @Repeatable and proper @Retention policy! Just confirm that the container annotation AdditionalHeaders is correctly defined to avoid runtime issues with repeated annotations.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "62": "{\n  \"code_review_suggestion\": \"Great addition of @Repeatable and retention policy! To improve clarity and maintainability, consider adding Javadoc updates reflecting the new repeatable usage and retention, so users clearly understand how and where to apply @AdditionalHeader.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "62": "{\"code_review_suggestion\":\"Since you made AdditionalHeader repeatable, double-check that the container annotation AdditionalHeaders exists and has matching @Retention(RUNTIME) and @Target({TYPE, METHOD, ANNOTATION_TYPE}); otherwise repeatable usage will fail to compile or behave unexpectedly.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "62": "{\n  \"code_review_suggestion\": \"Now that @AdditionalHeader is repeatable and runtime-retained, double‑check the scanning code uses getAnnotationsByType(AdditionalHeader.class) (not getAnnotation) so multiple headers on the same method/type are all applied; otherwise only one header will take effect.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

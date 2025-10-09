@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "277": "localstack/localstack:1908"
+        },
+        "selected_nodeLs": {
+            "277": "['PR-1908']"
+        },
+        "codediff": {
+            "277": "@@ -592,6 +592,10 @@ def download(url, path, verify_ssl=True):\n     # enable parallel file downloads during installation!\n     s = requests.Session()\n     r = s.get(url, stream=True, verify=verify_ssl)\n+    # check status code before attempting to read body\n+    if r.status_code != 200:\n+        raise 'Failed to download %s, response code %s' % (url, r.status_code)"
+        },
+        "groundTruth": {
+            "277": "The raised object should be an instance of `Exception` (otherwise we get a `TypeError`). Can we change this to: ``` raise Exception('Failed to download %s, response code %s' % (url, r.status_code)) ```"
+        },
+        "ds_dnContext": {
+            "277": "{\n  \"code_review_suggestion\": \"Using a plain string with 'raise' will cause a TypeError. Instead, raise a proper exception like RuntimeError or create a custom exception for clearer error handling.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "277": "{\n  \"code_review_suggestion\": \"Raising a string as an exception is invalid in Python. Use a proper exception class like `Exception` or a custom one to avoid runtime errors, e.g., `raise Exception('Failed to download...')`.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "277": "{\n  \"code_review_suggestion\": \"Instead of raising a string exception, use a proper exception class like requests.HTTPError or create a custom exception. String exceptions are deprecated and don't provide proper error handling context.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "277": "{\n  \"code_review_suggestion\": \"Instead of raising a string, you should raise a proper exception type like requests.HTTPError or create a custom exception. This will make error handling more consistent and maintainable throughout the codebase.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "277": "{\n  \"code_review_suggestion\": \"Good idea to add a status check! Instead of raising a string, which is a deprecated practice, could we use `r.raise_for_status()`? It's the idiomatic way to handle this with the `requests` library and raises a proper `HTTPError`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "277": "{\n  \"code_review_suggestion\": \"Great catch adding the status code check! However, raising a string literal is an anti-pattern in Python. Could you please raise a proper exception, like `raise Exception(...)`? This ensures that the error can be caught and handled correctly by the calling code.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "277": "{\n  \"code_review_suggestion\": \"Raising a string instead of an Exception will cause a runtime error; replace the raise statement with raising an Exception instance, e.g., raise RuntimeError('Failed to download %s, response code %s' % (url, r.status_code)).\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "277": "{\n  \"code_review_suggestion\": \"Raising a string as an exception will cause a TypeError; please raise a proper Exception type with the message instead, e.g., raise RuntimeError(f'Failed to download {url}, response code {r.status_code}').\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "277": "{\"code_review_suggestion\": \"You’re raising a raw string, which will crash in Python 3 (exceptions must inherit from BaseException). Instead, call r.raise_for_status() or raise a proper exception like RuntimeError(f'Failed to download {url}, status {r.status_code}').\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "277": "{\n  \"code_review_suggestion\": \"Good call adding a status check, but raising a plain string will fail in Python 3. Use r.raise_for_status() or raise an Exception/HTTPError (e.g., if r.status_code >= 400: raise requests.HTTPError(f'Failed to download {url}: {r.status_code}')).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "225": "LiskHQ/lisk-sdk:2786"
+        },
+        "selected_nodeLs": {
+            "225": "['PR-2786']"
+        },
+        "codediff": {
+            "225": "@@ -239,15 +239,36 @@ Blocks.prototype.onBind = function(scope) {\n  * @todo Add description for the params\n  * @todo Add @returns tag\n  */\n-Blocks.prototype.onNewBlock = function(block) {\n-\tconst tasks = [\n-\t\tmodules.cache.KEYS.blocksApi,\n-\t\tmodules.cache.KEYS.transactionsApi,\n-\t].map(pattern => callback => modules.cache.clearCacheFor(pattern, callback));\n+Blocks.prototype.onNewBlock = async function(block) {\n+\tif (components.cache) {\n+\t\tlibrary.logger.debug(\n+\t\t\t['Cache - onNewBlock', '| Status:', components.cache.isReady()].join(' ')\n+\t\t);\n+\t\tconst keys = [\n+\t\t\tCACHE_CONSTANTS.KEYS_BLOCKS,\n+\t\t\tCACHE_CONSTANTS.KEYS_TRANSACTIONS,\n+\t\t];\n+\t\ttry {\n+\t\t\t// eslint-disable-next-line no-restricted-syntax\n+\t\t\tfor await (const key of keys) {\n+\t\t\t\tawait components.cache.removeByPattern(key);"
+        },
+        "groundTruth": {
+            "225": "This can be done in parallel by using `await Promise.all`"
+        },
+        "ds_dnContext": {
+            "225": "{\n  \"code_review_suggestion\": \"The cache clearing operations are now sequential, which could slow down block processing. Consider using Promise.all() to clear both caches concurrently since they're independent operations.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "225": "{\n  \"code_review_suggestion\": \"Hey, I see the cache clearing is now sequential with for-await, which might slow down onNewBlock handling. Since the cache patterns are independent, using Promise.all could boost performance by running them in parallel.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "225": "{\n    \"code_review_suggestion\": \"The for-await loop is unnecessary since you're iterating over a static array - consider using Promise.all() for parallel execution to improve performance when clearing multiple cache patterns simultaneously.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "225": "{\n    \"code_review_suggestion\": \"The cache removal logic now uses a for-await loop with individual await calls, which processes keys sequentially instead of in parallel. Since cache clearing operations are independent, consider using Promise.all() for better performance by executing them concurrently.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "225": "{\n  \"code_review_suggestion\": \"Great job converting this to use async/await! Since the cache clearing operations are independent, you could run them in parallel with `Promise.all` instead of sequentially in a `for...of` loop. This would be more performant and would also allow you to remove the `eslint-disable` comment.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "225": "{\n  \"code_review_suggestion\": \"Great work refactoring this to use the new cache component! Since the cache clearing operations are independent, you could improve performance by running them in parallel with `Promise.all` instead of sequentially in a `for...await...of` loop. For example: `await Promise.all(keys.map(key => components.cache.removeByPattern(key)))`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "225": "{\n  \"code_review_suggestion\": \"Great use of async/await for cache clearing! To improve maintainability, consider replacing the commented eslint-disable line with a more readable approach like using Promise.all for parallel execution, which can also boost performance.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "225": "{\n  \"code_review_suggestion\": \"Great transition to async/await for cache clearing; however, consider adding error handling around the await calls to handle potential cache failures gracefully and avoid silent errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "225": "{\"code_review_suggestion\":\"Cache invalidation now runs sequentially with for await over a plain array, slowing block handling unnecessarily. Fire the removals in parallel (e.g. await Promise.all(keys.map(k => components.cache.removeByPattern(k)))) and drop the for‑await loop for a simpler, faster implementation.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "225": "{\n  \"code_review_suggestion\": \"The for await ... of over a plain array needlessly serializes two independent cache clears and adds async-iterator noise—just early-return if cache isn’t ready, then use await Promise.all(keys.map(k => components.cache.removeByPattern(k))) for clearer, parallel invalidation (or a simple for...of if ordering matters).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "299": "python/mypy:6527"
+        },
+        "selected_nodeLs": {
+            "299": "['PR-6527']"
+        },
+        "codediff": {
+            "299": "@@ -19,20 +19,22 @@ def __init__(self, options: Options, api: SemanticAnalyzerInterface) -> None:\n         self.options = options\n         self.api = api\n \n-    def process_enum_call(self, s: AssignmentStmt, is_func_scope: bool) -> None:\n-        \"\"\"Check if s defines an Enum; if yes, store the definition in symbol table.\"\"\"\n+    def process_enum_call(self, s: AssignmentStmt, is_func_scope: bool) -> bool:\n+        \"\"\"Check if s defines an Enum; if yes, store the definition in symbol table.\n+\n+        Return True if this looks like a type variable declaration (but maybe"
+        },
+        "groundTruth": {
+            "299": "\"Type variable declaration\" should be something like \"Enum definition\"."
+        },
+        "ds_dnContext": {
+            "299": "{\n  \"code_review_suggestion\": \"The docstring for process_enum_call is incomplete and doesn't fully explain the new boolean return value. Let's complete it by clearly stating what True/False indicates about type variable declarations to avoid confusion for future maintainers.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "299": "{\n  \"code_review_suggestion\": \"The updated docstring for process_enum_call is incomplete and cuts off mid-sentence. Please complete the docstring to clearly explain the return value conditions, especially the edge cases hinted by 'but maybe'.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "299": "{\n    \"code_review_suggestion\": \"The method signature changed to return a bool but the docstring doesn't explain what the return value means. Please update the docstring to clearly document when it returns True vs False and what the return value represents.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "299": "{\"code_review_suggestion\": \"The method signature change from returning None to bool is good, but the docstring is incomplete and contains a cut-off sentence. Please complete the docstring to clearly explain what True/False return values indicate about type variable declarations.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "299": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "299": "{\n  \"code_review_suggestion\": \"It looks like the docstring update for `process_enum_call` was cut short. Could you please finish the sentence to clarify the condition for the new boolean return value?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "299": "{\n  \"code_review_suggestion\": \"The updated method signature now returns a bool but the implementation is missing a return statement, which will cause unintended behavior. Make sure to add an explicit return True/False where appropriate to reflect whether s defines an Enum.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "299": "{\n  \"code_review_suggestion\": \"The updated method signature now returns a bool but the docstring is incomplete; please finish the docstring to clearly explain what the boolean return value represents for better clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "299": "{\"code_review_suggestion\": \"You changed the return annotation from None to bool but the snippet shows no implemented return path and the docstring is now incomplete. Either implement and document the boolean return (adding explicit True/False returns) or revert to None; in any case, finish the docstring so it doesn’t end mid-sentence and update callers accordingly.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "299": "{\n  \"code_review_suggestion\": \"You changed the return type to bool but the docstring is now an unfinished sentence and doesn’t explain what True/False mean; either finish the docstring (clearly stating both cases) or split the type-variable detection into a separate helper so process_enum_call stays single-purpose.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

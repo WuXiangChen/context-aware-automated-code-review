@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "86": "pantsbuild/pants:6844"
+        },
+        "selected_nodeLs": {
+            "86": "['PR-6844']"
+        },
+        "codediff": {
+            "86": "@@ -4,68 +4,80 @@\n \n from __future__ import absolute_import, division, print_function, unicode_literals\n \n+import time\n+\n+import requests\n+import responses\n from future.moves.urllib.parse import urlparse\n from requests import RequestException\n \n from pants.cache.pinger import BestUrlSelector, InvalidRESTfulCacheProtoError, Pinger\n-from pants_test.cache.delay_server import setup_delayed_server\n from pants_test.test_base import TestBase\n \n \n class TestPinger(TestBase):\n \n-  resolution = 1\n-  fast_delay_seconds = 0\n-  fast_timeout_seconds = fast_delay_seconds + resolution\n-  slow_delay_seconds = fast_timeout_seconds + resolution\n-  slow_timeout_seconds = slow_delay_seconds + resolution\n-  unreachable_delay_seconds = slow_timeout_seconds + 10 * resolution\n-  message = \"This test may fail occasionally if the CPU is very busy.\"\n+  fast_url = 'http://fast_url'\n+  slow_url = 'http://slow_url'\n+  unreachable_url = 'http://unreachable_url'\n \n-  def setUp(self):\n-    unreachable = setup_delayed_server(self.unreachable_delay_seconds)\n-    slow = setup_delayed_server(self.slow_delay_seconds)\n-    fast = setup_delayed_server(self.fast_delay_seconds)\n-    self.servers = [unreachable, slow, fast]\n-    self.fast_netloc = 'http://localhost:{}'.format(fast.socket.getsockname()[1])\n-    self.slow_netloc = 'http://localhost:{}'.format(slow.socket.getsockname()[1])\n-    self.unreachable_netloc = 'http://localhost:{}'.format(unreachable.socket.getsockname()[1])\n-    self.https_external_netlock = 'https://github.com'\n+  latency_by_url = {\n+    fast_url: 0.1,\n+    slow_url: 0.3,\n+    unreachable_url: Pinger.UNREACHABLE\n+  }\n \n-  def test_pinger_times_correct(self):\n-    test = Pinger(timeout=self.slow_timeout_seconds, tries=2)\n-    netlocs = [self.fast_netloc, self.slow_netloc, self.unreachable_netloc]\n-    ping_results = dict(test.pings(netlocs))\n-    self.assertNotEqual(ping_results[self.slow_netloc], Pinger.UNREACHABLE)\n-    self.assertLess(ping_results[self.fast_netloc], ping_results[self.slow_netloc])\n-    self.assertEqual(ping_results[self.unreachable_netloc], Pinger.UNREACHABLE, msg=self.message)\n+  @classmethod\n+  def expect_response(cls, url, timeout):\n+    latency = cls.latency_by_url[url]\n+    body = requests.exceptions.ConnectTimeout() if latency >= timeout else ''\n+\n+    def callback(_):"
+        },
+        "groundTruth": {
+            "86": "`mock_callback` would be even more descriptive. I was able to figure out the meaning quickly enough, so feel free to ignore this suggestion."
+        },
+        "ds_dnContext": {
+            "86": "{\n  \"code_review_suggestion\": \"The test now uses mocking instead of real servers, which is great for reliability. However, the test timeout (0.2s) is lower than the slow URL's simulated latency (0.3s), causing it to be marked as unreachable. This breaks the test's expectation that the slow URL should be reachable. Consider increasing the timeout to 0.4s or reducing the slow URL's latency to 0.15s to match the test's intent.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "86": "{\n  \"code_review_suggestion\": \"The test replaces real servers with mocked responses but doesn't simulate network latency, which is essential for testing ping times. Consider adding delays in the response callbacks for fast_url and slow_url using time.sleep() to accurately test timing comparisons.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "86": "{\"code_review_suggestion\": \"The test now uses hardcoded latency values instead of actual network calls, which defeats the purpose of testing real network behavior. Consider using a proper mocking framework that simulates network delays while maintaining the ability to test timeout handling and actual HTTP interactions.\"}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "86": "{\n  \"code_review_suggestion\": \"The test refactor looks good overall, but I noticed the callback function doesn't return a proper response tuple. Since you're mocking requests with responses, the callback should return (status_code, headers, body) instead of just raising an exception. Consider returning (408, {}, '') for timeout cases to properly simulate HTTP behavior.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "86": "{\n  \"code_review_suggestion\": \"This is a great refactor to improve test reliability! However, the new `expect_response` helper has a small logic issue. Assigning an exception to the `body` variable won't work as intended. The `callback` should instead `raise requests.exceptions.ConnectTimeout()` to correctly simulate a timeout.\""
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "86": "{\n  \"code_review_suggestion\": \"Great work on making these tests more robust by using `responses`! I noticed the current approach simulates a timeout by setting the response body to a `ConnectTimeout` exception. This will likely result in a `200 OK` response, not a true timeout. To accurately test the pinger's timeout handling, the callback should"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "86": "{\n  \"code_review_suggestion\": \"The test setup using mocked URLs with fixed latency is clever, but defining 'body' as an exception instance instead of raising or returning it in the callback can cause unexpected behavior; instead, the callback should explicitly raise the timeout exception to properly simulate timeouts.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "86": "{\n  \"code_review_suggestion\": \"Great move mocking requests to make TestPinger more robust! Just ensure that the mocked callbacks properly simulate connection timeout exceptions as raised errors, not as returned values, so the test behavior accurately reflects real request failures.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "86": "{\n  \"code_review_suggestion\": \"expect_response defines an empty callback and never uses the latency (time.sleep) or returns/raises properly, so timeouts and ordering won’t be tested—currently it just builds a ConnectTimeout object as a body. Implement the callback to sleep for latency, raise requests.exceptions.ConnectTimeout when latency >= timeout, otherwise return a (200, headers, body) tuple, and ensure expect_response registers it with responses.add_callback (and returns nothing) so the pinger test actually exercises timing.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "86": "{\n  \"code_review_suggestion\": \"To actually exercise Pinger’s timing logic, have expect_response register a responses.add_callback that does time.sleep(latency) and raises requests.exceptions.ConnectTimeout when latency >= timeout; returning a ConnectTimeout object as a body won’t simulate delay or an exception, so the test may pass without validating latency ordering.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

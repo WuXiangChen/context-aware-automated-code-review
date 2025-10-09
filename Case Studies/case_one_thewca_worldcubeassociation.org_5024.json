@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "14": "thewca/worldcubeassociation.org:5024"
+        },
+        "selected_nodeLs": {
+            "14": "['PR-5024', 'PR-5023']"
+        },
+        "codediff": {
+            "14": "@@ -5,6 +5,7 @@\n   <p>Until 2011, the Regulations were maintained by Ron van Bruchem and the WCA Board. Since then, the <%= mail_to \"wrc@worldcubeassociation.org\", \"WCA Regulations Committee\" %> is in charge of them.<br />For the 2013 release, the Regulations were split into two documents: the Regulations and the Guidelines.</p>\n   <p>Here are all past and current versions of the Regulations.</p>\n   <ul>\n+    <li><%= link_to \"2019-05-01\", \"./official/2019-01-05/\" %> (<%= link_to \"Changes\", \"https://github.com/thewca/wca-regulations/compare/official-2018-01-01...release-candidate-2019-04-04\" %>, <%= link_to \"Summarized Changes\", \"https://www.worldcubeassociation.org/posts/wca-regulations-may-2019\" %>)</li>"
+        },
+        "groundTruth": {
+            "14": "I think the link is slightly off here, while the release candidate ended up being the same as the official version, we'd better use the `official-2019-05-01` tag, and also include the `#files_bucket` anchor to directly link to the diff."
+        },
+        "ds_dnContext": {
+            "14": "{\n  \"code_review_suggestion\": \"The date in the link text says '2019-05-01' but the path uses '2019-01-05'. This inconsistency could confuse users or lead to a broken link. Please align the displayed date with the actual directory path.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "14": "{\n  \"code_review_suggestion\": \"Hey, the date '2019-05-01' in the link text doesn't match the folder path '2019-01-05', which might break the link. Please verify and correct the date to ensure it points to the right location for the 2019 Regulations.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "14": "{\n  \"code_review_suggestion\": \"The date format in the link text '2019-05-01' appears to be YYYY-MM-DD while the URL path uses './official/2019-01-05/' which suggests DD-MM format. This inconsistency could confuse users - consider aligning both to use the same date format for clarity.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "14": "{\n  \"code_review_suggestion\": \"The date format in the link text '2019-05-01' appears to be inconsistent with the directory path './official/2019-01-05/' - please verify that both the display date and the actual directory structure match the intended May 1st, 2019 release date.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "14": "{\n  \"code_review_suggestion\": \"Looks like there's a small typo in the new link. The link text is '2019-05-01', but the path points to a '2019-01-05' directory. Let's correct the path to ensure users are directed to the right regulations.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "14": "{\n  \"code_review_suggestion\": \"Looks like there's a small typo in the link path for the new regulations. The link text says '2019-05-01', but the URL points to '2019-01-05'. Could you update the path to match the text to avoid linking to the wrong document?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "14": "{\n  \"code_review_suggestion\": \"The link text for the 2019-05-01 regulation points to the folder '2019-01-05/', which looks like a typo; fixing this to match the date or verifying the correct folder will improve accuracy and prevent broken navigation.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "14": "{\n  \"code_review_suggestion\": \"The date in the link path and displayed text ('2019-05-01') does not match the folder in the URL ('2019-01-05'); please correct this to ensure the link points to the intended 2019 regulations version.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "14": "{\"code_review_suggestion\":\"The displayed date (2019-05-01) doesn’t match the linked path (./official/2019-01-05/), which is likely a typo and will confuse users or 404. Update the href to ./official/2019-05-01/ (or adjust the label) so the visible text and target directory are consistent.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "14": "{\n  \"code_review_suggestion\": \"The new list item shows date 2019-05-01 but links to ./official/2019-01-05/ (month/day swapped), likely a broken link—update the path (or the display text) so the folder name and visible date match.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

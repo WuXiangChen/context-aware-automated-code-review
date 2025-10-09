@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "99": "owncloud/core:7162"
+        },
+        "selected_nodeLs": {
+            "99": "['PR-7162']"
+        },
+        "codediff": {
+            "99": "@@ -19,6 +19,15 @@ window.FileList={\n \t\t});\n \t},\n \t/**\n+\t * Sets a new page title\n+\t */\n+\tsetPageTitle: function(title){\n+\t\t// Sets the page title with the \" - ownCloud\" suffix as in templates\n+\t\twindow.document.title = title + ' - ownCloud';"
+        },
+        "groundTruth": {
+            "99": "With respect to branding this should be taken from the class OC_Defaults"
+        },
+        "ds_dnContext": {
+            "99": "{\n  \"code_review_suggestion\": \"The hardcoded ' - ownCloud' suffix is not maintainable. Consider making it configurable, perhaps by referencing an existing translation string or configuration value, to make future rebranding or localization easier.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n  \"code_review_suggestion\": \"Consider making the 'ownCloud' suffix configurable instead of hardcoding it, as this would improve maintainability if the branding needs to change later.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n  \"code_review_suggestion\": \"The page title suffix should be configurable rather than hardcoded as ' - ownCloud' to support different deployment scenarios and branding. Consider making this a configurable option that can be overridden.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n    \"code_review_suggestion\": \"The hardcoded ' - ownCloud' suffix should be made configurable or extracted as a constant to allow for easier rebranding and maintainability, especially since this appears to be part of a fix for page title navigation.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n  \"code_review_suggestion\": \"This is a useful helper! To make it more robust, how about we avoid hardcoding the ' - ownCloud' suffix? It would be better to fetch this from a configuration variable, making it easier to manage branding across the app.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n  \"code_review_suggestion\": \"This is a great UX improvement! To make this more robust and support theming, could we avoid hardcoding the ' - ownCloud' suffix? It would be better to retrieve the instance name from a global configuration variable if one is available.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n  \"code_review_suggestion\": \"It would be clearer and safer to sanitize or validate the `title` input to avoid potential injection of unwanted characters into the page title, ensuring consistency and security.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n  \"code_review_suggestion\": \"Consider adding a null or type check on the title parameter to avoid setting a malformed page title, ensuring robustness and preventing potential UI issues.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n  \"code_review_suggestion\": \"setPageTitle blindly concatenates, so passing an empty or undefined value (or an already-suffixed title) could yield awkward titles like 'undefined - ownCloud' or duplicate suffixes. Add a guard: coerce to a safe default and only append the suffix if it’s not already there.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "99": "{\n  \"code_review_suggestion\": \"Nice helper, but it won’t solve the issue unless it’s actually called—hook setPageTitle into the directory change flow (e.g., right after a successful navigation/ajax load) and handle empty or root cases to avoid setting a blank title.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

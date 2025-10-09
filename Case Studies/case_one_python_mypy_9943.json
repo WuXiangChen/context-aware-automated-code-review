@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "454": "python/mypy:9943"
+        },
+        "selected_nodeLs": {
+            "454": "['PR-9943']"
+        },
+        "codediff": {
+            "454": "@@ -216,18 +220,18 @@ def verify_mypyfile(\n         m\n         for m in dir(runtime)\n         if not m.startswith(\"_\")\n-        # Ensure that the object's module is `runtime`, e.g. so that we don't pick up reexported\n-        # modules and infinitely recurse. Unfortunately, there's no way to detect an explicit\n-        # reexport missing from the stubs (that isn't specified in __all__)\n-        and getattr(getattr(runtime, m), \"__module__\", None) == runtime.__name__\n     ]\n     # Check all things declared in module's __all__, falling back to runtime_public_contents\n     to_check.update(getattr(runtime, \"__all__\", runtime_public_contents))"
+        },
+        "groundTruth": {
+            "454": "I believe this is incorrect, you just have to updated with both `__all__` and `runtime_public_contents`. `__all__` is not about things being public or private, it is just about `from pgk import *`. For example, you could have tons of public stuff in a package, but just list just the most useful things in `__all__`. However, consider that `__all__` can list names starting with understcore (`_`), not sure if those should be considered public or private in mypy, but `from pgk import *` do import them."
+        },
+        "ds_dnContext": {
+            "454": "{\n  \"code_review_suggestion\": \"Removing the module check risks infinite recursion when processing reexported modules. Consider keeping this safeguard or implementing an alternative mechanism like tracking visited modules to prevent cycles.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "454": "{\n  \"code_review_suggestion\": \"The change removes a check that prevented infinite recursion on reexported modules. Since the PR aims to handle __all__-listed submodules, consider adding a recursion guard or explicitly handling reexports to maintain safety while achieving the goal.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "454": "{\n  \"code_review_suggestion\": \"The removed module check was preventing infinite recursion on reexported modules. Without this safeguard, there's a risk of infinite recursion when verifying modules that reexport other modules. Consider adding a visited set or alternative mechanism to track already-verified modules to prevent this issue.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "454": "{\n    \"code_review_suggestion\": \"The removal of the module check could cause infinite recursion when submodules are re-exported from other modules. Consider keeping a safety check or adding a visited set to prevent cycles when importing submodules mentioned in __all__.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "454": "{\n  \"code_review_suggestion\": \"Hey, I noticed the check for an object's `__module__` was removed. The original comment mentioned this was to prevent infinite recursion with re-exported modules. It seems like an important safeguard that we should probably keep to avoid potential issues.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "454": "{\n  \"code_review_suggestion\": \"I see you're removing the `__module__` check to better handle submodules listed in `__all__`. The original comment mentioned this check was to prevent infinite recursion with re-exports. While your change fixes the submodule issue, I'm wondering if it re-introduces that risk for modules without an `__all__` defined. Could we perhaps refine the filter to allow submodules (e.g., `obj.__module__.startswith(runtime.__name__)`) while still excluding unrelated re-exports?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "454": "{\n  \"code_review_suggestion\": \"The current filtering by `__module__` to avoid reexports may miss valid objects or cause unexpected exclusions; consider explicitly documenting this limitation or improving the approach by checking the object's origin more robustly to prevent recursion and ensure all relevant items are included.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "454": "{\n  \"code_review_suggestion\": \"The current check on __module__ helps avoid infinite recursion by excluding reexported modules, but it might miss valid reexports not listed in __all__; consider documenting this limitation clearly or adding a more explicit handling for such cases to improve maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "454": "{\"code_review_suggestion\": \"You dropped the __module__ == runtime.__name__ filter when building runtime_public_contents, so reexports can slip in and potentially trigger the infinite recursion the old comment warned about—add that guard (or an explicit allowlist) back to keep traversal bounded.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "454": "{\"code_review_suggestion\":\"By dropping the __module__ == runtime.__name__ filter, you now pull in every imported submodule via dir(runtime), not just those explicitly reexported, which can reintroduce recursion/perf issues the comment warned about. Consider keeping the original filter and then explicitly adding only submodules named in __all__ so the change stays targeted to the stated goal.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

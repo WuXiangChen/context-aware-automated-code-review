@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "155": "Blazemeter/taurus:738"
+        },
+        "selected_nodeLs": {
+            "155": "['PR-738', 'PR-5']"
+        },
+        "codediff": {
+            "155": "@@ -89,7 +89,12 @@ def __init__(self, config, scenario, engine):\n                 raise TaurusConfigError(\"Items from upload-files must specify parameter name\")\n \n             path_exc = TaurusConfigError(\"Items from upload-files must specify path to file\")\n-            file_dict[\"path\"] = get_full_path(self.engine.find_file(file_dict.get(\"path\", path_exc)))\n+            path = str(file_dict.get(\"path\", path_exc))\n+            if not path.startswith('$'):    # exclude varables"
+        },
+        "groundTruth": {
+            "155": "Path can contain variable pattern in the middle. Also, `$` is not enough to tell if this is JMeter variable. We have correct variable detecting somewhere in our code."
+        },
+        "ds_dnContext": {
+            "155": "{\n  \"code_review_suggestion\": \"The change correctly skips processing for variables (starting with '$'), but it doesn't handle the variable case afterward. Consider adding an `else` branch to preserve the original variable string in `file_dict['path']` to avoid leaving it unset or incorrect for variables.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "155": "{\n  \"code_review_suggestion\": \"Good catch on excluding variables, but there's a typo in the comment: 'varables' should be 'variables'. Also, consider adding a brief note about why variables (starting with '$') are excluded for clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "155": "{\n  \"code_review_suggestion\": \"The condition `if not path.startswith('$')` might be too restrictive for variables - consider using a more robust variable detection pattern like checking for `${...}` syntax or using a regex to handle different variable formats that might be used in the configuration.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "155": "{\n    \"code_review_suggestion\": \"The variable check should exclude variables (starting with '$') from path expansion, but there's a typo in the comment - 'varables' should be 'variables'. Also consider adding a brief comment explaining why we skip expansion for variables to make the intent clearer.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "155": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "155": "{\n  \"code_review_suggestion\": \"Good catch on handling JMeter variables! To make this check more robust, could we specifically look for the `${...}` syntax? Using `if not (path.startswith('${') and path.endswith('}')):` would be more precise and avoid accidentally skipping valid paths that might happen to start with a '$'.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "155": "{\n  \"code_review_suggestion\": \"The check for variables by just verifying 'path.startswith(\\\"$\\\")' is fragile and may miss other variable syntaxes or edge cases; consider implementing a more robust method to detect and handle variables to avoid path resolution errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "155": "{\n  \"code_review_suggestion\": \"Consider adding a comment or helper function to clarify why paths starting with '$' are excluded from expansion to improve maintainability and aid future readers.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "155": "{\"code_review_suggestion\": \"The change leaves an empty if block (no body) and removes the original assignment, causing a syntax/logic error and losing path resolution. Restore logic, e.g.: path = file_dict.get('path', path_exc); if isinstance(path, str) and not path.startswith('$'): file_dict['path'] = get_full_path(self.engine.find_file(path)) else: file_dict['path'] = path.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "155": "{\n  \"code_review_suggestion\": \"You removed the original assignment but didn’t add a new one, so file_dict['path'] may never be set now. Finish the if logic: keep the raw value when it’s a JMeter var (e.g. ${VAR}), otherwise resolve it as before. For example: if isinstance(path, str) and path.startswith('${'): file_dict['path'] = path else: file_dict['path'] = get_full_path(self.engine.find_file(path)).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

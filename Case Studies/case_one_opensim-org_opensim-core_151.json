@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "209": "opensim-org/opensim-core:151"
+        },
+        "selected_nodeLs": {
+            "209": "['PR-151']"
+        },
+        "codediff": {
+            "209": "@@ -156,8 +168,37 @@ const SimTK::Inertia& Body::getInertia() const\n \t// Has not been set programmatically\n \tif (_inertia.isNaN()){\n \t\t// initialize from properties\n-\t\tconst SimTK::Vec6& Ivec = get_inertia();\n-\t\t_inertia = SimTK::Inertia(Ivec.getSubVec<3>(0), Ivec.getSubVec<3>(3));\n+\t\tconst double& m = getMass();\n+\t\t// if mass is zero, non-zero inertia makes no sense\n+\t\tif (m >= -SimTK::Eps && m <= SimTK::Eps){"
+        },
+        "groundTruth": {
+            "209": "Style suggestion: ``` if (-SimTK::Eps <= m && m <= SimTK::Eps) { } ``` To me that reads more like the -eps <= m <= eps that we would like to be able to say."
+        },
+        "ds_dnContext": {
+            "209": "{\n  \"code_review_suggestion\": \"The condition for zero mass includes negative values, which might mask errors if mass is incorrectly negative. Consider using `if (m >= 0 && m <= SimTK::Eps)` to ensure mass is non-negative.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "209": "{\n  \"code_review_suggestion\": \"The condition allows negative mass values (down to -Eps), which is unphysical. Consider checking for non-negative mass explicitly: `if (m >= 0 && m <= SimTK::Eps)` to avoid potential logical errors.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "209": "{\n    \"code_review_suggestion\": \"The mass comparison should use a tolerance check instead of direct equality with zero. Consider using `SimTK::SignificantReal` or a relative tolerance check to handle floating-point precision issues more robustly.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "209": "{\"code_review_suggestion\": \"The condition `if (m >= -SimTK::Eps && m <= SimTK::Eps)` should use a tolerance check for floating-point comparison, but consider using `SimTK::SignificantReal` or a more explicit tolerance variable for clarity and maintainability.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "209": "{\n  \"code_review_suggestion\": \"Nice catch handling the zero-mass case! For improved clarity, you could simplify the floating-point comparison to `std::abs(m) <= SimTK::Eps`. It's a more idiomatic way to express that the mass is approximately zero and makes the intent immediately clear.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "209": "{\n  \"code_review_suggestion\": \"Nice catch handling the zero-mass case. To make the zero-check a bit more conventional and readable, you could use `std::abs(m) <= SimTK::Eps`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "209": "{\n  \"code_review_suggestion\": \"Checking mass near zero using direct comparison with an epsilon may cause confusion; consider using a clearer function or explicit threshold check for zero mass to improve readability and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "209": "{\n  \"code_review_suggestion\": \"Consider simplifying the zero-mass check by using a single absolute value comparison instead of a range to improve clarity, e.g., if (std::abs(m) <= SimTK::Eps).\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "209": "{\n  \"code_review_suggestion\": \"The new mass ~0 check removed the original _inertia initialization, so _inertia can stay NaN and be returned uninitialized. After the zero-mass guard (use std::abs(m) <= SimTK::Eps), still assign _inertia: set it to SimTK::Inertia() (or zeros) when mass ~0, else build it from the property as before.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "209": "{\"code_review_suggestion\":\"The zero-mass test would be clearer and less error-prone as if (std::abs(m) <= SimTK::Eps) instead of the dual >= -Eps && <= Eps check; consider also whether a relative tolerance (scaled by expected mass magnitude) is more appropriate to avoid unintentionally zeroing very small but valid masses.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

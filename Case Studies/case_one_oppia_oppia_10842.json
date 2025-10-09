@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "256": "oppia/oppia:10842"
+        },
+        "selected_nodeLs": {
+            "256": "['PR-10842']"
+        },
+        "codediff": {
+            "256": "@@ -689,7 +449,7 @@ def _validate_node_count(\n                     'collection_ids %s' % (\n                         base_model_validators.ERROR_CATEGORY_FIELD_CHECK),\n                     'Entity id %s: based on field collection_ids having'\n-                    ' value %s, expected model %s with id %s but it doesn\\'t'\n+                    ' value %s, expect model %s with id %s but it doesn\\'t'"
+        },
+        "groundTruth": {
+            "256": "Why'd we make these changes? Maybe we can undo them? (including all of the similar changes below)"
+        },
+        "ds_dnContext": {
+            "256": "{\n  \"code_review_suggestion\": \"The error message appears incomplete ('it doesn't' what?) which may cause confusion. Consider adding the missing word, e.g., 'but it doesn't exist' for clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "256": "{\n  \"code_review_suggestion\": \"The change from 'expected' to 'expect' introduces a grammatical inconsistency in the error message. Since the surrounding context uses past tense ('based', 'having'), consider keeping 'expected' for consistency or rephrasing the entire message to maintain tense agreement.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "256": "{\n  \"code_review_suggestion\": \"The grammar fix from 'expected' to 'expect' creates a tense inconsistency with 'doesn't'. Consider using 'expected model %s with id %s to exist, but it doesn't' for proper grammatical flow.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "256": "{\n    \"code_review_suggestion\": \"The string change from 'expected' to 'expect' appears to be a typo that breaks the grammar of the error message. Since this is part of a refactor to move classifier validators, we should maintain proper English in error messages for clarity. Consider reverting to 'expected' for grammatical correctness.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "256": "{\n  \"code_review_suggestion\": \"Good eye for detail! While this is a minor grammatical point, using the past tense 'expected' is slightly more conventional for error messages. It clarifies that a certain state was anticipated at the time of validation but wasn't met. Let's consider reverting to the original wording for clarity.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "256": "{\n  \"code_review_suggestion\": \"Thanks for the refactor! I noticed a small grammatical change in the error message. I believe 'expected' was grammatically correct in the original phrase, as in '...expected model...'. Would you mind changing 'expect' back to 'expected'?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "256": "{\n  \"code_review_suggestion\": \"The message contains a grammatical inconsistency ('expect' should be 'expected'), so I'd recommend correcting it to improve clarity and professionalism.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "256": "{\n  \"code_review_suggestion\": \"The message change from 'expected' to 'expect' is grammatically incorrect; please revert to 'expected' to maintain clear and correct error descriptions.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "256": "{\"code_review_suggestion\": \"The change from 'expected model %s' to 'expect model %s' makes the error message grammatically incorrect and less clear; revert to 'expected model %s' or rephrase as '...value %s; expected model %s with id %s but it doesn’t...' to maintain readability of validation logs.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "256": "{\n  \"code_review_suggestion\": \"The change from 'expected model %s' to 'expect model %s' introduces a grammatical error and reduces clarity; keep the original phrasing or use 'expected a model %s' to maintain readable, consistent validation messages (important for tests and potential i18n).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

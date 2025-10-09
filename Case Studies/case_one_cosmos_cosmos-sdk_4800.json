@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "20": "cosmos/cosmos-sdk:4800"
+        },
+        "selected_nodeLs": {
+            "20": "['PR-4800']"
+        },
+        "codediff": {
+            "20": "@@ -73,12 +73,32 @@ func NewKVStoreKey(name string) *KVStoreKey {\n \treturn types.NewKVStoreKey(name)\n }\n \n+// NewKVStoreKeys returns a map of new  pointers to KVStoreKey's.\n+// Uses pointers so keys don't collide.\n+func NewKVStoreKeys(names ...string) map[string]*KVStoreKey {\n+\tkeys := make(map[string]*KVStoreKey)\n+\tfor _, name := range names {\n+\t\tkeys[name] = NewKVStoreKey(name)\n+\t}\n+\treturn keys\n+}\n+\n // Constructs new TransientStoreKey\n // Must return a pointer according to the ocap principle\n func NewTransientStoreKey(name string) *TransientStoreKey {\n \treturn types.NewTransientStoreKey(name)\n }\n \n+// Constructs a new map of TransientStoreKey's"
+        },
+        "groundTruth": {
+            "20": "```suggestion // NewTransientStoreKeys constructs a new map of TransientStoreKey's ```"
+        },
+        "ds_dnContext": {
+            "20": "{\n  \"code_review_suggestion\": \"The NewKVStoreKeys function should check for duplicate names to prevent key overwrites. Consider adding a duplicate check and panic with a clear message if duplicates are found.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "20": "{\n  \"code_review_suggestion\": \"The function NewKVStoreKeys should handle duplicate names to prevent accidental key overwrites. Consider adding a duplicate check or documenting the behavior for duplicate input names. Also, the TransientStoreKey function appears incomplete in the diff—ensure it's fully implemented.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "20": "{\n  \"code_review_suggestion\": \"The comment for NewKVStoreKeys mentions 'Uses pointers so keys don't collide' but this is misleading - the pointer usage is actually to satisfy the ocap principle and interface requirements, not collision avoidance. Consider updating the comment to clarify the real purpose: ensuring proper capability isolation.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "20": "{\n    \"code_review_suggestion\": \"The NewKVStoreKeys function should include a check for duplicate names to prevent key collisions, since the comment mentions avoiding collisions but the implementation doesn't handle duplicate input names.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "20": "{\n  \"code_review_suggestion\": \"This is a nice utility! For consistency, it would be great to also add the `NewTransientStoreKeys` function that the new comment is hinting at, providing a parallel helper for both `KVStoreKey` and `TransientStoreKey` types.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "20": "{\n  \"code_review_suggestion\": \"Looks like there's a leftover, incomplete comment at the end of this hunk. Could you please either add the corresponding `NewTransientStoreKeys` function or remove the comment for now to keep things clean?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "20": "{\n  \"code_review_suggestion\": \"The comment for NewKVStoreKeys is a bit unclear and has a typo—simplify it to clearly explain that the function returns a map of pointers to KVStoreKeys keyed by their names, which helps avoid key collisions.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "20": "{\n  \"code_review_suggestion\": \"The new function NewKVStoreKeys is clear and useful; consider adding a corresponding implementation and comment for the NewTransientStoreKeys map function mentioned but not included yet to maintain consistency and completeness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "20": "{\"code_review_suggestion\":\"The comment claiming pointers prevent key collisions is misleading—collisions still occur if duplicate names are passed. Clarify the comment and optionally detect duplicates (e.g., panic or return an error) while preallocating: keys := make(map[string]*KVStoreKey, len(names)).\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "20": "{\n  \"code_review_suggestion\": \"NewKVStoreKeys silently overwrites duplicate names, which can mask configuration mistakes. Consider detecting duplicates (e.g., panic or return an error when a name already exists) and update the comment accordingly; also you can preallocate with make(map[string]*KVStoreKey, len(names)).\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "185": "Jackett/Jackett:7371"
+        },
+        "selected_nodeLs": {
+            "185": "['PR-7371', 'Issue-7292']"
+        },
+        "codediff": {
+            "185": "@@ -161,26 +163,26 @@ private async Task ProcessPage(List<ReleaseInfo> releases, string searchUrl)\n                     }\n \n                     // Check if the release has been assigned a category\n-                    if (row.Cq().Find(\"td:eq(0) a\").Length > 0)\n+                    if (row.QuerySelector(\"td:nth-of-type(1) a\") != null)"
+        },
+        "groundTruth": {
+            "185": "assign `row.QuerySelector(\"td:nth-of-type(1) a\")`to a var to reuse in the next line"
+        },
+        "ds_dnContext": {
+            "185": "{\n  \"code_review_suggestion\": \"Consider using 'td:first-of-type a' instead of 'td:nth-of-type(1) a' for better readability and clarity, as it's a more intuitive CSS selector.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "185": "{\n  \"code_review_suggestion\": \"The CSS selector conversion from CsQuery's `td:eq(0)` to AngleSharp's `td:nth-of-type(1)` is correct for this migration, but consider using the more readable `td:first-of-type` selector instead to improve clarity and maintain consistency with CSS best practices.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "185": "{\n  \"code_review_suggestion\": \"The CSS selector change from 'td:eq(0) a' to 'td:nth-of-type(1) a' is good for standardization, but consider adding a comment explaining why nth-of-type is preferred over :eq() for better maintainability and to help other developers understand the selector choice.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "185": "{\n  \"code_review_suggestion\": \"The conversion from CsQuery to AngleSharp looks good, but consider using a more specific selector like 'td:first-of-type a' instead of 'td:nth-of-type(1) a' for better readability and to make the intent clearer.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "185": "{\n  \"code_review_suggestion\": \"Nice refactor! Using `QuerySelector` is more performant as it stops searching after finding the first element. For even clearer intent, you could also consider the `td:first-child` selector, which is a highly readable and standard way to grab the first cell in a row.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "185": "{\n  \"code_review_suggestion\": \"Nice work on migrating to AngleSharp! For this selector, you could use `td:first-child a` instead of `td:nth-of-type(1) a`. It's slightly more readable and idiomatic for targeting the first table cell.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "185": "{\n  \"code_review_suggestion\": \"The change from jQuery-like selector to QuerySelector improves consistency with standard DOM APIs, but using 'td:nth-of-type(1) a' is less clear than a zero-based index approach; consider clarifying or documenting this choice for better maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "185": "{\n  \"code_review_suggestion\": \"Nice job switching from CsQuery to AngleSharp! Just ensure that the selector change from \\\"td:eq(0) a\\\" to \\\"td:nth-of-type(1) a\\\" has equivalent behavior in all edge cases, as the indexing and CSS selector engines differ subtly.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "185": "{\"code_review_suggestion\":\"Changing 'td:eq(0) a' to 'td:nth-of-type(1) a' alters the matching rules (nth-of-type skips over a leading th and can hit deeper descendants), risking false positives. If you only mean the row’s first cell, use a direct child selector like ':scope > td:first-of-type a' (or row.Cells[0]) for precise, maintainable intent.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "185": "{\n  \"code_review_suggestion\": \"To keep the CsQuery-to-AngleSharp migration clear, consider simplifying the selector: 'td:first-of-type a' (or grabbing row.Cells[0] then checking for an <a>) is more readable than 'td:nth-of-type(1) a' and less likely to confuse future maintainers.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

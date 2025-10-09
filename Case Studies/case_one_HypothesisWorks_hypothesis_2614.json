@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "130": "HypothesisWorks/hypothesis:2614"
+        },
+        "selected_nodeLs": {
+            "130": "['PR-880', 'PR-1826']"
+        },
+        "codediff": {
+            "130": "@@ -171,7 +173,7 @@ def target(observation: float, *, label: str = \"\") -> None:\n     check_type(str, label, \"label\")\n \n     context = _current_build_context.value\n-    if context is None:\n+    if context is None and allow_outside_given_test is False:"
+        },
+        "groundTruth": {
+            "130": "```suggestion if context is None: if allow_outside_given_test: return ``` And we'll want to `check_type(bool, allow_outside_given_test, \"allow_outside_given_test\")` above."
+        },
+        "ds_dnContext": {
+            "130": "{\n  \"code_review_suggestion\": \"The variable 'allow_outside_given_test' appears to be used as a global, which can make the code harder to test and maintain due to hidden dependencies. Consider passing it as a parameter to the function instead for better clarity and encapsulation.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "130": "{\n  \"code_review_suggestion\": \"The condition now uses `allow_outside_given_test`, which isn't defined in this function. Ensure it's passed as a parameter or available in scope to avoid a NameError.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "130": "{\n  \"code_review_suggestion\": \"The new condition introduces a potential NameError since 'allow_outside_given_test' isn't defined in this scope. You should either define this variable locally or pass it as a parameter to avoid runtime errors.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "130": "{\"code_review_suggestion\": \"The condition `allow_outside_given_test is False` should use `== False` instead of `is False` for boolean comparison, as `is` checks for identity rather than equality which can cause issues with some boolean values.\"}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "130": "{\n  \"code_review_suggestion\": \"It looks like the new `allow_outside_given_test` variable is used without being defined in this scope, which could lead to a `NameError`. Should this be a global variable or perhaps passed as a parameter to the function?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "130": "{\n  \"code_review_suggestion\": \"Just a small style point: the condition `allow_outside_given_test is False` could be simplified to the more idiomatic `not allow_outside_given_test`. It's a bit more concise and generally easier to read.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "130": "{\n  \"code_review_suggestion\": \"The variable 'allow_outside_given_test' is used without being defined or passed into the function, which will cause a NameError; to fix this, ensure it's defined in scope or passed as a parameter for clarity and maintainability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "130": "{\n  \"code_review_suggestion\": \"The added condition `allow_outside_given_test is False` is used but not defined or passed in the function, which will cause a NameError; ensure `allow_outside_given_test` is properly introduced as a parameter or in scope before this check.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "130": "{\"code_review_suggestion\":\"The new condition introduces allow_outside_given_test without showing it in scope; if it's an implicit global, that’s brittle and could raise a NameError. Pass it explicitly as a keyword param (with a default) or ensure it’s clearly defined before use to avoid hidden coupling and unexpected runtime errors.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "130": "{\n  \"code_review_suggestion\": \"The new condition references allow_outside_given_test, which isn’t defined in this scope—this will raise a NameError. Pass it as an explicit parameter (with a default), or fetch it from a settings/config object (e.g. settings.allow_outside_given_test) before the if-statement, then use `if context is None and not allow_outside_given_test:`.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "23": "microsoft/fhir-server:1025"
+        },
+        "selected_nodeLs": {
+            "23": "['PR-1025', 'PR-996']"
+        },
+        "codediff": {
+            "23": "@@ -115,31 +116,34 @@ internal void Build()\n             _initialized = true;\n         }\n \n-        private static bool ShouldExcludeEntry(string resourceType, string searchParameterName)\n+        private bool ShouldExcludeEntry(string resourceType, string searchParameterName)\n         {\n-            return (resourceType == ResourceType.DomainResource.ToString() && searchParameterName == \"_text\") ||\n-                   (resourceType == ResourceType.Resource.ToString() && searchParameterName == \"_content\") ||\n-                   (resourceType == ResourceType.Resource.ToString() && searchParameterName == \"_query\")\n-#if Stu3\n-                || (resourceType == ResourceType.DataElement.ToString() && (searchParameterName == \"objectClass\" || searchParameterName == \"objectClassProperty\"))\n-#endif\n-                ;\n+            return (resourceType == KnownResourceTypes.DomainResource && searchParameterName == \"_text\") ||\n+                   (resourceType == KnownResourceTypes.Resource && searchParameterName == \"_content\") ||\n+                   (resourceType == KnownResourceTypes.Resource && searchParameterName == \"_query\") ||\n+                   ShouldExcludeEntryStu3(resourceType, searchParameterName);\n+        }\n+\n+        private bool ShouldExcludeEntryStu3(string resourceType, string searchParameterName)\n+        {\n+            return _modelInfoProvider.Version == FhirSpecification.Stu3 &&\n+                   (resourceType == \"DataElement\" &&"
+        },
+        "groundTruth": {
+            "23": "Should DataElement also be a KnownResourceType? Nit: The parentheses on this line aren't needed."
+        },
+        "ds_dnContext": {
+            "23": "{\n  \"code_review_suggestion\": \"The hardcoded string 'DataElement' in ShouldExcludeEntryStu3 could break if resource type naming changes. Consider using a constant from KnownResourceTypes (like DomainResource/Resource) for consistency and maintainability.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "23": "{\n  \"code_review_suggestion\": \"The STU3 condition check uses a hardcoded string 'DataElement' instead of the KnownResourceTypes constant. Consider using a constant like KnownResourceTypes.DataElement for better maintainability and to avoid potential typos.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "23": "{\n  \"code_review_suggestion\": \"The STU3-specific exclusion logic is now conditionally executed, but the 'DataElement' string is hardcoded. Consider using a constant like KnownResourceTypes.DataElement for better maintainability and to avoid typos.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "23": "{\n    \"code_review_suggestion\": \"The ShouldExcludeEntryStu3 method should handle the case where _modelInfoProvider might be null, as the LGTM alerts indicate potential null dereference issues. Consider adding a null check for _modelInfoProvider before accessing its Version property.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "23": "{\n  \"code_review_suggestion\": \"This is a great refactor to support multiple FHIR versions at runtime! To keep the code consistent with the other changes, could you replace the hardcoded string `\\\"DataElement\\\"` in the new `ShouldExcludeEntryStu3` method with a constant, likely from `KnownResourceTypes`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "23": "{\n  \"code_review_suggestion\": \"Nice refactoring to separate the STU3-specific logic! For consistency and to avoid magic strings, could you use `KnownResourceTypes.DataElement` instead of the hardcoded string `\\\"DataElement\\\"`?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "23": "{\n  \"code_review_suggestion\": \"Consider making ShouldExcludeEntry a static method again and passing in all necessary dependencies like _modelInfoProvider or version, to improve testability and clarity, rather than relying on instance state within a private helper.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "23": "{\n  \"code_review_suggestion\": \"Consider adding null checks or safeguards around _modelInfoProvider to avoid potential NullReferenceExceptions during the Stu3 version check in ShouldExcludeEntryStu3 for more robust and defensive code.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "23": "{\"code_review_suggestion\": \"The new ShouldExcludeEntryStu3 method is incomplete (it ends after 'resourceType == \\\"DataElement\\\" &&'), which will either not compile or has lost the search parameter checks. Finish the predicate so it matches the original intent, e.g.: return _modelInfoProvider.Version == FhirSpecification.Stu3 && resourceType == KnownResourceTypes.DataElement && (searchParameterName == \\\"objectClass\\\" || searchParameterName == \\\"objectClassProperty\\\");\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "23": "{\n  \"code_review_suggestion\": \"Nice refactor using KnownResourceTypes, but the new Stu3 helper still hardcodes \\\"DataElement\\\" as a string while the others use constants—easy to typo and inconsistent. Prefer adding/using a KnownResourceTypes.DataElement (or equivalent constant) so the exclusion logic stays uniform and safer.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

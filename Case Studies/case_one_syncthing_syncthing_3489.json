@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "43": "syncthing/syncthing:3489"
+        },
+        "selected_nodeLs": {
+            "43": "['PR-3489', 'Issue-804']"
+        },
+        "codediff": {
+            "43": "@@ -0,0 +1,29 @@\n+// Copyright (C) 2016 The Syncthing Authors.\n+//\n+// This Source Code Form is subject to the terms of the Mozilla Public\n+// License, v. 2.0. If a copy of the MPL was not distributed with this file,\n+// You can obtain one at http://mozilla.org/MPL/2.0/.\n+\n+package connections\n+\n+import (\n+\t\"net\"\n+\t\"net/url\"\n+\t\"strconv\"\n+\t\"strings\"\n+)\n+\n+func fixupPort(uri *url.URL, replacementPort int) *url.URL {"
+        },
+        "groundTruth": {
+            "43": "`defaultPort` I think, we are not replacing anything."
+        },
+        "ds_dnContext": {
+            "43": "{\n  \"code_review_suggestion\": \"The current fixupPort implementation doesn't handle IPv6 addresses correctly when no port is present. Use uri.Hostname() to get the unbracketed host and net.JoinHostPort to ensure proper IPv6 formatting when setting the new port.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "43": "{\n  \"code_review_suggestion\": \"Consider making the `fixupPort` function unexported (lowercase) since it appears to be an internal helper function based on the KCP implementation context, and there's no indication it needs to be exposed outside this package.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "43": "{\n  \"code_review_suggestion\": \"The function should handle cases where the original URI already has a port specified. Consider checking if uri.Port() is empty before replacing it to avoid unintentionally overriding existing ports.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "43": "{\n    \"code_review_suggestion\": \"The fixupPort function should handle cases where the original URI already has a port specified - currently it always replaces the port, which might not be the intended behavior for all URI schemes.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "43": "{\n  \"code_review_suggestion\": \"To prevent surprising side effects for callers, it's best to avoid modifying input parameters. I'd suggest making a copy of the input `uri`, applying the port change to the copy, and then returning the new instance.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "43": "{\n  \"code_review_suggestion\": \"The `fixupPort` function signature is a bit ambiguous. Since it takes a pointer and returns a pointer, it's not immediately clear if it modifies the URI in-place or returns a new one. For better clarity, I'd suggest either modifying the URI in-place and removing the return value, or creating and returning a new copy.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "43": "{\n  \"code_review_suggestion\": \"Consider avoiding modifying the incoming *url.URL directly inside fixupPort; instead, create and return a new copy to prevent unintended side effects and improve function purity and clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "43": "{\n  \"code_review_suggestion\": \"The function signature is missing a comment describing its purpose and behavior; adding clear documentation will improve maintainability and readability for contributors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "43": "{\"code_review_suggestion\":\"The new file won’t compile because fixupPort is declared without a body. Either implement the logic (e.g., clone the URL, set Port if missing, and return it) or remove the stub until ready. Also reconsider taking *url.URL—returning a modified copy (value in, value out) can be clearer and avoids unintended in‑place mutation.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "43": "{\n  \"code_review_suggestion\": \"fixupPort is declared but has no implementation, so this file won’t compile and blocks the KCP addition. Implement it (e.g., if uri.Port() == \\\"\\\" use replacementPort, carefully handling IPv6 literals) and return a cloned *url.URL instead of mutating the original; or remove the stub until used.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

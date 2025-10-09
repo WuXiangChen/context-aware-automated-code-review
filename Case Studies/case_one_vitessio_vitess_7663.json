@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "496": "vitessio/vitess:7663"
+        },
+        "selected_nodeLs": {
+            "496": "['PR-7263', 'PR-7082']"
+        },
+        "codediff": {
+            "496": "@@ -17,15 +17,39 @@ limitations under the License.\n package planbuilder\n \n import (\n+\t\"vitess.io/vitess/go/vt/key\"\n \ttopodatapb \"vitess.io/vitess/go/vt/proto/topodata\"\n-\n \tvtrpcpb \"vitess.io/vitess/go/vt/proto/vtrpc\"\n \t\"vitess.io/vitess/go/vt/sqlparser\"\n \t\"vitess.io/vitess/go/vt/vterrors\"\n \t\"vitess.io/vitess/go/vt/vtgate/engine\"\n )\n \n-func buildRevertPlan(query string, stmt *sqlparser.RevertMigration, vschema ContextVSchema) (engine.Primitive, error) {\n+func buildAlterMigrationPlan(query string, stmt *sqlparser.AlterMigration, vschema ContextVSchema) (engine.Primitive, error) {"
+        },
+        "groundTruth": {
+            "496": "nit: why ask for `stmt` and then not use it?"
+        },
+        "ds_dnContext": {
+            "496": "{\n  \"code_review_suggestion\": \"The new buildAlterMigrationPlan function appears to reuse the revert migration logic but doesn't handle key range validation. Consider adding key DestinationType checks to prevent invalid routing decisions, similar to other plan builders in this package.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n  \"code_review_suggestion\": \"The new function buildAlterMigrationPlan should incorporate the session UUID from vschema's context to ensure proper migration context tracking for Online DDL operations, aligning with PR #7263's goals.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n  \"code_review_suggestion\": \"The function name `buildAlterMigrationPlan` doesn't match the expected `buildRevertPlan` function signature from the diff context. This appears to be implementing the wrong functionality - you should either rename the function to match or implement the correct revert migration logic instead.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n    \"code_review_suggestion\": \"The buildAlterMigrationPlan function should include session_uuid context handling to support Online DDL migration grouping, similar to how it's implemented in other migration-related functions. Consider adding session context extraction and passing it to the engine layer for proper migration tracking.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n  \"code_review_suggestion\": \"This is a great refactoring to generalize the function for all `ALTER MIGRATION` variants. For better consistency with other builders in this package (like `buildUpdate` or `buildDDL`), consider dropping the `Plan` suffix and renaming the function to `buildAlterMigration`.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n  \"code_review_suggestion\": \"This is a good refactoring. Renaming `buildRevertPlan` to the more generic `buildAlterMigrationPlan` improves clarity and makes the code more extensible for other `ALTER MIGRATION` sub-commands.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n  \"code_review_suggestion\": \"The function rename from buildRevertPlan to buildAlterMigrationPlan suggests a change in responsibility but the parameter still expects a RevertMigration type; update the parameter type to match AlterMigration for clarity and correctness.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n  \"code_review_suggestion\": \"The function name changed from buildRevertPlan to buildAlterMigrationPlan, but the diff lacks implementation details; ensure the new plan correctly handles all altered migration cases and includes appropriate error handling to align with the Online DDL context established in the PR.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n  \"code_review_suggestion\": \"The newly added import vitess.io/vitess/go/vt/key isn’t used; in Go this will cause a compile error. Drop the import or wire in its intended usage before merging.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "496": "{\n  \"code_review_suggestion\": \"The newly added import vtess.io/vitess/go/vt/key isn’t used in this function—will cause a compile error; drop it or add the intended usage to avoid breaking the build.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

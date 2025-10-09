@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "163": "ray-project/ray:10397"
+        },
+        "selected_nodeLs": {
+            "163": "['PR-5046']"
+        },
+        "codediff": {
+            "163": "@@ -257,9 +257,15 @@ def get_resource_spec(self):\n         \"\"\"Resolve and return the current resource spec for the node.\"\"\"\n \n         def merge_resources(env_dict, params_dict):\n-            \"\"\"Merge two dictionaries, picking from the second in the event of a conflict.\n-            Also emit a warning on every conflict.\n+            \"\"\"Separates special case params and merges two dictionaries, picking from the\n+            second in the event of a conflict. Also emit a warning on every"
+        },
+        "groundTruth": {
+            "163": "```suggestion first in the event of a conflict. Also emit a warning on every ```"
+        },
+        "ds_dnContext": {
+            "163": "{\n  \"code_review_suggestion\": \"The docstring update clarifies the function's new behavior, but consider adding a brief example or specifying what 'special case params' are to improve maintainability and reduce ambiguity for future contributors.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n  \"code_review_suggestion\": \"The docstring update improves clarity by mentioning special case param separation, but it appears cut off and might be incomplete; please ensure it fully describes the warning behavior to avoid confusion.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n  \"code_review_suggestion\": \"The docstring for merge_resources mentions 'separates special case params' but the function doesn't actually implement this separation logic. Either implement the special case handling or update the docstring to accurately reflect what the function does.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n    \"code_review_suggestion\": \"The PR context indicates this is about fixing memory leaks in ServerCall and ClientCall by making destructors virtual, but the code diff shows unrelated resource merging changes. Please ensure the code changes align with the PR's stated purpose of fixing memory leaks through virtual destructors.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n  \"code_review_suggestion\": \"It looks like the new docstring for `merge_resources` describes two separate responsibilities. To improve clarity and maintainability, perhaps we could extract the logic for 'separating special case params' into its own dedicated helper function?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n  \"code_review_suggestion\": \"It looks like the docstring for `merge_resources` was cut off mid-sentence. Could you please complete it to fully describe the function's behavior?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n  \"code_review_suggestion\": \"The docstring is incomplete and unclear after the update; please finish the explanation of the special case params for clarity, so future readers understand exactly what the function does.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n  \"code_review_suggestion\": \"The updated docstring is incomplete and cuts off mid-sentence, which reduces clarity; please finish the explanation fully to maintain clear and maintainable documentation.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n  \"code_review_suggestion\": \"The updated docstring is truncated and now includes unrelated instruction text, likely accidental; fix it by removing the extraneous lines, completing the sentence, and properly closing the triple quotes to avoid confusing docs or even a syntax error.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "163": "{\n  \"code_review_suggestion\": \"The updated docstring now ends mid‑sentence and adds an unexplained phrase ('special case params'); finish the sentence and explicitly list or define those special cases so readers know what is separated before the merge (e.g., which keys, why), and clarify that conflicts prefer params_dict while logging a warning for each key.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

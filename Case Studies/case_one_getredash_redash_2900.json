@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "279": "getredash/redash:2900"
+        },
+        "selected_nodeLs": {
+            "279": "['PR-2900', 'Issue-2430']"
+        },
+        "codediff": {
+            "279": "@@ -41,6 +41,11 @@ function CounterRenderer($timeout) {\n           const targetRowNumber = getRowNumber($scope.visualization.options.targetRowNumber, queryData.length);\n           const counterColName = $scope.visualization.options.counterColName;\n           const targetColName = $scope.visualization.options.targetColName;\n+          const counterLabel = $scope.visualization.options.counterLabel;\n+\n+          if (counterLabel) {\n+            $scope.counterLabel = counterLabel;\n+          }"
+        },
+        "groundTruth": {
+            "279": "Just to clarify, and maybe I misunderstood the feature, does this actually keep falling back to the visualization name as I assumed when the `<counter-name>` element's content is changed to `counterLabel`?"
+        },
+        "ds_dnContext": {
+            "279": "{\n  \"code_review_suggestion\": \"The condition checks for truthiness of `counterLabel`, which means empty strings won't update the label. Consider checking explicitly for `undefined` instead to allow empty labels if intended, e.g., `if (typeof counterLabel !== 'undefined')`.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "279": "{\n  \"code_review_suggestion\": \"The counter label should fall back to the visualization name when no custom label is provided, maintaining backward compatibility. Consider setting a default value like: `$scope.counterLabel = counterLabel || $scope.visualization.name;` instead of the conditional assignment.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "279": "{\n  \"code_review_suggestion\": \"The counterLabel assignment should include a fallback value to handle cases where counterLabel is undefined or empty, preventing potential undefined behavior in the template. Consider using: $scope.counterLabel = counterLabel || 'Count';\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "279": "{\n    \"code_review_suggestion\": \"The counter label addition looks good, but consider adding a fallback value when counterLabel is undefined to maintain consistency with the current behavior of using the visualization name as default.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "279": "{\n  \"code_review_suggestion\": \"Nice addition! You can make this a bit more concise by removing the conditional check. A direct assignment like `$scope.counterLabel = $scope.visualization.options.counterLabel;` achieves the same result, as assigning an undefined value is perfectly fine here.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "279": "{\n  \"code_review_suggestion\": \"Thanks for adding this! You can simplify this logic by removing the temporary variable and the `if` statement. A direct assignment like `$scope.counterLabel = $scope.visualization.options.counterLabel;` would be a bit cleaner and achieve the same result.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "279": "{\n  \"code_review_suggestion\": \"Instead of conditionally assigning $scope.counterLabel only when counterLabel is truthy, consider assigning it unconditionally or provide a default value to avoid potential undefined states and improve clarity.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "279": "{\n  \"code_review_suggestion\": \"Instead of conditionally assigning counterLabel to $scope.counterLabel, consider always assigning it with a default fallback to improve clarity and avoid potential undefined values in the view.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "279": "{\"code_review_suggestion\":\"The truthy check means clearing the label (e.g., setting it to empty string) won’t update the scope, leaving a stale value. Assign it unless it’s explicitly undefined/null: e.g., if (counterLabel != null) { $scope.counterLabel = counterLabel; } or just set it directly.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "279": "{\"code_review_suggestion\":\"Consider always assigning $scope.counterLabel instead of only when truthy; otherwise a previously set label will linger if the user clears the field. Set it every render, falling back to the existing default (e.g. visualization name or empty string) to avoid stale state.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

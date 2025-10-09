@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "151": "oppia/oppia:7841"
+        },
+        "selected_nodeLs": {
+            "151": "['PR-7741', 'Issue-7427', 'PR-7803']"
+        },
+        "codediff": {
+            "151": "@@ -33,9 +34,9 @@ def test_requires_override_for_calculation(self):\n                 state_answers_dict={})\n \n     def test_equality_of_hashable_answers(self):\n-        hashable_answer_1 = answer_models._HashableAnswer('answer_1')  # pylint: disable=protected-access\n-        hashable_answer_2 = answer_models._HashableAnswer('answer_2')  # pylint: disable=protected-access\n-        hashable_answer_3 = answer_models._HashableAnswer('answer_1')  # pylint: disable=protected-access\n+        hashable_answer_1 = utils.get_hashable_value('answer_1') # pylint: disable=protected-access\n+        hashable_answer_2 = utils.get_hashable_value('answer_2') # pylint: disable=protected-access\n+        hashable_answer_3 = utils.get_hashable_value('answer_1') # pylint: disable=protected-access"
+        },
+        "groundTruth": {
+            "151": "You'll also want to remove `# pylint: disable=protected-access`"
+        },
+        "ds_dnContext": {
+            "151": "{\n  \"code_review_suggestion\": \"The `pylint disable=protected-access` comment is no longer needed since `utils.get_hashable_value` appears to be a public utility function. Consider removing the disable comment to avoid confusion and follow best practices for linting.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "151": "{\n  \"code_review_suggestion\": \"The pylint disable comment for protected-access is no longer needed since utils.get_hashable_value is a public function. You can remove these comments to keep the code clean.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "151": "{\n  \"code_review_suggestion\": \"Great job replacing the protected _HashableAnswer class with a public utility function! This improves maintainability by using a documented public API instead of internal implementation details. Consider adding a brief comment explaining why get_hashable_value is used here to make the test's purpose clearer to future developers.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "151": "{\n  \"code_review_suggestion\": \"The change replaces direct instantiation of the protected _HashableAnswer class with a utility function get_hashable_value, which improves encapsulation. However, the pylint disable comment for 'protected-access' is no longer needed since we're not accessing a protected member directly, and should be removed to keep the code clean.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "151": null
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "151": "{\n  \"code_review_suggestion\": \"This is a nice refactor to use a utility function! Since `utils.get_hashable_value` is now the public-facing way to get this value, the `pylint: disable=protected-access` comment should no longer be needed here. Could you please remove it?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "151": "{\n  \"code_review_suggestion\": \"Switching to utils.get_hashable_value improves abstraction, but you should remove or replace the pylint disable comment to avoid masking potential issues with accessing protected members.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "151": "{\n  \"code_review_suggestion\": \"Nice move using utils.get_hashable_value to improve encapsulation, but the pylint disable for protected-access is still present; consider refactoring utils.get_hashable_value to avoid accessing protected members or update its access level for cleaner tests.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "151": "{\n  \"code_review_suggestion\": \"By switching to utils.get_hashable_value, this test no longer directly targets _HashableAnswer, so a regression in that class’s equality could slip by if the util changes. Either revert to constructing _HashableAnswer directly, or rename the test and drop the unnecessary pylint: disable comment for clarity.\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "151": "{\"code_review_suggestion\":\"Since you refactored to the public utils.get_hashable_value(), the inline '# pylint: disable=protected-access' is now unnecessary (and could mask real issues later). Drop that suppression (and the trailing space on the third line) to keep the test clean and accurate.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

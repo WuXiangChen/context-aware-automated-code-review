@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "190": "salesforce/design-system-react:1350"
+        },
+        "selected_nodeLs": {
+            "190": "['PR-1350', 'Issue-273']"
+        },
+        "codediff": {
+            "190": "@@ -0,0 +1,36 @@\n+/* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */\n+/* Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license */\n+/* eslint-disable import/no-mutable-exports */\n+/* eslint-disable max-len */\n+\n+import deprecatedEventParameter from '../../utilities/warning/deprecated-event-parameter';\n+import onlyOneOfProperties from '../../utilities/warning/only-one-of-properties';\n+\n+let checkProps = function () {};\n+\n+if (process.env.NODE_ENV !== 'production') {\n+\tcheckProps = function (COMPONENT, props) {\n+\t\tdeprecatedEventParameter(\n+\t\t\tCOMPONENT,\n+\t\t\t{\n+\t\t\t\toldEventParameterOrder: props.oldEventParameterOrder,\n+\t\t\t\tpropAsString: 'onChange',\n+\t\t\t\tpropAsValue: props.onChange,\n+\t\t\t},\n+\t\t\t'`components/forms/checkbox` is deprecated. `components/checkbox` should be used. When this path update is made `onChange` event parameters will change from `onChange(value, event, { value } to `onChange(event, { value }). Please update your event parameters when you change paths.` If you are using the CommonJS named import, `Checkbox` events will break at v1.0 and this warning will be present until then. Please review https://github.com/salesforce/design-system-react/releases when you upgrade.'"
+        },
+        "groundTruth": {
+            "190": "Minor: missing `)` in `onChange(value, event, { value } to ...`"
+        },
+        "ds_dnContext": {
+            "190": "{\n  \"code_review_suggestion\": \"The conditional function assignment for checkProps is a bit hard to read. Consider using a ternary or keeping the function declaration inside the if-block for better clarity, like: `const checkProps = process.env.NODE_ENV !== 'production' ? function(COMPONENT, props) { ... } : function() {};`\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "190": "{\n  \"code_review_suggestion\": \"The deprecation warning message contains a syntax error in the event parameter examples. Fix the mismatched braces and backticks: change `onChange(value, event, { value } to onChange(event, { value })` to proper formatting like `onChange(value, event, { value })` → `onChange(event, { value })` for clarity.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "190": "{\n  \"code_review_suggestion\": \"The warning message for deprecated event parameters is quite long and technical, which might be overwhelming for developers. Consider breaking it into a more concise, actionable message with a clear link to documentation for details.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "190": "{\n  \"code_review_suggestion\": \"The deprecation warning message mentions the new parameter order will be `(event, { value })`, but the context from #273 indicates the standard should be `(syntheticEvent, customData)` where customData contains the value. Consider updating the warning to match the established pattern: `onChange(event, { value })` for consistency across all components.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "190": "{\n  \"code_review_suggestion\": \"Great job adding this helpful deprecation warning! To improve readability and make maintenance easier, could we extract that long warning message into a named constant at the top of the file? This would also allow us to remove the `eslint-disable max-len` comment.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "190": "{\n  \"code_review_suggestion\": \"This warning is super helpful for developers. To improve readability and maintainability, could we break this long warning string into multiple lines using a template literal? It would make the code cleaner and help catch small typos, like the missing backtick in the `onChange(value, event, { value })` example.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "190": "{\n  \"code_review_suggestion\": \"Avoid disabling eslint rules like 'import/no-mutable-exports' and 'max-len' globally; instead, refactor the code to keep exports immutable and break long strings for better maintainability and readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "190": "{\n  \"code_review_suggestion\": \"The large deprecation warning message is hard to read; consider breaking it into multiple smaller, clearer statements or extracting it into a constant for better maintainability and readability.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "190": "{\"code_review_suggestion\":\"The deprecation warning message is malformed (missing a closing parenthesis in onChange(value, event, { value }) and has an extra backtick), which can confuse users about how to update their handler signature. Fix the string to clearly show: from onChange(value, event, { value }) to onChange(event, { value }).\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "190": "{\n  \"code_review_suggestion\": \"The deprecation message string is malformed (mismatched backticks/parentheses: 'onChange(value, event, { value } to ...' and an extra backtick after 'paths.'). This could confuse consumers. Update it to something like: \\\"...will change from onChange(value, event, { value }) to onChange(event, { value })...\\\" and remove the stray backtick. Consider pulling the long message into a named constant for easier maintenance.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

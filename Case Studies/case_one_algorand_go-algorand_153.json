@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "72": "algorand/go-algorand:153"
+        },
+        "selected_nodeLs": {
+            "72": "['PR-153']"
+        },
+        "codediff": {
+            "72": "@@ -442,13 +442,36 @@ func reportWarnf(format string, args ...interface{}) {\n }\n \n func reportErrorln(args ...interface{}) {\n-\tfmt.Println(args...)\n+\tfmt.Fprintln(os.Stderr, args...)\n \t// log.Warnln(args...)\n \tos.Exit(1)\n }\n \n func reportErrorf(format string, args ...interface{}) {\n-\tfmt.Printf(format+\"\\n\", args...)\n+\tfmt.Fprintf(os.Stderr, format+\"\\n\", args...)\n \t// log.Warnf(format, args...)\n \tos.Exit(1)\n }\n+\n+// writeFile is a wrapper of ioutil.WriteFile which considers the special\n+// case of stdout filename\n+func writeFile(filename string, data []byte, perm os.FileMode) error {\n+\tvar err error\n+\tif filename == stdoutFilenameValue {\n+\t\t// Write to Stdout\n+\t\tif _, err = os.Stdout.Write(data); err != nil {\n+\t\t\treturn err\n+\t\t}\n+\t\treturn nil\n+\t}\n+\treturn ioutil.WriteFile(filename, data, 0600)"
+        },
+        "groundTruth": {
+            "72": "`0600` should probably be `perm` here"
+        },
+        "ds_dnContext": {
+            "72": "{\n  \"code_review_suggestion\": \"Hey, the writeFile function uses ioutil.WriteFile, which is deprecated in Go. Switching to os.WriteFile would improve maintainability and align with current best practices.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "72": "{\n  \"code_review_suggestion\": \"The writeFile function ignores the provided perm parameter and uses a hardcoded 0600 mode for file writes. This could cause permission issues for users. Please use the passed perm parameter instead: `return ioutil.WriteFile(filename, data, perm)`.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "72": "{\n  \"code_review_suggestion\": \"The writeFile function hardcodes file permissions as 0600, which might be too restrictive for some use cases. Consider making the permissions configurable or using the original 'perm' parameter that's already passed in for better flexibility.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "72": "{\n    \"code_review_suggestion\": \"The writeFile function should use the provided 'perm' parameter instead of hardcoding 0600 permissions, as this maintains consistency with the function signature and allows proper file permission control for non-stdout files.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "72": "{\n  \"code_review_suggestion\": \"Nice work on the `writeFile` helper! It looks like the `perm` parameter is currently ignored when writing to a file, with permissions hardcoded to `0600`. To make the function more flexible and behave as expected, could we pass the `perm` variable to the `ioutil.WriteFile` call?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "72": "{\n  \"code_review_suggestion\": \"Nice work on abstracting file I/O to support piping! In the new `writeFile` function, it looks like the `perm` argument is being ignored in favor of a hardcoded `0600`. Let's use the provided `perm` variable in the `ioutil.WriteFile` call to ensure the function behaves as expected.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "72": "{\n  \"code_review_suggestion\": \"In writeFile, use the provided perm parameter when calling ioutil.WriteFile instead of hardcoding 0600 to respect caller's permission intent and improve flexibility.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "72": "{\n  \"code_review_suggestion\": \"In writeFile, you should use the provided 'perm' parameter when calling ioutil.WriteFile instead of hardcoding 0600 to respect the intended file permissions.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "72": "{\n  \"code_review_suggestion\": \"In writeFile you accept perm but ignore it (hard-coded 0600) and still use deprecated ioutil.WriteFile. This is misleading and may cause unexpected permission issues—switch to os.WriteFile and actually use the perm argument (or drop the param if fixed perms are intentional).\"\n}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "72": "{\"code_review_suggestion\":\"writeFile takes a perm argument but ignores it (hard-codes 0600); either pass perm through to ioutil.WriteFile or drop the parameter to avoid confusion and unexpected permission behavior.\"}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]

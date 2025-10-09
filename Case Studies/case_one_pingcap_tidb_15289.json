@@ -1,0 +1,74 @@
+[
+    {
+        "repo_id": {
+            "164": "pingcap/tidb:15289"
+        },
+        "selected_nodeLs": {
+            "164": "['PR-15289']"
+        },
+        "codediff": {
+            "164": "@@ -752,3 +752,46 @@ func (s *testSuite1) TestIssue10608(c *C) {\n \ttk.MustQuery(\"select (select group_concat(concat(123,'-')) from t where t.a = s.b group by t.a) as t from s;\").Check(testkit.Rows(\"123-\", \"123-\"))\n \n }\n+<<<<<<< HEAD"
+        },
+        "groundTruth": {
+            "164": "Please resolve the conflicts. @fzhedu"
+        },
+        "ds_dnContext": {
+            "164": "{\n  \"code_review_suggestion\": \"The code includes a merge conflict marker '<<<<<<< HEAD' which will cause compilation errors. Please remove all conflict markers and ensure the code is properly merged.\"\n}"
+        },
+        "model_names": "dsReasoner_No"
+    },
+    {
+        "generated_comments": {
+            "164": "{\n  \"code_review_suggestion\": \"Ensure the deep copy for maxMin4JSON is correctly implemented to handle all nested JSON structures, preventing data corruption that the shallow copy caused in the original issue.\"\n}"
+        },
+        "model_names": "dsReasoner_with"
+    },
+    {
+        "generated_comments": {
+            "164": "{\n  \"code_review_suggestion\": \"The diff shows a merge conflict marker (<<<<<<< HEAD) that needs to be resolved before this code can be properly reviewed. Please clean up the merge conflict and ensure the final code is properly formatted without any conflict markers.\"\n}"
+        },
+        "model_names": "ds_No"
+    },
+    {
+        "generated_comments": {
+            "164": "{\n    \"code_review_suggestion\": \"The change from shallow copy to deep copy for maxMin4JSON addresses the memory sharing issue effectively, but consider adding a unit test that specifically reproduces the original problem with a large dataset to validate the fix and prevent regression.\"\n}"
+        },
+        "model_names": "ds_with"
+    },
+    {
+        "generated_comments": {
+            "164": "{\n  \"code_review_suggestion\": \"Great job adding coverage for this issue! To make the test more maintainable, consider refactoring the repeated query blocks into a helper function or a loop, since the test logic is duplicated three times with only minor variations.\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_No"
+    },
+    {
+        "generated_comments": {
+            "164": "{\n  \"code_review_suggestion\": \"It looks like there's an unresolved merge conflict marked by `<<<<<<< HEAD` in the diff. Could you please resolve this conflict so the new test case can be properly added?\"\n}"
+        },
+        "model_names": "gemini-2.5-pro_with"
+    },
+    {
+        "generated_comments": {
+            "164": "{\n  \"code_review_suggestion\": \"Looks like there's an unresolved merge conflict marker (<<<<<<< HEAD) in the code. You should clean up these conflict markers to ensure the code compiles correctly and avoids confusion.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_No"
+    },
+    {
+        "generated_comments": {
+            "164": "{\n  \"code_review_suggestion\": \"It looks like a merge conflict marker (<<<<<<< HEAD) was accidentally left in the code; please remove it to prevent build or runtime errors.\"\n}"
+        },
+        "model_names": "gpt-4.1-mini_with"
+    },
+    {
+        "generated_comments": {
+            "164": "{\"code_review_suggestion\": \"A merge conflict marker (<<<<<<< HEAD) was committed—finish resolving the merge and remove all conflict markers so the test file compiles cleanly.\"}"
+        },
+        "model_names": "gpt-5_No"
+    },
+    {
+        "generated_comments": {
+            "164": "{\n  \"code_review_suggestion\": \"There’s an unresolved merge conflict marker (<<<<<<< HEAD) left in the test file—remove the conflict markers and complete the merge before committing, otherwise the build/tests will fail.\"\n}"
+        },
+        "model_names": "gpt-5_with"
+    }
+]
