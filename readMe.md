@@ -74,7 +74,7 @@ nohup python -u rl_main.py --rlModel msg/train_NN_5 --train_eval --task_type "ms
 Cause the limitation of upload capacity, the data set constructed in this paper is in [here](https://huggingface.co/datasets/XiangChenY/Context-Aware_Code_Review_Dataset/tree/main).
 
 ## Case Studies
-The case studies showcase the the review improvements achieved bythree popular LLMs—DeepSeek, GPT, and Gemini—and under the context selected by this work.
+The case studies showcase the the review improvements achieved by three popular LLMs—DeepSeek, GPT, and Gemini—under the context selected by this work.
 We present the five real-world cases as follow. Additional cases are provided in the Case Studies/ folder.
 <p align="center">
   <img src="Results/case4.png" alt="rq1_1" width="800"/>
