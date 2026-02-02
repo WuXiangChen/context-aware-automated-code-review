@@ -1,5 +1,5 @@
 # Description
-This repository is responsible for implementing the paper submitted to WWW 2026, "CA-ACR: Context-Aware Automated Code Review via Graph-Based Reinforcement Learning" 
+This repository is responsible for implementing the paper submitted to ISTA 2026, "TRACE: Context-Aware Automated Code Review via Graph-Based Reinforcement Learning" 
 
 ## Task:
 We aim to develop a context-aware automated code review tool.  By analyzing the code and its contextual information in OSS, this tool enhances the efficiency and accuracy of code reviews, helping developers quickly identify potential issues and improvement suggestions. 
